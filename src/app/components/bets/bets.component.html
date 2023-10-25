@@ -1,0 +1,204 @@
+<div *ngIf="!isLoggedIn()" class="card">
+    Go to login
+</div>
+<div *ngIf="isLoggedIn()" class="card">
+    <p-button (click)="endScrape()" [disabled]="disableButtons || endingScrape" *ngIf="appRunning" label="End Scrape" severity="danger" styleClass="p-button-danger"></p-button>
+    <p-button (click)="startScrape()" [disabled]="disableButtons || endingScrape" *ngIf="!appRunning" label="Start Scrape" severity="success" styleClass="p-button-success"></p-button>
+    <span *ngIf="appRunning && !endingScrape">Scraping... <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i></span>
+    <span *ngIf="endingScrape">Ending scrape...</span>
+    <span *ngIf="error">Error, try refreshing page.</span>
+    <!-- <span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span>
+    <input type="text" pInputText [(ngModel)]="urlSegment" />
+    <p-button (click)="setUrlSegment()" label="Set url" severity="success"></p-button> -->
+    <br>
+    <br>
+    <span>Last signal: {{lastSignal}}</span>
+    <br>
+    <br>
+    <p-table [value]="bets" [resizableColumns]="true" [scrollable]="true" scrollHeight="400px" [tableStyle]="{'min-width': '50rem'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th></th>
+                <th>Active</th>
+                <th>Yield</th>
+                <th>Sport</th>
+                <th>SB1</th>
+                <th>SB2</th>
+                <th>SB3</th>
+                <th>Player1</th>
+                <th>PlayerX</th>
+                <th>Player2</th>
+                <th>1</th>
+                <th>X</th>
+                <th>2</th>
+                <th>1X</th>
+                <th>2X</th>
+                <th>12</th>
+                <th>Bet1</th>
+                <th>BetX</th>
+                <th>Bet2</th>
+                <th>Bet1X</th>
+                <th>Bet2X</th>
+                <th>Bet12</th>
+                <th>ImplProb</th>
+                <th>Updated</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-bet>
+            <tr>
+                <td>
+                    <p-button (click)="betDetail(bet)" styleClass="p-button-rounded p-button-success" icon="pi pi-check"></p-button><p-button (click)="hideBet(bet)" icon="pi pi-times" styleClass="p-button-rounded p-button-danger"></p-button>
+                </td>
+                <td>
+                    <p-tag *ngIf="bet.active" severity="success" value="Active" [rounded]="true"></p-tag>
+                    <p-tag *ngIf="!bet.active" severity="danger" value="Inactive" [rounded]="true"></p-tag>
+                </td>
+                <td>{{bet.yield}}</td>
+                <td>{{bet.sport}}</td>
+                <td><img *ngIf="bet.sb1" src="{{getImageRoute(bet.sb1)}}" alt="{{bet.sb1}}" width="50px" height="20px"></td>
+                <td><img *ngIf="bet.sb2" src="{{getImageRoute(bet.sb2)}}" alt="{{bet.sb2}}" width="50px" height="20px"></td>
+                <td><img *ngIf="bet.sb3" src="{{getImageRoute(bet.sb3)}}" alt="{{bet.sb3}}" width="50px" height="20px"></td>
+                <td>{{bet.player1}}</td>
+                <td>{{bet?.playerX}}</td>
+                <td>{{bet.player2}}</td>
+                <td>{{bet?.c1}}</td>
+                <td>{{bet?.cX}}</td>
+                <td>{{bet?.c2}}</td>
+                <td>{{bet?.c1X}}</td>
+                <td>{{bet?.c2X}}</td>
+                <td>{{bet?.c12}}</td>
+                <td>{{bet?.bet1}}</td>
+                <td>{{bet?.betX}}</td>
+                <td>{{bet?.bet2}}</td>
+                <td>{{bet?.bet1X}}</td>
+                <td>{{bet?.bet2X}}</td>
+                <td>{{bet?.bet12}}</td>
+                <td>{{bet.implProb}}</td>
+                <td>{{bet.created}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <br>
+    <br>
+    <br>
+    <div class="flex flex-wrap gap-3 p-fluid">
+        <div class="flex-auto" style="max-width: 400px;">
+            <label for="integeronly"><strong>Budget</strong></label>
+            <p-inputNumber inputId="integeronly" [(ngModel)]="budget"> </p-inputNumber>
+        </div>
+    </div>
+    <p-table [value]="selectedBets" [resizableColumns]="true" [scrollable]="true" scrollHeight="400px" [tableStyle]="{'min-width': '50rem'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Sport</th>
+                <th>Place</th>
+                <th>Player</th>
+                <th>BetType</th>
+                <th>Course</th>
+                <th>Ammount</th>
+                <th>Yield</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-selectedBet>
+            <tr *ngIf="hasBets([selectedBet.c1, selectedBet.cX, selectedBet.c2])">
+                <td>{{selectedBet.sport}}</td>
+                <td><img src="{{getImageRoute(selectedBet.sb1)}}" alt="{{selectedBet.sb1}}" width="50px" height="20px"></td>
+                <td>{{selectedBet.player1}}</td>
+                <td>1</td>
+                <td><p-inputNumber [(ngModel)]="selectedBet.c1" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td>{{recalculateBet(selectedBet.c1, [selectedBet.c1, selectedBet.cX, selectedBet.c2])}}</td>
+                <td>{{recalculateYield([selectedBet.c1, selectedBet.cX, selectedBet.c2])}}</td>
+            </tr>
+            <tr *ngIf="hasBets([selectedBet.c1, selectedBet.cX, selectedBet.c2])" >
+                <td>{{selectedBet.sport}}</td>
+                <td><img src="{{getImageRoute(selectedBet.sb2)}}" alt="{{selectedBet.sb2}}" width="50px" height="20px"></td>
+                <td>{{selectedBet.playerX}}</td>
+                <td>X</td>
+                <td><p-inputNumber [(ngModel)]="selectedBet.cX" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td>{{recalculateBet(selectedBet.cX, [selectedBet.c1, selectedBet.cX, selectedBet.c2])}}</td>
+                <td>{{recalculateYield([selectedBet.c1, selectedBet.cX, selectedBet.c2])}}</td>
+            </tr>
+            <tr *ngIf="hasBets([selectedBet.c1, selectedBet.cX, selectedBet.c2])" >
+                <td>{{selectedBet.sport}}</td>
+                <td><img src="{{getImageRoute(selectedBet.sb3)}}" alt="{{selectedBet.sb3}}" width="50px" height="20px"></td>
+                <td>{{selectedBet.player2}}</td>
+                <td>2</td>
+                <td><p-inputNumber [(ngModel)]="selectedBet.c2" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td>{{recalculateBet(selectedBet.c2, [selectedBet.c1, selectedBet.cX, selectedBet.c2])}}</td>
+                <td>{{recalculateYield([selectedBet.c1, selectedBet.cX, selectedBet.c2])}}</td>
+            </tr>
+            <tr *ngIf="hasBets([selectedBet.c1, selectedBet.c2]) && selectedBet.cX==null">
+                <td>{{selectedBet.sport}}</td>
+                <td><img src="{{getImageRoute(selectedBet.sb1)}}" alt="{{selectedBet.sb1}}" width="50px" height="20px"></td>
+                <td>{{selectedBet.player1}}</td>
+                <td>1</td>
+                <td><p-inputNumber [(ngModel)]="selectedBet.c1" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td>{{recalculateBet(selectedBet.c1, [selectedBet.c1, selectedBet.c2])}}</td>
+                <td>{{recalculateYield([selectedBet.c1, selectedBet.c2])}}</td>
+            </tr>
+            <tr *ngIf="hasBets([selectedBet.c1, selectedBet.c2]) && selectedBet.cX==null">
+                <td>{{selectedBet.sport}}</td>
+                <td><img src="{{getImageRoute(selectedBet.sb2)}}" alt="{{selectedBet.sb2}}" width="50px" height="20px"></td>
+                <td>{{selectedBet.player2}}</td>
+                <td>2</td>
+                <td><p-inputNumber [(ngModel)]="selectedBet.c2" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td>{{recalculateBet(selectedBet.c2, [selectedBet.c1, selectedBet.c2])}}</td>
+                <td>{{recalculateYield([selectedBet.c1, selectedBet.c2])}}</td>
+            </tr>
+            <tr *ngIf="hasBets([selectedBet.c1, selectedBet.c2X])">
+                <td>{{selectedBet.sport}}</td>
+                <td><img src="{{getImageRoute(selectedBet.sb1)}}" alt="{{selectedBet.sb1}}" width="50px" height="20px"></td>
+                <td>{{selectedBet.player1}}</td>
+                <td>1</td>
+                <td><p-inputNumber [(ngModel)]="selectedBet.c1" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td>{{recalculateBet(selectedBet.c1, [selectedBet.c1, selectedBet.c2X])}}</td>
+                <td>{{recalculateYield([selectedBet.c1, selectedBet.c2X])}}</td>
+            </tr>
+            <tr *ngIf="hasBets([selectedBet.c1, selectedBet.c2X])">
+                <td>{{selectedBet.sport}}</td>
+                <td><img src="{{getImageRoute(selectedBet.sb2)}}" alt="{{selectedBet.sb2}}" width="50px" height="20px"></td>
+                <td>{{selectedBet.player2}}</td>
+                <td>2X</td>
+                <td><p-inputNumber [(ngModel)]="selectedBet.c2X" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td>{{recalculateBet(selectedBet.c2X, [selectedBet.c1, selectedBet.c2X])}}</td>
+                <td>{{recalculateYield([selectedBet.c1, selectedBet.c2X])}}</td>
+            </tr>
+            <tr *ngIf="hasBets([selectedBet.cX, selectedBet.c12])">
+                <td>{{selectedBet.sport}}</td>
+                <td><img src="{{getImageRoute(selectedBet.sb1)}}" alt="{{selectedBet.sb1}}" width="50px" height="20px"></td>
+                <td>{{selectedBet.player1}}</td>
+                <td>X</td>
+                <td><p-inputNumber [(ngModel)]="selectedBet.cX" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td>{{recalculateBet(selectedBet.cX, [selectedBet.cX, selectedBet.c12])}}</td>
+                <td>{{recalculateYield([selectedBet.cX, selectedBet.c12])}}</td>
+            </tr>
+            <tr *ngIf="hasBets([selectedBet.cX, selectedBet.c12])">
+                <td>{{selectedBet.sport}}</td>
+                <td><img src="{{getImageRoute(selectedBet.sb2)}}" alt="{{selectedBet.sb2}}" width="50px" height="20px"></td>
+                <td>{{selectedBet.player2}}</td>
+                <td>12</td>
+                <td><p-inputNumber [(ngModel)]="selectedBet.c12" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td>{{recalculateBet(selectedBet.c12, [selectedBet.cX, selectedBet.c12])}}</td>
+                <td>{{recalculateYield([selectedBet.cX, selectedBet.c12])}}</td>
+            </tr>
+            <tr *ngIf="hasBets([selectedBet.c2, selectedBet.c1X])">
+                <td>{{selectedBet.sport}}</td>
+                <td><img src="{{getImageRoute(selectedBet.sb1)}}" alt="{{selectedBet.sb1}}" width="50px" height="20px"></td>
+                <td>{{selectedBet.player1}}</td>
+                <td>2</td>
+                <td><p-inputNumber [(ngModel)]="selectedBet.c2" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td>{{recalculateBet(selectedBet.c2, [selectedBet.c2, selectedBet.c1X])}}</td>
+                <td>{{recalculateYield([selectedBet.c2, selectedBet.c1X])}}</td>
+            </tr>
+            <tr *ngIf="hasBets([selectedBet.c2, selectedBet.c1X])">
+                <td>{{selectedBet.sport}}</td>
+                <td><img src="{{getImageRoute(selectedBet.sb2)}}" alt="{{selectedBet.sb2}}" width="50px" height="20px"></td>
+                <td>{{selectedBet.player2}}</td>
+                <td>1X</td>
+                <td><p-inputNumber [(ngModel)]="selectedBet.c1X" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td>{{recalculateBet(selectedBet.c1X, [selectedBet.c2, selectedBet.c1X])}}</td>
+                <td>{{recalculateYield([selectedBet.c2, selectedBet.c1X])}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

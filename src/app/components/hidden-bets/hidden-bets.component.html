@@ -1,0 +1,69 @@
+<div *ngIf="!isLoggedIn()" class="card">
+    Go to login
+</div>
+<div *ngIf="isLoggedIn()" class="card">
+    <p-table [value]="hiddenBets" [resizableColumns]="true" [scrollable]="true" scrollHeight="400px" [tableStyle]="{'min-width': '50rem'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th></th>
+                <th>Active</th>
+                <th>Yield</th>
+                <th>Sport</th>
+                <th>SB1</th>
+                <th>SB2</th>
+                <th>SB3</th>
+                <th>Player1</th>
+                <th>PlayerX</th>
+                <th>Player2</th>
+                <th>1</th>
+                <th>X</th>
+                <th>2</th>
+                <th>1X</th>
+                <th>2X</th>
+                <th>12</th>
+                <th>Bet1</th>
+                <th>BetX</th>
+                <th>Bet2</th>
+                <th>Bet1X</th>
+                <th>Bet2X</th>
+                <th>Bet12</th>
+                <th>ImplProb</th>
+                <th>Updated</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-bet>
+            <tr>
+                <td>
+                    <p-button (click)="renewBet(bet)" icon="pi pi-check" styleClass="p-button-rounded"></p-button>
+                </td>
+                <td>
+                    <p-tag *ngIf="bet.active" severity="success" value="Active" [rounded]="true"></p-tag>
+                    <p-tag *ngIf="!bet.active" severity="danger" value="Inactive" [rounded]="true"></p-tag>
+                </td>
+                <td>{{bet.yield}}</td>
+                <td>{{bet.sport}}</td>
+                <td>{{bet.sb1}}</td>
+                <td>{{bet.sb2}}</td>
+                <td>{{bet?.sb3}}</td>
+                <td>{{bet.player1}}</td>
+                <td>{{bet?.playerX}}</td>
+                <td>{{bet.player2}}</td>
+                <td>{{bet?.c1}}</td>
+                <td>{{bet?.cX}}</td>
+                <td>{{bet?.c2}}</td>
+                <td>{{bet?.c1X}}</td>
+                <td>{{bet?.c2X}}</td>
+                <td>{{bet?.c12}}</td>
+                <td>{{bet?.bet1}}</td>
+                <td>{{bet?.betX}}</td>
+                <td>{{bet?.bet2}}</td>
+                <td>{{bet?.bet1X}}</td>
+                <td>{{bet?.bet2X}}</td>
+                <td>{{bet?.bet12}}</td>
+                <td>{{bet.implProb}}</td>
+                <td>{{bet.created}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+</div>
