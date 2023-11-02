@@ -13,7 +13,7 @@ import { ConfigComponent } from './components/config/config.component';
                 path: '', component: AppLayoutComponent,
                 children: [
                     { path: '', component: BetsComponent},
-                    { path: 'liveBets', component: LivebetsComponent},
+                    // { path: 'liveBets', component: LivebetsComponent},
                     { path: 'hidden', component: HiddenBetsComponent},
                     { path: 'config', component: ConfigComponent},
                 ]

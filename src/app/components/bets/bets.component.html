@@ -6,7 +6,8 @@
         <div class="col">
             <p-button (click)="endScrape()" [disabled]="disableButtons || endingScrape" *ngIf="appRunning" label="End Scrape" severity="danger" styleClass="p-button-danger"></p-button>
             <p-button (click)="startScrape()" [disabled]="disableButtons || endingScrape" *ngIf="!appRunning" label="Start Scrape" severity="success" styleClass="p-button-success"></p-button>
-            <span *ngIf="appRunning && !endingScrape">Scraping... <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i></span>
+            <span>&nbsp;</span>
+            <span *ngIf="appRunning && !endingScrape">Scraping... &nbsp;<i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i></span>
             <span *ngIf="endingScrape">Ending scrape...</span>
             <span *ngIf="error">Error, try refreshing page.</span>
         </div>
