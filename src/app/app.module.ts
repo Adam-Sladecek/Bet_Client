@@ -18,6 +18,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { ToastModule } from 'primeng/toast';
 import { PasswordModule } from 'primeng/password';
 import { SliderModule } from 'primeng/slider';
+import { CheckboxModule } from 'primeng/checkbox';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +41,8 @@ import { SliderModule } from 'primeng/slider';
     MultiSelectModule,
     ToastModule,
     PasswordModule,
-    SliderModule
+    SliderModule,
+    CheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]

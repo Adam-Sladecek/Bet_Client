@@ -13,6 +13,9 @@
         <div class="col">
             <span><strong>Last signal:</strong> {{lastSignal}}</span>
         </div>
+        <div class="col">
+            <strong>Hide inactives: &nbsp;</strong><p-checkbox [(ngModel)]="hideInactives" [binary]="true" inputId="binary"></p-checkbox>
+        </div>
         <div class="col lowerBoundDiv">
             <span>Lower bound:</span>
             <input type="text" pInputText [(ngModel)]="lowerBound" class="w-full"/>

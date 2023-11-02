@@ -23,6 +23,7 @@ export class BetsComponent implements OnInit{
     error: boolean
     lastSignal?: Date
     lowerBound:number;
+    hideInactives:boolean
     // urlSegment: string
     constructor( private betService: BetService , private configService: ConfigService) {
       this.bets = []
@@ -34,6 +35,7 @@ export class BetsComponent implements OnInit{
       this.disableButtons = true
       this.error = false
       this.lowerBound = 1.3
+      this.hideInactives = false
       // this.urlSegment = ''
     }
     playAudio(){
@@ -45,6 +47,9 @@ export class BetsComponent implements OnInit{
     getNumberOfActives(bets: IBet[]): number {
       return bets.filter(bet => bet.active).length
     }
+    filterActives(bets: IBet[]):IBet[] {
+      return bets.filter(bet => bet.active)
+    }
     getBets() {
       this.subscription = timer(0, 1000).pipe(
         switchMap(() => this.betService.getBets())
@@ -53,7 +58,13 @@ export class BetsComponent implements OnInit{
           if (data.data.length > 0) {
             this.lastSignal = data.data.at(0)?.created
           }
-          this.bets = this.filterBets(data.data)
+          if (this.hideInactives) {
+            this.bets = this.filterActives(data.data)
+            this.bets = this.filterBets(this.bets)
+          }
+          else {
+            this.bets = this.filterBets(data.data)
+          }
           let numberOfActives = this.getNumberOfActives(this.bets);
           if ( numberOfActives > this.oldLength) {
             this.playAudio();
@@ -92,7 +103,7 @@ export class BetsComponent implements OnInit{
         }
       });
     }
-    filterBets(bets:IBet[]) {
+    filterBets(bets:IBet[]):IBet[] {
       return bets.filter((bet) => !this.betService.hiddenBets.some((fbet) => {
         return fbet.betIdentifier == bet.betIdentifier
       }) && bet.yield >= this.lowerBound)
