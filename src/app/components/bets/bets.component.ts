@@ -22,6 +22,7 @@ export class BetsComponent implements OnInit{
     disableButtons: boolean
     error: boolean
     lastSignal?: Date
+    lowerBound:number;
     // urlSegment: string
     constructor( private betService: BetService , private configService: ConfigService) {
       this.bets = []
@@ -32,6 +33,7 @@ export class BetsComponent implements OnInit{
       this.endingScrape = false
       this.disableButtons = true
       this.error = false
+      this.lowerBound = 1.3
       // this.urlSegment = ''
     }
     playAudio(){
@@ -93,7 +95,7 @@ export class BetsComponent implements OnInit{
     filterBets(bets:IBet[]) {
       return bets.filter((bet) => !this.betService.hiddenBets.some((fbet) => {
         return fbet.betIdentifier == bet.betIdentifier
-      }) && bet.yield >= 1.3)
+      }) && bet.yield >= this.lowerBound)
     }
     hasBets(nums: (number | undefined)[]){
       return nums.every(num => num != undefined && num != null)

@@ -17,6 +17,7 @@ import { ConfigComponent } from './components/config/config.component';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ToastModule } from 'primeng/toast';
 import { PasswordModule } from 'primeng/password';
+import { SliderModule } from 'primeng/slider';
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,7 +39,8 @@ import { PasswordModule } from 'primeng/password';
     InputTextModule,
     MultiSelectModule,
     ToastModule,
-    PasswordModule
+    PasswordModule,
+    SliderModule
   ],
   providers: [],
   bootstrap: [AppComponent]
