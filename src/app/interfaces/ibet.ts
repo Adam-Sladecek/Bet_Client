@@ -22,6 +22,5 @@ export interface IBet {
     bet12?: number
     yield: number
     active: boolean
-    identifier: string
     betIdentifier: string
 }
