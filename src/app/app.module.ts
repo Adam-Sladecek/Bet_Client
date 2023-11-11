@@ -19,13 +19,16 @@ import { ToastModule } from 'primeng/toast';
 import { PasswordModule } from 'primeng/password';
 import { SliderModule } from 'primeng/slider';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ErrorsComponent } from './components/errors/errors.component';
+import { CardModule } from 'primeng/card';
 @NgModule({
   declarations: [
     AppComponent,
     BetsComponent,
     HiddenBetsComponent,
     LivebetsComponent,
-    ConfigComponent
+    ConfigComponent,
+    ErrorsComponent
   ],
   imports: [
     AppLayoutModule,
@@ -42,7 +45,8 @@ import { CheckboxModule } from 'primeng/checkbox';
     ToastModule,
     PasswordModule,
     SliderModule,
-    CheckboxModule
+    CheckboxModule,
+    CardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
