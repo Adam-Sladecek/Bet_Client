@@ -5,7 +5,7 @@
     <i *ngIf="gettingErrors" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
     <p-card *ngFor="let error of errors" header="{{error.created}}">
         <p class="m-0">
-            {{error.message}}
+            {{error.errormsg}}
         </p>
     </p-card>
 </div>
