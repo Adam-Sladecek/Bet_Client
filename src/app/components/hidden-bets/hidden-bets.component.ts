@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IBet } from 'src/app/interfaces/ibet';
-import { BetService } from 'src/app/services/bet.service';
 import { ConfigService } from 'src/app/services/config.service';
+import { WebSocketService } from 'src/app/services/web-socket.service';
 
 @Component({
   selector: 'app-hidden-bets',
@@ -10,12 +10,12 @@ import { ConfigService } from 'src/app/services/config.service';
 })
 export class HiddenBetsComponent {
   hiddenBets: IBet[]
-  constructor( private betService: BetService, private configService: ConfigService ) {
-    this.hiddenBets = betService.hiddenBets
+  constructor( private websocketService: WebSocketService, private configService: ConfigService ) {
+    this.hiddenBets = websocketService.hiddenBets
   }
   renewBet(bet: IBet) {
-    this.betService.hiddenBets.forEach((element,index)=>{
-      if(element == bet) this.betService.hiddenBets.splice(index,1);
+    this.websocketService.hiddenBets.forEach((element,index)=>{
+      if(element == bet) this.websocketService.hiddenBets.splice(index,1);
    })
   }
   isLoggedIn () {

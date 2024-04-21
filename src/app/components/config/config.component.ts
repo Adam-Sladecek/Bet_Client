@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { BetService } from 'src/app/services/bet.service';
 import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
@@ -18,7 +17,7 @@ export class ConfigComponent implements OnInit {
   inputUrlSegment: string
   userName: string
   password: string
-  constructor( private configService: ConfigService, private betService: BetService, private messageService: MessageService ) {
+  constructor( private configService: ConfigService, private messageService: MessageService ) {
     this.sports = []
     this.sportsBooks = []
     this.selectedSports = []
@@ -97,9 +96,9 @@ export class ConfigComponent implements OnInit {
         next: (data) => {
           this.gettingConfig = false
           this.sports = data.sports
-          this.sportsBooks = data.sportsBooks
-          this.selectedSports = data.selectedSports
-          this.selectedSportsBooks = data.selectedSportsBooks
+          this.sportsBooks = data.sportsbooks
+          this.selectedSports = data.sports.filter((sport: any) => sport.selected)
+          this.selectedSportsBooks = data.sportsbooks.filter((sportsbook: any) => sportsbook.selected)
         },
         error: (error) => {
           console.error('Error:', error);

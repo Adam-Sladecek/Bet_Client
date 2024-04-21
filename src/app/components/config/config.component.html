@@ -18,10 +18,10 @@
     <p-button (click)="login()" label="Login" severity="success" styleClass="p-button-success"></p-button>
 </div>
 <div *ngIf="isLoggedIn()" class="card">
-    <p-multiSelect [options]="sports" [(ngModel)]="selectedSports" defaultLabel="Select sports" display="chip"></p-multiSelect>
+    <p-multiSelect [options]="sports" optionLabel="name" [(ngModel)]="selectedSports" defaultLabel="Select sports" display="chip"></p-multiSelect>
     <br>
     <br>
-    <p-multiSelect [options]="sportsBooks" [(ngModel)]="selectedSportsBooks" defaultLabel="Select sportsbooks" display="chip"></p-multiSelect>
+    <p-multiSelect [options]="sportsBooks" optionLabel="name" [(ngModel)]="selectedSportsBooks" defaultLabel="Select sportsbooks" display="chip"></p-multiSelect>
     <br>
     <br>
     <p-button *ngIf="!gettingConfig" (click)="setConfig()" label="Set config" severity="success" styleClass="p-button-success"></p-button>

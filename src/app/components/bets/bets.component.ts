@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { BetService } from 'src/app/services/bet.service';
-import { Subscription, timer } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { IBet } from 'src/app/interfaces/ibet';
 import { ConfigService } from 'src/app/services/config.service';
+import { WebSocketService } from 'src/app/services/web-socket.service';
+import { TaskState } from 'src/app/interfaces/task-state';
 
 @Component({
   selector: 'app-bets',
@@ -12,117 +12,93 @@ import { ConfigService } from 'src/app/services/config.service';
 })
 export class BetsComponent implements OnInit{
     bets: IBet[]
-    selectedBets: IBet[]
-    subscription? : Subscription;
-    checkServerState? : Subscription;
+    betInDetail!: IBet
     budget: number;
     oldLength: number;
-    appRunning: boolean
-    endingScrape: boolean
-    disableButtons: boolean
-    error: boolean
-    lastSignal?: Date
+    lastSignal?: string
     lowerBound:number;
-    hideInactives:boolean
-    // urlSegment: string
-    constructor( private betService: BetService , private configService: ConfigService) {
+    defaultBet: IBet = {id: -1} as IBet
+    private triggerEventSubscription: Subscription;
+    taskState!: TaskState
+    error!: boolean; 
+    
+    constructor( private configService: ConfigService, private websocketService: WebSocketService) {
       this.bets = []
       this.budget = 100
-      this.selectedBets = []
       this.oldLength = 0
-      this.appRunning = false
-      this.endingScrape = false
-      this.disableButtons = true
-      this.error = false
       this.lowerBound = 1.3
-      this.hideInactives = false
-      // this.urlSegment = ''
+      this.triggerEventSubscription = this.websocketService.triggerEventObservable.subscribe(() => {
+        this.update()
+      });
     }
+
+    update() { 
+      this.taskState = this.websocketService.state;
+      this.error = this.websocketService.error;
+      this.bets = this.websocketService.bets;
+      if (this.bets.length > this.oldLength) this.playAudio();
+      this.oldLength = this.bets.length
+      const currentDate = new Date();
+      const currentHours = this.padZero(currentDate.getHours());
+      const currentMinutes = this.padZero(currentDate.getMinutes());
+      const currentSeconds = this.padZero(currentDate.getSeconds());
+      this.lastSignal = currentHours + ':' + currentMinutes + ':' + currentSeconds;
+    }
+
+    padZero(num: number): string {
+      return num < 10 ? '0' + num : num.toString();
+    }
+
+    appRunning(): boolean { 
+      return this.taskState == TaskState.RUNNING
+    }
+
+    endingScrape(): boolean { 
+      return this.taskState == TaskState.ENDING
+    }
+
+    disable_buttons(): boolean { 
+      return !this.taskState || this.endingScrape()
+    }
+
     playAudio(){
       let audio = new Audio();
       audio.src = "../../assets/music/ding-idea-40142.mp3";
       audio.load();
       audio.play();
     }
-    getNumberOfActives(bets: IBet[]): number {
-      return bets.filter(bet => bet.active).length
-    }
-    filterActives(bets: IBet[]):IBet[] {
-      return bets.filter(bet => bet.active)
-    }
-    getBets() {
-      this.subscription = timer(0, 1000).pipe(
-        switchMap(() => this.betService.getBets())
-      ).subscribe({
-        next: (data) => {
-          if (data.data.length > 0) {
-            this.lastSignal = data.data.at(0)?.created
-          }
-          if (this.hideInactives) {
-            this.bets = this.filterActives(data.data)
-            this.bets = this.filterBets(this.bets)
-          }
-          else {
-            this.bets = this.filterBets(data.data)
-          }
-          let numberOfActives = this.getNumberOfActives(this.bets);
-          if ( numberOfActives > this.oldLength) {
-            this.playAudio();
-          }
-          this.oldLength = numberOfActives;
-        },
-        error: (error) => {
-          this.error = true;
-          console.error('Error:', error);
-        },
-        complete: () => {
-          console.log('Observable completed');
-        }
-      })
-    }
-    checkState() {
-      this.checkServerState = timer(0, 5000).pipe(
-        switchMap(() => this.betService.checkState())
-      ).subscribe({
-        next: (data) => {
-          this.disableButtons = false
-          if(data.running){
-            this.endingScrape = data.endingScrape
-            this.appRunning = true
-          }
-          else{
-            this.appRunning = false
-          }
-        },
-        error: (error) => {
-          this.error = true;
-          console.error('Error:', error);
-        },
-        complete: () => {
-          console.log('Observable completed');
-        }
-      });
-    }
+
     filterBets(bets:IBet[]):IBet[] {
-      return bets.filter((bet) => !this.betService.hiddenBets.some((fbet) => {
-        return fbet.betIdentifier == bet.betIdentifier
-      }) && bet.yield >= this.lowerBound)
+      return bets.filter((bet) => bet.profit*this.budget >= this.lowerBound && !this.websocketService.hiddenBets.some((fbet) => {
+        return fbet == bet
+      }))
     }
-    hasBets(nums: (number | undefined)[]){
-      return nums.every(num => num != undefined && num != null)
-    }
+
     betDetail(bet: IBet) {
-      this.selectedBets = [bet]
+      if (this.betInDetail && this.betInDetail.id == bet.id) {
+        this.betInDetail = this.defaultBet;
+        return
+      }
+      this.betInDetail = structuredClone(bet)
     }
-    recalculateYield(courses: (number | undefined)[]) {
+
+    editBet(bet: IBet) { 
+      return this.betInDetail && this.betInDetail.id == bet.id;
+    }
+
+    getEditedBetProfit() {
+      var courses = this.betInDetail.details.map(detail=> detail.odd)
       var cmm = this.getImplProb(courses)
-      return this.budget*(100/cmm - 1)
+      return 100/cmm - 1;
     }
-    recalculateBet(num: (number | undefined), courses: (number | undefined)[]) {
+
+    getEditedBetAmmount(index: number) {
+      var courses = this.betInDetail.details.map(detail=> detail.odd)
       var cmm = this.getImplProb(courses)
-      var bip = this.getImplProb([num])
-      return this.budget*bip/cmm
+      var bip = this.getImplProb([this.betInDetail.details.at(index)?.odd])
+      return bip/cmm;
     }
+
     getImplProb(probs: (number | undefined)[]) {
       var sum = 0
       probs.forEach((prob) => {
@@ -130,12 +106,14 @@ export class BetsComponent implements OnInit{
       })
       return sum
     }
+
     hideBet(bet: IBet) {
-      this.betService.hiddenBets.push(bet)
-      this.bets = this.bets.filter((bet) => !this.betService.hiddenBets.some((fbet) => {
+      this.websocketService.hiddenBets.push(bet)
+      this.bets = this.bets.filter((bet) => !this.websocketService.hiddenBets.some((fbet) => {
         return fbet == bet
       }))
     }
+
     getImageRoute(sbName?: string): string {
       switch (sbName) {
         case "Betfair":
@@ -154,34 +132,25 @@ export class BetsComponent implements OnInit{
           return ""
       }
     }
-    // setUrlSegment() {
-    //   this.betService.setBaseUrl(this.urlSegment);
-    // }
+
     startScrape(){
-      this.disableButtons = true
-      this.betService.startScrape().subscribe(result => {
-        this.appRunning = true
-        this.disableButtons = false
-      });
+      this.websocketService.sendMessage({ action: 'start' });
     }
+
     endScrape(){
-      this.endingScrape = true
-      this.disableButtons = true
-      this.betService.endScrape().subscribe(result => {
-        this.endingScrape = false
-        this.appRunning = false
-        this.disableButtons = false
-      });
+      this.taskState = TaskState.ENDING;
+      this.websocketService.sendMessage({ action: 'end' });
     }
+
     isLoggedIn () {
       return this.configService.userLoggedIn
     }
+
     ngOnInit(): void {
-      this.checkState()
-      this.getBets()
+      this.websocketService.connect();
     }
+
     ngOnDestroy() {
-      this.subscription?.unsubscribe();
-      this.checkServerState?.unsubscribe();
+      this.triggerEventSubscription.unsubscribe();
     }
 }
