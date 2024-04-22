@@ -19,11 +19,16 @@ export class ConfigService {
   getConfig(): Observable<any> {
     const baseUrl = this.getUrl()
     // return this.http.get<any>(baseUrl + "config/get", {headers: new HttpHeaders({'ngrok-skip-browser-warning': 'true'})})
-    return this.http.get<any>(baseUrl + "config")
+    return this.http.get<any>(baseUrl + "config/get")
   }
-  setConfig(body: any): Observable<any> {
+  // getToken(): Observable<any> {
+  //   const baseUrl = this.getUrl()
+  //   return this.http.get<any>(baseUrl + "config/token")
+  // }
+  setConfig(body: any, headers: any): Observable<any> {
     const baseUrl = this.getUrl()
-    return this.http.post<any>(baseUrl + "setConfig", body , {headers: new HttpHeaders({'ngrok-skip-browser-warning': 'true'})})
+    // return this.http.post<any>(baseUrl + "config/set", body , {headers: new HttpHeaders({'ngrok-skip-browser-warning': 'true'})})
+    return this.http.post<any>(baseUrl + "config/set", body, {headers})
   }
   login(body: any): Observable<any> {
     const baseUrl = this.getUrl()

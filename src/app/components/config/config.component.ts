@@ -1,3 +1,4 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { ConfigService } from 'src/app/services/config.service';
@@ -17,6 +18,8 @@ export class ConfigComponent implements OnInit {
   inputUrlSegment: string
   userName: string
   password: string
+
+  
   constructor( private configService: ConfigService, private messageService: MessageService ) {
     this.sports = []
     this.sportsBooks = []
@@ -30,8 +33,29 @@ export class ConfigComponent implements OnInit {
   }
   setConfig() {
     this.gettingConfig = true
+    this.postConfig()
+    // this.configService.getToken().subscribe({
+    //   next: (data) => {
+    //     console.log(data)
+        
+    //   },
+    //   error: (error) => {
+    //     this.gettingConfig = false
+    //     this.messageService.add({ severity: 'warn', summary: 'Warn', detail: 'Error occured. Set correct url.'})
+    //     console.error('Error:', error);
+    //   },
+    //   complete: () => {
+    //     console.log('Observable completed');
+    //   }
+    // })
+    
+  }
+  postConfig() {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
     const body = { sports: this.selectedSports, sportsBooks: this.selectedSportsBooks };
-    this.configService.setConfig(body).subscribe({
+    this.configService.setConfig(body, headers).subscribe({
       next: (data) => {
         this.gettingConfig = false
         this.messageService.add({ severity: 'success', summary: 'Success', detail: data.message });
