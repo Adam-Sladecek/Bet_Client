@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IBet } from 'src/app/interfaces/ibet';
-import { ConfigService } from 'src/app/services/config.service';
 import { WebSocketService } from 'src/app/services/web-socket.service';
 
 @Component({
@@ -10,15 +9,14 @@ import { WebSocketService } from 'src/app/services/web-socket.service';
 })
 export class HiddenBetsComponent {
   hiddenBets: IBet[]
-  constructor( private websocketService: WebSocketService, private configService: ConfigService ) {
+
+  constructor( private websocketService: WebSocketService ) {
     this.hiddenBets = websocketService.hiddenBets
   }
-  renewBet(bet: IBet) {
+
+  renewBet(bet: IBet): void {
     this.websocketService.hiddenBets.forEach((element,index)=>{
       if(element == bet) this.websocketService.hiddenBets.splice(index,1);
-   })
-  }
-  isLoggedIn () {
-    return this.configService.userLoggedIn
+    })
   }
 }

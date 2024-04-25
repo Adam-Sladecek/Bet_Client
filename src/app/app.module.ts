@@ -21,13 +21,15 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ErrorsComponent } from './components/errors/errors.component';
 import { CardModule } from 'primeng/card';
 import { WebSocketService } from './services/web-socket.service';
+import { LoginComponent } from './components/login/login.component';
 @NgModule({
   declarations: [
     AppComponent,
     BetsComponent,
     HiddenBetsComponent,
     ConfigComponent,
-    ErrorsComponent
+    ErrorsComponent,
+    LoginComponent
   ],
   imports: [
     AppLayoutModule,

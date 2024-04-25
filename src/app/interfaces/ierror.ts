@@ -1,5 +1,4 @@
 export interface IError {
-    id: number
-    created: Date
-    errormsg: string
+    active: boolean
+    message: string
 }

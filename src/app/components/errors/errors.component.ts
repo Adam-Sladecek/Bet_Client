@@ -17,9 +17,6 @@ export class ErrorsComponent implements OnInit {
     this.errors = []
     this.gettingErrors = true
   }
-  isLoggedIn () {
-    return this.configService.userLoggedIn
-  }
   ngOnInit(): void {
     this.errorService.getErrors().subscribe({
       next: (data) => {

@@ -1,7 +1,4 @@
-<div *ngIf="!isLoggedIn()" class="card">
-    Go to login
-</div>
-<div *ngIf="isLoggedIn()" class="card">
+<div class="card">
     <p-table [value]="hiddenBets" [resizableColumns]="true" [scrollable]="true" scrollHeight="400px" [tableStyle]="{'min-width': '50rem'}">
         <ng-template pTemplate="header">
             <tr>

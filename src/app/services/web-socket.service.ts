@@ -1,31 +1,39 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { SocketResponseType } from '../interfaces/socket-response-type';
-import { TaskState } from '../interfaces/task-state';
+import { Observable, Subject } from 'rxjs';
+import { SocketResponseType } from '../enums/socket-response-type';
+import { TaskState } from '../enums/task-state';
 import { IBet } from '../interfaces/ibet';
+import { IError } from '../interfaces/ierror';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebSocketService {
-  private socket!: WebSocket;
-  private serverUrl = 'ws://localhost:8000/ws/scrape/';
-  // "http://192.168.0.106:5000/"
-  private triggerEventSubject = new Subject<void>();
-  triggerEvent$ = this.triggerEventSubject.asObservable();
-  private _state!: TaskState;
-  private _error!: boolean;
-  private _bets: IBet[] = [];
+  private socket !: WebSocket;
+  private serverUrl: string
+  private triggerEventSubject: Subject<void>
+  private _triggerEvent$: Observable<void>
+  private _state !: TaskState;
+  private _error !: IError;
+  private _bets: IBet[];
   private _hiddenBets: IBet[]
+  
+  constructor() {
+    this._hiddenBets = []
+    this._bets = []
+    this.triggerEventSubject = new Subject<void>()
+    this._triggerEvent$ = this.triggerEventSubject.asObservable()
+    this.serverUrl = 'ws://localhost:8000/ws/scrape/'
+    this.error = {'active': false, 'message': ''} as IError
+    // "http://192.168.0.106:5000/"
+  }
+  
   // getUrl() {
   //   const urlSegment = localStorage.getItem('urlSegment') || ''; 
   //   return `https://${urlSegment}-213-81-225-137.ngrok-free.app/`
   // }
-  constructor() {
-    this._hiddenBets = []
-  }
 
-  public get hiddenBets() {
+  get hiddenBets() {
     return this._hiddenBets
   }
 
@@ -33,8 +41,12 @@ export class WebSocketService {
     return this._state;
   }
 
-  get error(): boolean  {
+  get error(): IError  {
     return this._error;
+  }
+  
+  private set error(_value: IError)  {
+    this._error = _value;
   }
 
   get bets(): IBet[]  {
@@ -42,7 +54,7 @@ export class WebSocketService {
   }
 
   get triggerEventObservable() {
-    return this.triggerEvent$;
+    return this._triggerEvent$;
   }
 
   connect(): void {
@@ -64,20 +76,19 @@ export class WebSocketService {
         this.updateStates();
         return
       }
-      this._error = true;
-      console.log('Error:', event.data);
-      this.updateStates();
+      else if (response["type"] as number == SocketResponseType.ERROR) {
+        this._error = {'active': true, 'message': response["data"]} as IError
+        console.log('Error:', event.data);
+        this.updateStates();
+        return
+      }
     };
 
     this.socket.onclose = () => {
-      this._error = true;
+      this._error = {'active': true, 'message': 'WebSocket connection closed.'} as IError
       console.log('WebSocket connection closed.');
       this.updateStates();
     };
-  }
-
-  updateStates() {
-    this.triggerEventSubject.next();
   }
 
   sendMessage(message: any): void {
@@ -88,7 +99,11 @@ export class WebSocketService {
     }
   }
 
-  deserializeArbitrageBets(jsonData: any): IBet[] {
+  private updateStates(): void {
+    this.triggerEventSubject.next();
+  }
+  
+  private deserializeArbitrageBets(jsonData: any): IBet[] {
     return jsonData.map((bet: any) => ({
         id: bet.id,
         updated: bet.updated,
@@ -106,5 +121,5 @@ export class WebSocketService {
             amount: detail.amount
         }))
     }));
-}
+  }
 }

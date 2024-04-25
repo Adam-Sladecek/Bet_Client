@@ -1,4 +1,4 @@
-<div *ngIf="!isLoggedIn()" class="card">
+<!-- <div *ngIf="!isLoggedIn()" class="card">
     <input type="text" pInputText [(ngModel)]="inputUrlSegment" />
     <span>&nbsp;</span>
     <p-button (click)="setUrl()" label="Set url" severity="success" styleClass="p-button-success"></p-button>
@@ -16,21 +16,20 @@
     </span>
     <br>
     <p-button (click)="login()" label="Login" severity="success" styleClass="p-button-success"></p-button>
-</div>
-<div *ngIf="isLoggedIn()" class="card">
+</div> -->
+<div class="card">
     <p-multiSelect [options]="sports" optionLabel="name" [(ngModel)]="selectedSports" defaultLabel="Select sports" display="chip"></p-multiSelect>
     <br>
     <br>
     <p-multiSelect [options]="sportsBooks" optionLabel="name" [(ngModel)]="selectedSportsBooks" defaultLabel="Select sportsbooks" display="chip"></p-multiSelect>
     <br>
     <br>
-    <p-button *ngIf="!gettingConfig" (click)="setConfig()" label="Set config" severity="success" styleClass="p-button-success"></p-button>
+    <p-button *ngIf="sports.length && sportsBooks.length" [disabled]="gettingConfig" (click)="setConfig()" label="Set config" severity="success" styleClass="p-button-success"></p-button>
     <i *ngIf="gettingConfig" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
     <br>
     <br>
     <input type="text" pInputText [(ngModel)]="inputUrlSegment" />
     <span>&nbsp;</span>
     <p-button (click)="setUrl()" label="Set url" severity="success" styleClass="p-button-success"></p-button>
-    <p-toast></p-toast>
 </div>
 <p-toast></p-toast>
