@@ -15,7 +15,7 @@
             <div class="flex-auto" style="max-width: 400px;">
                 <span>Budget</span>
                 <br>
-                <p-inputNumber inputId="integeronly" [(ngModel)]="budget"> </p-inputNumber>
+                <p-inputNumber inputId="integeronly" [(ngModel)]="budget"></p-inputNumber>
             </div>
         </div>
         <div class="col lowerBoundDiv">
@@ -54,7 +54,7 @@
                 <td>{{ detail.player_name }}</td>
                 <td>{{ detail.opportunity_name }}</td>
                 <td *ngIf="!editBet(bet)">{{ detail.odd }}</td>
-                <td *ngIf="editBet(bet)"><p-inputNumber [(ngModel)]="betInDetail.details[i].odd" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"> </p-inputNumber></td>
+                <td *ngIf="editBet(bet)"><p-inputNumber [(ngModel)]="betInDetail.details[i].odd" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"></p-inputNumber></td>
                 <td *ngIf="!editBet(bet)">{{ detail.amount*budget }}</td>
                 <td *ngIf="editBet(bet)">{{ getEditedBetAmmount(i)*budget | number:'1.2-2' }}</td>
                 <td *ngIf="i === 0" [attr.rowspan]="bet.details.length">{{ bet.updated }}</td>
