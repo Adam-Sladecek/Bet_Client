@@ -74,7 +74,7 @@ export class BetsComponent implements OnInit{
       return 100/cmm - 1;
     }
     
-    getEditedBetAmmount(index: number): number {
+    getEditedBetAmount(index: number): number {
       var courses = this.betInDetail.details.map(detail=> detail.odd)
       var cmm = this.getImplProb(courses)
       var bip = this.getImplProb([this.betInDetail.details.at(index)?.odd])
@@ -92,7 +92,7 @@ export class BetsComponent implements OnInit{
     hideBet(bet: IBet): void {
       this.websocketService.hiddenBets.push(bet)
       this.bets = this.bets.filter((bet) => !this.websocketService.hiddenBets.some((fbet) => {
-        return fbet == bet
+        return fbet.id == bet.id
       }))
     }
     

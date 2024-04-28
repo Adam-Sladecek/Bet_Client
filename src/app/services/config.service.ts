@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { IConfigResponse } from '../interfaces/iconfigresponse';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +10,10 @@ export class ConfigService {
 
   constructor( private http: HttpClient ) {}
 
-  getConfig(): Observable<any> {
+  getConfig(): Observable<IConfigResponse> {
     const baseUrl = this.getUrl()
     // return this.http.get<any>(baseUrl + "config/get", {headers: new HttpHeaders({'ngrok-skip-browser-warning': 'true'})})
-    return this.http.get<any>(baseUrl + "config/get")
+    return this.http.get<IConfigResponse>(baseUrl + "config/get")
   }
   
   setConfig(body: any): Observable<any> {

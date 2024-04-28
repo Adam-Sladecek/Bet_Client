@@ -16,7 +16,7 @@ export class HiddenBetsComponent {
 
   renewBet(bet: IBet): void {
     this.websocketService.hiddenBets.forEach((element,index)=>{
-      if(element == bet) this.websocketService.hiddenBets.splice(index,1);
+      if(element.id == bet.id) this.websocketService.hiddenBets.splice(index,1);
     })
   }
 }

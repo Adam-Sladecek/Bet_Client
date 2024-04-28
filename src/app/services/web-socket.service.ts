@@ -36,21 +36,33 @@ export class WebSocketService {
   get hiddenBets() {
     return this._hiddenBets
   }
+  
+  set hiddenBets(_value:IBet[] ) {
+    this._hiddenBets = _value
+  }
 
   get state(): TaskState  {
     return this._state;
+  }
+
+  set state(_value: TaskState) {
+    this._state = _value;
   }
 
   get error(): IError  {
     return this._error;
   }
   
-  private set error(_value: IError)  {
+  set error(_value: IError)  {
     this._error = _value;
   }
 
   get bets(): IBet[]  {
     return this._bets;
+  }
+
+  set bets(_value: IBet[])  {
+    this._bets = _value;
   }
 
   get triggerEventObservable() {
@@ -73,7 +85,7 @@ export class WebSocketService {
       }
       else if (response["type"] as number == SocketResponseType.MATCHDATA) {
         this._bets = this.deserializeArbitrageBets(response["data"]);
-        this.updateStates();
+        this.updateStates()
         return
       }
       else if (response["type"] as number == SocketResponseType.ERROR) {

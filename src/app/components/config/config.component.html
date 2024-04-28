@@ -1,22 +1,3 @@
-<!-- <div *ngIf="!isLoggedIn()" class="card">
-    <input type="text" pInputText [(ngModel)]="inputUrlSegment" />
-    <span>&nbsp;</span>
-    <p-button (click)="setUrl()" label="Set url" severity="success" styleClass="p-button-success"></p-button>
-    <br>
-    <br>
-    <span class="p-float-label">
-        <input pInputText id="username" [(ngModel)]="userName" />
-        <label htmlFor="username">Username</label>
-    </span>
-    <br>
-    <br>
-    <span class="p-float-label">
-        <p-password [(ngModel)]="password" [feedback]="false"></p-password>
-        <label for="password">Password</label>
-    </span>
-    <br>
-    <p-button (click)="login()" label="Login" severity="success" styleClass="p-button-success"></p-button>
-</div> -->
 <div class="card">
     <p-multiSelect [options]="sports" optionLabel="name" [(ngModel)]="selectedSports" defaultLabel="Select sports" display="chip"></p-multiSelect>
     <br>

@@ -56,7 +56,7 @@
                 <td *ngIf="!editBet(bet)">{{ detail.odd }}</td>
                 <td *ngIf="editBet(bet)"><p-inputNumber [(ngModel)]="betInDetail.details[i].odd" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"></p-inputNumber></td>
                 <td *ngIf="!editBet(bet)">{{ detail.amount*budget }}</td>
-                <td *ngIf="editBet(bet)">{{ getEditedBetAmmount(i)*budget | number:'1.2-2' }}</td>
+                <td *ngIf="editBet(bet)">{{ getEditedBetAmount(i)*budget | number:'1.2-2' }}</td>
                 <td *ngIf="i === 0" [attr.rowspan]="bet.details.length">{{ bet.updated }}</td>
             </tr>
         </ng-template>
