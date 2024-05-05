@@ -25,6 +25,11 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { ToastModule } from 'primeng/toast';
 import { SliderModule } from 'primeng/slider';
 import { TableModule } from 'primeng/table';
+import { OpportunityManagementComponent } from './components/opportunity-management/opportunity-management.component';
+import { TabViewModule } from 'primeng/tabview';
+import { OpportunityFactoryComponent } from './components/opportunity-factory/opportunity-factory.component';
+import { OpportunityLinksComponent } from './components/opportunity-links/opportunity-links.component';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   imports: [
@@ -41,7 +46,9 @@ import { TableModule } from 'primeng/table';
     ToastModule,
     SliderModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    TabViewModule,
+    DropdownModule
   ],
   declarations: [
     AppComponent,
@@ -49,7 +56,10 @@ import { TableModule } from 'primeng/table';
     HiddenBetsComponent,
     ConfigComponent,
     ErrorsComponent,
-    LoginComponent
+    LoginComponent,
+    OpportunityManagementComponent,
+    OpportunityFactoryComponent,
+    OpportunityLinksComponent,
   ],
   providers: [
     WebSocketService, 

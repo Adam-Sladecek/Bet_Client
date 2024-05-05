@@ -6,6 +6,7 @@ import { HiddenBetsComponent } from './components/hidden-bets/hidden-bets.compon
 import { ConfigComponent } from './components/config/config.component';
 import { ErrorsComponent } from './components/errors/errors.component';
 import { LoginComponent } from './components/login/login.component';
+import { OpportunityManagementComponent } from './components/opportunity-management/opportunity-management.component';
 
 @NgModule({
     imports: [
@@ -18,6 +19,7 @@ import { LoginComponent } from './components/login/login.component';
                     { path: 'hidden', component: HiddenBetsComponent},
                     { path: 'config', component: ConfigComponent},
                     { path: 'errors', component: ErrorsComponent},
+                    { path: 'opportunities', component: OpportunityManagementComponent},
                 ]
             },
             { path: '**', redirectTo: '/notfound' },

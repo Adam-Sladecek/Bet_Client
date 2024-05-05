@@ -1,0 +1,10 @@
+<div class="card">
+    <p-tabView [(activeIndex)]="activeIndex">
+        <p-tabPanel header="Factory">
+            <app-opportunity-factory *ngIf="activeIndex==0"></app-opportunity-factory>
+        </p-tabPanel>
+        <p-tabPanel header="Links">
+            <app-opportunity-links *ngIf="activeIndex==1"></app-opportunity-links>
+        </p-tabPanel>
+    </p-tabView>
+</div>

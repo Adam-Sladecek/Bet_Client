@@ -22,6 +22,7 @@ export class AppMenuComponent implements OnInit {
                     { label: 'HiddenBets', icon: 'pi pi-fw pi-eye-slash', routerLink: ['/hidden'] },
                     { label: 'Configuration', icon: 'pi pi-fw pi-cog', routerLink: ['/config'] },
                     { label: 'Errors', icon: 'pi pi-fw pi-thumbs-down-fill', routerLink: ['/errors'] },
+                    { label: 'Opportunity management', icon: 'pi pi-fw pi-sort-alt', routerLink: ['/opportunities'] },
                 ]
             }
         ];

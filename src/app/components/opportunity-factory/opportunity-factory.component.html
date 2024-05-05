@@ -1,0 +1,144 @@
+<p-progressSpinner *ngIf="loading" ariaLabel="loading"></p-progressSpinner>
+<div *ngIf="!loading">
+    <div class="row flex">
+        <div class="col-6">
+            <p-dropdown 
+                [options]="allSportsBooks" 
+                [(ngModel)]="selectedSportsbook" 
+                (onChange)="sbChange($event)"
+                placeholder="Select a SportsBoook" 
+            />
+            <br>
+            <p-table 
+                [value]="firstOpportunities" 
+                [scrollable]="true" 
+                scrollHeight="300px" 
+                [tableStyle]="{'min-width': '25rem'}">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th></th>
+                            <th>Desc</th>
+                            <th>Tip type</th>
+                            <th>Opp number</th>
+                            <th>Market Id</th>
+                            <th>Bet Order</th>
+                            <th>Sport</th>
+                            <th>SB</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-opp>
+                        <tr>
+                            <td><p-button [disabled]="linking" (click)="pickFirstOpp(opp)" label="Pick" styleClass="p-button-success"></p-button></td>
+                            <td>{{opp.opp_description}}</td>
+                            <td>{{opp.tip_type}}</td>
+                            <td>{{opp.opp_number}}</td>
+                            <td>{{opp.market_id}}</td>
+                            <td>{{opp.bet_order}}</td>
+                            <td>{{opp.sport}}</td>
+                            <td><img src="{{getImageRoute(opp.sportsbook)}}" alt="{{opp.sportsbook}}" width="50px" height="20px"></td>
+                        </tr>
+                    </ng-template>
+            </p-table>
+        </div>
+        <div class="col-6">
+            <br>
+            <p-table 
+                [value]="secondOpportunities" 
+                [scrollable]="true" 
+                scrollHeight="300px" 
+                [tableStyle]="{'min-width': '25rem'}">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th></th>
+                            <th>Desc</th>
+                            <th>Tip type</th>
+                            <th>Opp number</th>
+                            <th>Market Id</th>
+                            <th>Bet Order</th>
+                            <th>Sport</th>
+                            <th>SB</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-opp>
+                        <tr *ngIf="showSecondOpp(opp)">
+                            <td><p-button [disabled]="linking" (click)="pickSecondOpp(opp)" label="Pick" styleClass="p-button-success"></p-button></td>
+                            <td>{{opp.opp_description}}</td>
+                            <td>{{opp.tip_type}}</td>
+                            <td>{{opp.opp_number}}</td>
+                            <td>{{opp.market_id}}</td>
+                            <td>{{opp.bet_order}}</td>
+                            <td>{{opp.sport}}</td>
+                            <td><img src="{{getImageRoute(opp.sportsbook)}}" alt="{{opp.sportsbook}}" width="50px" height="20px"></td>
+                        </tr>
+                    </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <br>
+    <div class="row flex">
+        <div class="col-5">
+            <div class="card">
+                <p-table 
+                [value]="firstSelectedOpp" 
+                [tableStyle]="{'min-width': '25rem'}">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Desc</th>
+                            <th>Tip type</th>
+                            <th>Opp number</th>
+                            <th>Market Id</th>
+                            <th>Bet Order</th>
+                            <th>Sport</th>
+                            <th>SB</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-opp>
+                        <tr>
+                            <td>{{opp.opp_description}}</td>
+                            <td>{{opp.tip_type}}</td>
+                            <td>{{opp.opp_number}}</td>
+                            <td>{{opp.market_id}}</td>
+                            <td>{{opp.bet_order}}</td>
+                            <td>{{opp.sport}}</td>
+                            <td><img src="{{getImageRoute(opp.sportsbook)}}" alt="{{opp.sportsbook}}" width="50px" height="20px"></td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+        <div class="col-2 button_div">
+            <p-button [disabled]="linking" (click)="link()" [disabled]="!firstSelectedOpp.length || !secondSelectedOpp.length" label="Link" styleClass="p-button-success"></p-button>
+        </div>
+        <div class="col-5">
+            <div class="card">
+                <p-table 
+                [value]="secondSelectedOpp" 
+                [tableStyle]="{'min-width': '25rem'}">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Desc</th>
+                            <th>Tip type</th>
+                            <th>Opp number</th>
+                            <th>Market Id</th>
+                            <th>Bet Order</th>
+                            <th>Sport</th>
+                            <th>SB</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-opp>
+                        <tr>
+                            <td>{{opp.opp_description}}</td>
+                            <td>{{opp.tip_type}}</td>
+                            <td>{{opp.opp_number}}</td>
+                            <td>{{opp.market_id}}</td>
+                            <td>{{opp.bet_order}}</td>
+                            <td>{{opp.sport}}</td>
+                            <td><img src="{{getImageRoute(opp.sportsbook)}}" alt="{{opp.sportsbook}}" width="50px" height="20px"></td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>
+<p-toast></p-toast>

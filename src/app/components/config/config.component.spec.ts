@@ -47,7 +47,7 @@ describe('ConfigComponent', () => {
 
   it('should call setConfig', () => {
     const body = { sports: component.selectedSports, sportsBooks: component.selectedSportsBooks };
-    const response = {success: true, message: 'Configuration saved.'};
+    const response = {message: 'Configuration saved.'};
     spyOn(component['configService'], 'setConfig').and.returnValue(new Observable(subscriber => {
       expect(component.gettingConfig).toBeTrue();
       subscriber.next(response);
