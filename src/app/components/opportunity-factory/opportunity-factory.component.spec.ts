@@ -37,12 +37,13 @@ describe('OpportunityFactoryComponent', () => {
     opportunities = {
       data: {
         'Nike': [
-          {opportunity_id: 1, sportsbook: 'Betfair'} as IUnassignedOpportunity,
-          {opportunity_id: 2, sportsbook: 'Tipsport'} as IUnassignedOpportunity,
+          {opportunity_id: 1, sportsbook: 'Betfair', sport:'Tennis'} as IUnassignedOpportunity,
+          {opportunity_id: 2, sportsbook: 'Tipsport', sport:'Tennis'} as IUnassignedOpportunity,
         ],
         'Tipsport': [
-          {opportunity_id: 3, sportsbook: 'Betfair'} as IUnassignedOpportunity,
-          {opportunity_id: 4, sportsbook: 'Nike'} as IUnassignedOpportunity,
+          {opportunity_id: 3, sportsbook: 'Betfair', sport:'Tennis'} as IUnassignedOpportunity,
+          {opportunity_id: 4, sportsbook: 'Nike', sport:'Tennis'} as IUnassignedOpportunity,
+          {opportunity_id: 5, sportsbook: 'Nike', sport:'Football'} as IUnassignedOpportunity,
         ]
       }
     } as IUnassignedOpportunityResponse
@@ -70,11 +71,12 @@ describe('OpportunityFactoryComponent', () => {
     expect(component.firstSelectedOpp).toEqual([]);
     expect(component.secondSelectedOpp).toEqual([]);
     expect(component.firstOpportunities).toEqual([
-      {opportunity_id: 1, sportsbook: 'Betfair'} as IUnassignedOpportunity,
-      {opportunity_id: 2, sportsbook: 'Tipsport'} as IUnassignedOpportunity,
+      {opportunity_id: 1, sportsbook: 'Betfair', sport:'Tennis'} as IUnassignedOpportunity,
+      {opportunity_id: 2, sportsbook: 'Tipsport', sport:'Tennis'} as IUnassignedOpportunity,
     ]);
     expect(component.secondOpportunities).toEqual([
-      {opportunity_id: 4, sportsbook: 'Nike'} as IUnassignedOpportunity,
+      {opportunity_id: 4, sportsbook: 'Nike', sport:'Tennis'} as IUnassignedOpportunity,
+      {opportunity_id: 5, sportsbook: 'Nike', sport:'Football'} as IUnassignedOpportunity,
     ]);
   })
 
@@ -110,6 +112,8 @@ describe('OpportunityFactoryComponent', () => {
     expect(component.showSecondOpp(opp)).toBeTrue();
     opp = opportunities.data['Nike'][0]
     expect(component.showSecondOpp(opp)).toBeFalse();
+    opp = opportunities.data['Tipsport'][2]
+    expect(component.showSecondOpp(opp)).toBeFalse();
   })
 
   it('should link', () => {
@@ -130,10 +134,11 @@ describe('OpportunityFactoryComponent', () => {
     expect(component.allOpportunities).toEqual({
       data: {
         'Nike': [
-          {opportunity_id: 1, sportsbook: 'Betfair'} as IUnassignedOpportunity,
+          {opportunity_id: 1, sportsbook: 'Betfair', sport:'Tennis'} as IUnassignedOpportunity,
         ],
         'Tipsport': [
-          {opportunity_id: 3, sportsbook: 'Betfair'} as IUnassignedOpportunity,
+          {opportunity_id: 3, sportsbook: 'Betfair', sport:'Tennis'} as IUnassignedOpportunity,
+          {opportunity_id: 5, sportsbook: 'Nike', sport:'Football'} as IUnassignedOpportunity,
         ]
       }
     } as IUnassignedOpportunityResponse)

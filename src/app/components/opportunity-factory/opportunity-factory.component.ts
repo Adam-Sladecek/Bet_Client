@@ -46,7 +46,7 @@ export class OpportunityFactoryComponent implements OnInit{
   }
 
   showSecondOpp(opp: IUnassignedOpportunity) {
-    return this.firstSelectedOpp.length>0 && this.allOpportunities.data[this.firstSelectedOpp[0].sportsbook].includes(opp)
+    return this.firstSelectedOpp.length>0 && this.firstSelectedOpp[0].sport == opp.sport && this.allOpportunities.data[this.firstSelectedOpp[0].sportsbook].includes(opp)
   }
 
   pickFirstOpp(opp: IUnassignedOpportunity) { 
