@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { DropdownChangeEvent } from 'primeng/dropdown';
+import { Table } from 'primeng/table';
 import { IUnassignedOpportunity } from 'src/app/interfaces/iunassigned-opportunity';
 import { IUnassignedOpportunityResponse } from 'src/app/interfaces/iunassigned-opportunity-response';
 import { OpportunityService } from 'src/app/services/opportunity.service';
@@ -56,6 +57,10 @@ export class OpportunityFactoryComponent implements OnInit{
 
   pickSecondOpp(opp: IUnassignedOpportunity) { 
     this.secondSelectedOpp = [opp]
+  }
+  
+  clear(table: Table) {
+    table.clear();
   }
 
   getImageRoute(sbName?: string): string {

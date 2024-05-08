@@ -10,18 +10,25 @@
             />
             <br>
             <p-table 
+                #dt1
                 [value]="firstOpportunities" 
                 [scrollable]="true" 
                 scrollHeight="300px" 
-                [tableStyle]="{'min-width': '25rem'}">
+                [tableStyle]="{'min-width': '20rem'}">
+                    <ng-template pTemplate="caption">
+                        <div class="flex">
+                            <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+                        </div>
+                    </ng-template>
                     <ng-template pTemplate="header">
                         <tr>
                             <th></th>
-                            <th>Desc</th>
-                            <th>Tip type</th>
-                            <th>Opp number</th>
-                            <th>Market Id</th>
-                            <th>Bet Order</th>
+                            <th>
+                                <div class="flex align-items-center">
+                                    Desc
+                                    <p-columnFilter type="text" field="opp_description" display="menu" />
+                                </div>
+                            </th>
                             <th>Sport</th>
                             <th>SB</th>
                         </tr>
@@ -30,10 +37,6 @@
                         <tr>
                             <td><p-button [disabled]="linking" (click)="pickFirstOpp(opp)" label="Pick" styleClass="p-button-success"></p-button></td>
                             <td>{{opp.opp_description}}</td>
-                            <td>{{opp.tip_type}}</td>
-                            <td>{{opp.opp_number}}</td>
-                            <td>{{opp.market_id}}</td>
-                            <td>{{opp.bet_order}}</td>
                             <td>{{opp.sport}}</td>
                             <td><img src="{{getImageRoute(opp.sportsbook)}}" alt="{{opp.sportsbook}}" width="50px" height="20px"></td>
                         </tr>
@@ -43,18 +46,25 @@
         <div class="col-6">
             <br>
             <p-table 
+                #dt2
                 [value]="secondOpportunities" 
                 [scrollable]="true" 
                 scrollHeight="300px" 
-                [tableStyle]="{'min-width': '25rem'}">
+                [tableStyle]="{'min-width': '20rem'}">
+                    <ng-template pTemplate="caption">
+                        <div class="flex">
+                            <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt2)" />
+                        </div>
+                    </ng-template>
                     <ng-template pTemplate="header">
                         <tr>
                             <th></th>
-                            <th>Desc</th>
-                            <th>Tip type</th>
-                            <th>Opp number</th>
-                            <th>Market Id</th>
-                            <th>Bet Order</th>
+                            <th>
+                                <div class="flex align-items-center">
+                                    Desc
+                                    <p-columnFilter type="text" field="opp_description" display="menu" />
+                                </div>
+                            </th>
                             <th>Sport</th>
                             <th>SB</th>
                         </tr>
@@ -63,10 +73,6 @@
                         <tr *ngIf="showSecondOpp(opp)">
                             <td><p-button [disabled]="linking" (click)="pickSecondOpp(opp)" label="Pick" styleClass="p-button-success"></p-button></td>
                             <td>{{opp.opp_description}}</td>
-                            <td>{{opp.tip_type}}</td>
-                            <td>{{opp.opp_number}}</td>
-                            <td>{{opp.market_id}}</td>
-                            <td>{{opp.bet_order}}</td>
                             <td>{{opp.sport}}</td>
                             <td><img src="{{getImageRoute(opp.sportsbook)}}" alt="{{opp.sportsbook}}" width="50px" height="20px"></td>
                         </tr>
