@@ -221,13 +221,13 @@ describe('BetsComponent', () => {
 
     component.budget = 100
     component.lowerBound = 3
-    var filteredBets = component['filterBets'](bets)
-
+    var filteredBets = component.filterBets(bets)
+    filteredBets = component.filterBetsByLowerBound(filteredBets)
     expect(filteredBets).toEqual([bets[0]])
 
     component['websocketService'].hiddenBets = [bets[0]]
     component.lowerBound = 1
-    var filteredBets = component['filterBets'](bets)
+    var filteredBets = component.filterBets(bets)
     expect(filteredBets).toEqual([bets[1]])
   })
 });

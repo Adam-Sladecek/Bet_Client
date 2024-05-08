@@ -124,6 +124,16 @@ export class BetsComponent implements OnInit{
       this.websocketService.sendMessage({ action: 'end' });
     }
 
+    filterBets(bets:IBet[]): IBet[] {
+      return bets.filter((bet) => !this.websocketService.hiddenBets.some((fbet) => {
+        return fbet == bet
+      }))
+    }
+
+    filterBetsByLowerBound(bets:IBet[]): IBet[] {
+      return bets.filter((bet) => bet.profit*this.budget >= this.lowerBound)
+    }
+
     private update(): void { 
       this.taskState = this.websocketService.state;
       this.error = this.websocketService.error;
@@ -150,11 +160,6 @@ export class BetsComponent implements OnInit{
       audio.load();
       audio.play();
     }
-  
-    private filterBets(bets:IBet[]): IBet[] {
-      return bets.filter((bet) => bet.profit*this.budget >= this.lowerBound && !this.websocketService.hiddenBets.some((fbet) => {
-        return fbet == bet
-      }))
-    }
+    
   }
   
