@@ -141,6 +141,7 @@ export class BetsComponent implements OnInit{
         this.messageService.add({ severity: 'error', summary: 'Error', detail: this.error.message})
       }
       this.bets = this.filterBets(this.websocketService.bets);
+      this.bets = this.filterBetsByLowerBound(this.bets);
       if (this.bets.length > this.oldLength) this.playAudio();
       this.oldLength = this.bets.length
       const currentDate = new Date();
