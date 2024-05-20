@@ -131,7 +131,7 @@ export class BetsComponent implements OnInit{
     }
 
     filterBetsByLowerBound(bets:IBet[]): IBet[] {
-      return bets.filter((bet) => bet.profit*this.budget >= this.lowerBound)
+      return bets.filter((bet) => bet.profit*100 >= this.lowerBound)
     }
 
     private update(): void { 
