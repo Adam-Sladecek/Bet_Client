@@ -4,26 +4,18 @@
         <tr>
             <th></th>
             <th>Sport</th>
-            <th>SB</th>
-            <th>Description</th>
-            <th>Tip type</th>
-            <th>Opp number</th>
-            <th>Market Id</th>
-            <th>Bet order</th>
+            <th>First opportunity</th>
+            <th>Second opportunity</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-link>
-        <tr *ngFor="let opp of link.opportunities; let i = index">
-            <td *ngIf="i === 0" [attr.rowspan]="link.opportunities.length">
-                <p-button (click)="deleteLink(link)" [disabled]="deleting" styleClass="p-button-danger">Delete</p-button>
+        <tr>
+            <td>
+                <p-button (click)="deleteLink(link.parents[0])" [disabled]="deleting" styleClass="p-button-danger">Delete</p-button>
             </td>
-            <td *ngIf="i === 0" [attr.rowspan]="link.opportunities.length">{{ opp.sport }}</td>
-            <td><img src="{{getImageRoute(opp.sportsbook)}}" alt="{{opp.sportsbook}}" width="50px" height="20px"></td>
-            <td>{{ opp.opp_description }}</td>
-            <td>{{ opp.tip_type }}</td>
-            <td>{{ opp.opp_number }}</td>
-            <td>{{ opp.market_id }}</td>
-            <td>{{ opp.bet_order }}</td>
+            <td>{{ link.sport }}</td>
+            <td>{{ link.parents[0].description }}</td>
+            <td>{{ link.parents[1].description }}</td>
         </tr>
     </ng-template>
 </p-table>

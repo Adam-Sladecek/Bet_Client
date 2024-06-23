@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { DropdownChangeEvent } from 'primeng/dropdown';
 import { Table } from 'primeng/table';
-import { IUnassignedOpportunity } from 'src/app/interfaces/iunassigned-opportunity';
-import { IUnassignedOpportunityResponse } from 'src/app/interfaces/iunassigned-opportunity-response';
+import { IOpportunity } from 'src/app/interfaces/iopportunity';
+import { IOpportunityFactoryResponse } from 'src/app/interfaces/iopportunity-factory-response';
+import { IParentOpportunity } from 'src/app/interfaces/iparrent-opportunity';
 import { OpportunityService } from 'src/app/services/opportunity.service';
 
 @Component({
@@ -15,18 +15,18 @@ import { OpportunityService } from 'src/app/services/opportunity.service';
 export class OpportunityFactoryComponent implements OnInit{
   loading: boolean
   linking: boolean
-  allSportsBooks!: string[]
-  selectedSportsbook!: string[]
-
-  allOpportunities!: IUnassignedOpportunityResponse
-  firstOpportunities!: IUnassignedOpportunity[]
-  secondOpportunities!: IUnassignedOpportunity[]
+  canCreateParents: boolean
+  canLinkChild: boolean
+  parents!: IParentOpportunity[]
+  opportunities!: IOpportunity[]
   
-  firstSelectedOpp: IUnassignedOpportunity[]
-  secondSelectedOpp: IUnassignedOpportunity[]
+  firstSelectedOpp: IOpportunity[] | IParentOpportunity[]
+  secondSelectedOpp: IOpportunity[]
   constructor( private oppService: OpportunityService, private messageService: MessageService) {
     this.loading = true
     this.linking = false
+    this.canCreateParents = false
+    this.canLinkChild = false
     this.firstSelectedOpp = [] 
     this.secondSelectedOpp = [] 
   }
@@ -35,34 +35,86 @@ export class OpportunityFactoryComponent implements OnInit{
     this.getOpportunities()
   }
 
-  sbChange(event: DropdownChangeEvent) { 
-    this.firstOpportunities = this.allOpportunities.data[event.value]
-    this.secondOpportunities = []
-    for (const [key, value] of Object.entries(this.allOpportunities.data)) {
-      if (key == event.value) continue
-      this.secondOpportunities = this.secondOpportunities.concat(value.filter(val => val.sportsbook == event.value))
-    }
-    this.firstSelectedOpp = [] 
-    this.secondSelectedOpp = [] 
-  }
-
-  showSecondOpp(opp: IUnassignedOpportunity) {
-    return this.firstSelectedOpp.length>0 && this.firstSelectedOpp[0].sport == opp.sport && this.allOpportunities.data[this.firstSelectedOpp[0].sportsbook].includes(opp)
-  }
-
-  pickFirstOpp(opp: IUnassignedOpportunity) { 
-    this.firstSelectedOpp = [opp]
+  pickParent(parent: IParentOpportunity) { 
+    this.canCreateParents = false
+    this.canLinkChild = false
+    this.firstSelectedOpp = [parent]
     this.secondSelectedOpp = []
   }
 
-  pickSecondOpp(opp: IUnassignedOpportunity) { 
-    this.secondSelectedOpp = [opp]
+  pickOpportunity(opp: IOpportunity) { 
+    this.canCreateParents = false
+    this.canLinkChild = false
+    if (this.secondSelectedOpp.length == 0 && this.firstSelectedOpp.length == 1) {
+      this.secondSelectedOpp = [opp]
+      this.canLinkChild = true
+      return
+    }
+
+    if (this.secondSelectedOpp.length == 0) {
+      this.secondSelectedOpp = [opp]
+      return
+    }
+
+    if (this.firstSelectedOpp.length == 0) {
+      this.firstSelectedOpp = [opp]
+      this.canCreateParents = true
+      return
+    }
+
+    if (this.firstSelectedOpp.length == 1) {
+      this.firstSelectedOpp = []
+      this.secondSelectedOpp = [opp]
+      return
+    }
   }
   
   clear(table: Table) {
     table.clear();
   }
 
+  addLink () {
+    this.canCreateParents = false
+    this.canLinkChild = false
+    this.linking = true
+    const body = {opportunities: [this.firstSelectedOpp[0], this.secondSelectedOpp[0]]}
+    this.oppService.addOpportunityLink(body).subscribe({
+      next: (response: IOpportunityFactoryResponse) => {
+        this.firstSelectedOpp = [] 
+        this.secondSelectedOpp = [] 
+        this.parents = response.parents 
+        this.opportunities = response.opportunities
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: "Link added." })
+        this.linking = false
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
+        console.error(err)
+        this.linking = false
+      }
+    })
+  }
+
+  addChild () {
+    this.canCreateParents = false
+    this.canLinkChild = false
+    this.linking = true
+    this.oppService.addChild(this.firstSelectedOpp[0].id, this.secondSelectedOpp[0].id).subscribe({
+      next: (response: IOpportunityFactoryResponse) => {
+        this.firstSelectedOpp = [] 
+        this.secondSelectedOpp = [] 
+        this.parents = response.parents 
+        this.opportunities = response.opportunities
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: "Child added." })
+        this.linking = false
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
+        console.error(err)
+        this.linking = false
+      }
+    })
+  }
   getImageRoute(sbName?: string): string {
     switch (sbName) {
       case "Betfair":
@@ -81,32 +133,11 @@ export class OpportunityFactoryComponent implements OnInit{
         return ""
     }
   }
-
-  link () {
-    this.linking = true
-    const body = {opportunities: [this.firstSelectedOpp[0], this.secondSelectedOpp[0]]}
-    this.oppService.setOpportunityLink(body).subscribe({
-      next: (data) => {
-        for (const [key, value] of Object.entries(this.allOpportunities.data)) {
-          this.allOpportunities.data[key] = value.filter(val => val.opportunity_id != this.firstSelectedOpp[0].opportunity_id && val.opportunity_id != this.secondSelectedOpp[0].opportunity_id)
-        }
-        this.sbChange({value: this.secondSelectedOpp[0].sportsbook} as DropdownChangeEvent)
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: data.message })
-        this.linking = false
-      },
-      error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
-        console.error(err)
-        this.linking = false
-      }
-    })
-  }
-
   private getOpportunities() { 
-    this.oppService.getOpportunities().subscribe({
-      next: (response: IUnassignedOpportunityResponse) => {
-        this.allOpportunities = response
-        this.allSportsBooks = Object.keys(response.data)
+    this.oppService.getOpportunitiesToLink().subscribe({
+      next: (response: IOpportunityFactoryResponse) => {
+        this.parents = response.parents 
+        this.opportunities = response.opportunities
         this.loading = false
       },
       error: (err) => {

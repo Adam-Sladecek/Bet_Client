@@ -1,6 +1,5 @@
-export interface IUnassignedOpportunity {
-    opportunity_id: number
-    opportunity_tbl_id: number
+export interface IOpportunity {
+    id: number
     opp_description: string
     tip_type: string
     opp_number: string
@@ -9,3 +8,4 @@ export interface IUnassignedOpportunity {
     sport: string
     sportsbook: string
 }
+

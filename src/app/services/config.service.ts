@@ -16,10 +16,10 @@ export class ConfigService {
     return this.http.get<IConfigResponse>(baseUrl + "config/get")
   }
   
-  setConfig(body: any): Observable<any> {
+  setConfig(body: any): Observable<IConfigResponse> {
     const baseUrl = this.getUrl()
     // return this.http.post<any>(baseUrl + "config/set", body , {headers: new HttpHeaders({'ngrok-skip-browser-warning': 'true'})})
-    return this.http.post<any>(baseUrl + "config/set", body)
+    return this.http.post<IConfigResponse>(baseUrl + "config/set", body)
   }
   
   private getUrl(): string {

@@ -4,7 +4,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { OpportunityService } from 'src/app/services/opportunity.service';
 import { Observable } from 'rxjs';
-import { IOpportunity, IOpportunityLinkResponse, IOpportunityLinkResponseDict } from 'src/app/interfaces/iopportunity-link-response-dict';
+import { IOpportunityLink, IOpportunityLinkResponse } from 'src/app/interfaces/iopportunity-link-response';
+import { IParentOpportunity } from 'src/app/interfaces/iparrent-opportunity';
 import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
@@ -12,7 +13,7 @@ import { ToastModule } from 'primeng/toast';
 describe('OpportunityLinksComponent', () => {
   let component: OpportunityLinksComponent;
   let fixture: ComponentFixture<OpportunityLinksComponent>;
-  let opportunity_link_response_dict: IOpportunityLinkResponseDict
+  let opportunity_link_response: IOpportunityLinkResponse
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({ 
@@ -32,16 +33,9 @@ describe('OpportunityLinksComponent', () => {
     fixture = TestBed.createComponent(OpportunityLinksComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    opportunity_link_response_dict = {
-      data: [
-        {
-          opportunity_link_id: 1,
-          opportunities: [
-            {} as IOpportunity
-          ]
-        } as IOpportunityLinkResponse
-      ]
-    } as IOpportunityLinkResponseDict;
+    opportunity_link_response = {
+      links: []
+    } as IOpportunityLinkResponse;
   });
 
   // function tests
@@ -59,33 +53,30 @@ describe('OpportunityLinksComponent', () => {
     expect(component['getLinks']).toHaveBeenCalled();
   })
 
-  it('should get Opportunity links', () => {
-    spyOn<any>(component['oppService'], 'getOpportunityLinks').and.returnValue(new Observable(subscriber => {
+  it('should get links', () => {
+    spyOn<any>(component['oppService'], 'getLinks').and.returnValue(new Observable(subscriber => {
       expect(component.loading).toBeTrue();
-      subscriber.next(opportunity_link_response_dict);
+      subscriber.next(opportunity_link_response);
     }));
   
     component['getLinks']();
 
-    expect(component['oppService'].getOpportunityLinks).toHaveBeenCalled();
+    expect(component['oppService'].getLinks).toHaveBeenCalled();
     expect(component.loading).toBeFalse();
-    expect(component.opportunityLinks).toEqual(opportunity_link_response_dict.data);
+    expect(component.opportunityLinks).toEqual(opportunity_link_response.links);
   })
 
-  it('should delete Opportunity link', () => {
-    component.opportunityLinks = opportunity_link_response_dict.data
-    const response = {message: 'Opportunity link deleted.'};
-    spyOn<any>(component['oppService'], 'deleteOpportunityLink').and.returnValue(new Observable(subscriber => {
+  it('should delete link', () => {
+    component.opportunityLinks = opportunity_link_response.links
+    spyOn<any>(component['oppService'], 'deleteLink').and.returnValue(new Observable(subscriber => {
       expect(component.deleting).toBeTrue();
-      expect(component.opportunityLinks.length).toEqual(1);
-      subscriber.next(response);
+      subscriber.next(opportunity_link_response);
     }));
   
     spyOn(component['messageService'], 'add');
-    component['deleteLink'](opportunity_link_response_dict.data[0]);
+    component['deleteLink']({id:1} as IParentOpportunity);
 
-    expect(component.opportunityLinks.length).toEqual(0);
-    expect(component['messageService'].add).toHaveBeenCalledOnceWith({ severity: 'success', summary: 'Success', detail: response.message });
+    expect(component['messageService'].add).toHaveBeenCalledOnceWith({ severity: 'success', summary: 'Success', detail: 'Link deleted.' });
     expect(component.deleting).toBeFalse();
   })
 });

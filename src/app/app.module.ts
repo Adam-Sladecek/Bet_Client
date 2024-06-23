@@ -30,6 +30,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { OpportunityFactoryComponent } from './components/opportunity-factory/opportunity-factory.component';
 import { OpportunityLinksComponent } from './components/opportunity-links/opportunity-links.component';
 import { DropdownModule } from 'primeng/dropdown';
+import { OpportunityChildrenComponent } from './components/opportunity-children/opportunity-children.component';
 
 @NgModule({
   imports: [
@@ -60,6 +61,7 @@ import { DropdownModule } from 'primeng/dropdown';
     OpportunityManagementComponent,
     OpportunityFactoryComponent,
     OpportunityLinksComponent,
+    OpportunityChildrenComponent,
   ],
   providers: [
     WebSocketService, 

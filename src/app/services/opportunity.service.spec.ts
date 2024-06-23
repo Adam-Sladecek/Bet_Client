@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-
 import { OpportunityService } from './opportunity.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { IUnassignedOpportunityResponse } from '../interfaces/iunassigned-opportunity-response';
-import { IUnassignedOpportunity } from '../interfaces/iunassigned-opportunity';
-import { IOpportunity, IOpportunityLinkResponse, IOpportunityLinkResponseDict } from '../interfaces/iopportunity-link-response-dict';
+import { IOpportunityFactoryResponse } from '../interfaces/iopportunity-factory-response';
+import { IOpportunityChildrenResponse } from '../interfaces/iopportunity-children-response';
+import { IOpportunityLinkResponse } from '../interfaces/iopportunity-link-response';
+import { IOpportunity } from '../interfaces/iopportunity';
 
 describe('OpportunityService', () => {
   let service: OpportunityService;
@@ -29,68 +29,104 @@ describe('OpportunityService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should get opportunities', () => {
-    const mockConfigResponse = {
-      data: {'Nike': [
-        {} as IUnassignedOpportunity
-      ]}
-    } as IUnassignedOpportunityResponse;
-    service.getOpportunities().subscribe(response => {
-      expect(response).toEqual(mockConfigResponse);
+  it('should get opportunities to link', () => {
+    const mockFactoryResponse = {
+      parents: [],
+      opportunities: []
+    } as IOpportunityFactoryResponse;
+    service.getOpportunitiesToLink().subscribe(response => {
+      expect(response).toEqual(mockFactoryResponse);
     });
     const url = service['getUrl']()
     const req = httpMock.expectOne(url + 'opportunitytolink/get');
     expect(req.request.method).toBe('GET');
-    req.flush(mockConfigResponse);
+    req.flush(mockFactoryResponse);
   });
 
-  it('should set opportunity link', () => {
-    const mockConfigData = {
-      sports: [
-        {id:1, name: 'Tennis', selected: true}
-      ],
-      sportsBooks: [
-        {id:1, name: 'Nike', selected: true}
-      ]
+  it('should add opportunity link', () => {
+    const mockLinkData = {
+      opportunities: [{} as IOpportunity, {} as IOpportunity]
     };
-    service.setOpportunityLink(mockConfigData).subscribe(response => {
-      expect(response).toBeTruthy();
+    const mockFactoryResponse = {
+      parents: [],
+      opportunities: []
+    } as IOpportunityFactoryResponse;
+    service.addOpportunityLink(mockLinkData).subscribe(response => {
+      expect(response).toEqual(mockFactoryResponse);
     });
     const url = service['getUrl']()
-    const req = httpMock.expectOne(url + 'opportunitylink/set');
+    const req = httpMock.expectOne(url + 'opportunitylink/add');
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(mockConfigData);
-    req.flush({'message': 'Event link saved.'});
+    expect(req.request.body).toEqual(mockLinkData);
+    req.flush(mockFactoryResponse);
   });
 
-  it('should get opportunity links', () => {
-    const mockConfigResponse = {
-      data: [
-        {
-          opportunity_link_id: 1,
-          opportunities: [
-            {} as IOpportunity
-          ]
-        } as IOpportunityLinkResponse
-      ]
-    } as IOpportunityLinkResponseDict;
+  it('should add child', () => {
+    const mockFactoryResponse = {
+      parents: [],
+      opportunities: []
+    } as IOpportunityFactoryResponse;
+    service.addChild(2, 3).subscribe(response => {
+      expect(response).toEqual(mockFactoryResponse);
+    });
+    const url = service['getUrl']()
+    const req = httpMock.expectOne(url + 'opportunity/2/add/3');
+    expect(req.request.method).toBe('POST');
+    req.flush(mockFactoryResponse);
+  });
 
-    service.getOpportunityLinks().subscribe(response => {
-      expect(response).toEqual(mockConfigResponse);
+  it('should get children', () => {
+    const mockChildrenResponse = {
+      parents: [],
+      opportunities: {}
+    } as IOpportunityChildrenResponse;
+    service.getChildren().subscribe(response => {
+      expect(response).toEqual(mockChildrenResponse);
+    });
+    const url = service['getUrl']()
+    const req = httpMock.expectOne(url + 'opportunity/children/get');
+    expect(req.request.method).toBe('GET');
+    req.flush(mockChildrenResponse);
+  });
+
+  it('should remove child from parent', () => {
+    const mockChildrenResponse = {
+      parents: [],
+      opportunities: {}
+    } as IOpportunityChildrenResponse;
+    service.removeChildFromParent(5).subscribe(response => {
+      expect(response).toEqual(mockChildrenResponse);
+    });
+    const url = service['getUrl']()
+    const req = httpMock.expectOne(url + 'opportunity/children/remove/5');
+    expect(req.request.method).toBe('DELETE');
+    req.flush(mockChildrenResponse);
+  });
+
+  it('should get links', () => {
+    const mockLinkResponse = {
+      links: []
+    } as IOpportunityLinkResponse;
+
+    service.getLinks().subscribe(response => {
+      expect(response).toEqual(mockLinkResponse);
     });
     const url = service['getUrl']()
     const req = httpMock.expectOne(url + 'opportunitylink/get');
     expect(req.request.method).toBe('GET');
-    req.flush(mockConfigResponse);
+    req.flush(mockLinkResponse);
   });
 
-  it('should delete opportunity link', () => {
-    service.deleteOpportunityLink(1).subscribe(response => {
-      expect(response).toBeTruthy();
+  it('should delete link', () => {
+    const mockLinkResponse = {
+      links: []
+    } as IOpportunityLinkResponse;
+    service.deleteLink(1).subscribe(response => {
+      expect(response).toEqual(mockLinkResponse);
     });
     const url = service['getUrl']()
     const req = httpMock.expectOne(url + 'opportunitylink/delete/1');
     expect(req.request.method).toBe('DELETE');
-    req.flush({'message': 'Opportunity link deleted.'});
+    req.flush(mockLinkResponse);
   });
 });

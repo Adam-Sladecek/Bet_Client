@@ -2,16 +2,9 @@
 <div *ngIf="!loading">
     <div class="row flex">
         <div class="col-6">
-            <p-dropdown 
-                [options]="allSportsBooks" 
-                [(ngModel)]="selectedSportsbook" 
-                (onChange)="sbChange($event)"
-                placeholder="Select a SportsBoook" 
-            />
-            <br>
             <p-table 
                 #dt1
-                [value]="firstOpportunities" 
+                [value]="parents" 
                 [scrollable]="true" 
                 scrollHeight="300px" 
                 [tableStyle]="{'min-width': '20rem'}">
@@ -26,22 +19,20 @@
                             <th>
                                 <div class="flex align-items-center">
                                     Desc
-                                    <p-columnFilter type="text" field="opp_description" display="menu" />
+                                    <p-columnFilter type="text" field="description" display="menu" />
                                 </div>
                             </th>
                             <th>
                                 Sport
                                 <p-columnFilter type="text" field="sport" display="menu" />
                             </th>
-                            <th>SB</th>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body" let-opp>
+                    <ng-template pTemplate="body" let-parent>
                         <tr>
-                            <td><p-button [disabled]="linking" (click)="pickFirstOpp(opp)" label="Pick" styleClass="p-button-success"></p-button></td>
-                            <td>{{opp.opp_description}}</td>
-                            <td>{{opp.sport}}</td>
-                            <td><img src="{{getImageRoute(opp.sportsbook)}}" alt="{{opp.sportsbook}}" width="50px" height="20px"></td>
+                            <td><p-button [disabled]="linking || (firstSelectedOpp.length > 0 && firstSelectedOpp[0].id == parent.id)" (click)="pickParent(parent)" label="Pick" styleClass="p-button-success"></p-button></td>
+                            <td>{{parent.description}}</td>
+                            <td>{{parent.sport}}</td>
                         </tr>
                     </ng-template>
             </p-table>
@@ -50,7 +41,7 @@
             <br>
             <p-table 
                 #dt2
-                [value]="secondOpportunities" 
+                [value]="opportunities" 
                 [scrollable]="true" 
                 scrollHeight="300px" 
                 [tableStyle]="{'min-width': '20rem'}">
@@ -68,13 +59,17 @@
                                     <p-columnFilter type="text" field="opp_description" display="menu" />
                                 </div>
                             </th>
-                            <th>Sport</th>
-                            <th>SB</th>
+                            <th>
+                                Sport
+                            </th>
+                            <th>
+                                SB
+                            </th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-opp>
-                        <tr *ngIf="showSecondOpp(opp)">
-                            <td><p-button [disabled]="linking" (click)="pickSecondOpp(opp)" label="Pick" styleClass="p-button-success"></p-button></td>
+                        <tr>
+                            <td><p-button [disabled]="linking|| (secondSelectedOpp.length > 0 && secondSelectedOpp[0].id == opp.id) || (firstSelectedOpp.length > 0 && firstSelectedOpp[0].id == opp.id)" (click)="pickOpportunity(opp)" label="Pick" styleClass="p-button-success"></p-button></td>
                             <td>{{opp.opp_description}}</td>
                             <td>{{opp.sport}}</td>
                             <td><img src="{{getImageRoute(opp.sportsbook)}}" alt="{{opp.sportsbook}}" width="50px" height="20px"></td>
@@ -103,7 +98,7 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-opp>
                         <tr>
-                            <td>{{opp.opp_description}}</td>
+                            <td>{{opp.opp_description ?? opp.description}}</td>
                             <td>{{opp.tip_type}}</td>
                             <td>{{opp.opp_number}}</td>
                             <td>{{opp.market_id}}</td>
@@ -116,7 +111,8 @@
             </div>
         </div>
         <div class="col-2 button_div">
-            <p-button [disabled]="linking" (click)="link()" [disabled]="!firstSelectedOpp.length || !secondSelectedOpp.length" label="Link" styleClass="p-button-success"></p-button>
+            <p-button class="spaced" (click)="addLink()" [disabled]="linking || !canCreateParents" label="Link" styleClass="p-button-success"></p-button>
+            <p-button (click)="addChild()" [disabled]="linking || !canLinkChild" label="Add child" styleClass="p-button-success"></p-button>
         </div>
         <div class="col-5">
             <div class="card">

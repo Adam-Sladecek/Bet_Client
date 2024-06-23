@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ConfigService } from './config.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { IConfigResponse } from '../interfaces/iconfigresponse';
 
 describe('ConfigService', () => {
   let service: ConfigService;
@@ -31,7 +32,7 @@ describe('ConfigService', () => {
       sports: [
         {id:1, name: 'Tennis', selected: true}
       ],
-      sportsBooks: [
+      sportsbooks: [
         {id:1, name: 'Nike', selected: true}
       ]
     };
@@ -49,7 +50,7 @@ describe('ConfigService', () => {
       sports: [
         {id:1, name: 'Tennis', selected: true}
       ],
-      sportsBooks: [
+      sportsbooks: [
         {id:1, name: 'Nike', selected: true}
       ]
     };

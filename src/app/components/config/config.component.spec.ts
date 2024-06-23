@@ -46,8 +46,17 @@ describe('ConfigComponent', () => {
   });
 
   it('should call setConfig', () => {
-    const body = { sports: component.selectedSports, sportsBooks: component.selectedSportsBooks };
-    const response = {message: 'Configuration saved.'};
+    const body = { sports: component.selectedSports, sportsbooks: component.selectedSportsbooks };
+    const response = {
+      sportsbooks: [
+          {'id': 1, 'name': 'Doxxbet', 'selected': false} ,
+          {'id': 6, 'name': 'Tipsport', 'selected': true}, 
+        ],
+      sports: [
+          {'id': 1, 'name': 'Tennis', 'selected': true},
+          {'id': 2, 'name': 'Darts', 'selected': false},
+      ]
+    } as IConfigResponse
     spyOn(component['configService'], 'setConfig').and.returnValue(new Observable(subscriber => {
       expect(component.gettingConfig).toBeTrue();
       subscriber.next(response);
@@ -57,12 +66,12 @@ describe('ConfigComponent', () => {
     component.setConfig();
   
     expect(component['configService'].setConfig).toHaveBeenCalledWith(body);
-    expect(component['messageService'].add).toHaveBeenCalledOnceWith({ severity: 'success', summary: 'Success', detail: response.message });
+    expect(component['messageService'].add).toHaveBeenCalledOnceWith({ severity: 'success', summary: 'Success', detail: "Config set." });
     expect(component.gettingConfig).toBeFalse();
   });
 
   it('should handle error in setConfig', () => {
-    const body = { sports: component.selectedSports, sportsBooks: component.selectedSportsBooks };
+    const body = { sports: component.selectedSports, sportsbooks: component.selectedSportsbooks };
     const err = { error: { message: 'Bad request' } };
     spyOn(component['configService'], 'setConfig').and.returnValue(new Observable(subscriber => {
       expect(component.gettingConfig).toBeTrue();
@@ -80,7 +89,7 @@ describe('ConfigComponent', () => {
 
   it('should call getConfig', () => {
     const response = {
-      sportsBooks: [
+      sportsbooks: [
           {'id': 1, 'name': 'Doxxbet', 'selected': false} ,
           {'id': 6, 'name': 'Tipsport', 'selected': true}, 
         ],
@@ -91,7 +100,7 @@ describe('ConfigComponent', () => {
     } as IConfigResponse
 
     const filteredResponse = {
-      sportsBooks: [
+      sportsbooks: [
           {'id': 6, 'name': 'Tipsport', 'selected': true}, 
         ],
       sports: [
@@ -108,9 +117,9 @@ describe('ConfigComponent', () => {
   
     expect(component['configService'].getConfig).toHaveBeenCalled();
     expect(component.sports).toEqual(response.sports);
-    expect(component.sportsBooks).toEqual(response.sportsBooks);
+    expect(component.sportsbooks).toEqual(response.sportsbooks);
     expect(component.selectedSports).toEqual(filteredResponse.sports);
-    expect(component.selectedSportsBooks).toEqual(filteredResponse.sportsBooks);
+    expect(component.selectedSportsbooks).toEqual(filteredResponse.sportsbooks);
     expect(component.gettingConfig).toBeFalse();
   });
 
@@ -137,9 +146,9 @@ describe('ConfigComponent', () => {
 
     expect(component.gettingConfig).toBeTrue();
     expect(component.sports).toEqual([]);
-    expect(component.sportsBooks).toEqual([]);
+    expect(component.sportsbooks).toEqual([]);
     expect(component.selectedSports).toEqual([]);
-    expect(component.selectedSportsBooks).toEqual([]);
+    expect(component.selectedSportsbooks).toEqual([]);
     expect(component.inputUrlSegment).toEqual('');
 
     component.ngOnInit();
@@ -165,7 +174,7 @@ describe('ConfigComponent', () => {
     component.sports = [
       {'id': 1, 'name': 'Tennis', 'selected': true},
     ] 
-    component.sportsBooks = [
+    component.sportsbooks = [
       {'id': 1, 'name': 'Doxxbet', 'selected': false} ,
     ]
     fixture.detectChanges();

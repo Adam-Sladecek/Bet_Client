@@ -1,6 +1,6 @@
 export interface IConfigResponse {
     sports: IConfig[]
-    sportsBooks: IConfig[]
+    sportsbooks: IConfig[]
 }
 export interface IConfig {
     id: number;

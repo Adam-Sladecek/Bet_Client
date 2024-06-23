@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IUnassignedOpportunityResponse } from '../interfaces/iunassigned-opportunity-response';
-import { IOpportunityLinkResponseDict } from '../interfaces/iopportunity-link-response-dict';
+import { IOpportunityFactoryResponse } from '../interfaces/iopportunity-factory-response';
+import { IOpportunityChildrenResponse } from '../interfaces/iopportunity-children-response';
+import { IOpportunityLinkResponse } from '../interfaces/iopportunity-link-response';
 
 @Injectable({
   providedIn: 'root'
@@ -11,26 +12,42 @@ export class OpportunityService {
 
   constructor(private http: HttpClient) { }
 
-  getOpportunities(): Observable<IUnassignedOpportunityResponse> {
+  getOpportunitiesToLink(): Observable<IOpportunityFactoryResponse> {
     const baseUrl = this.getUrl()
-    return this.http.get<IUnassignedOpportunityResponse>(baseUrl + "opportunitytolink/get")
+    return this.http.get<IOpportunityFactoryResponse>(baseUrl + "opportunitytolink/get")
   }
   
-  setOpportunityLink(body: any): Observable<any> {
+  addOpportunityLink(body: any): Observable<IOpportunityFactoryResponse> {
     const baseUrl = this.getUrl()
     // return this.http.post<any>(baseUrl + "config/set", body , {headers: new HttpHeaders({'ngrok-skip-browser-warning': 'true'})})
-    return this.http.post<any>(baseUrl + "opportunitylink/set", body)
+    return this.http.post<IOpportunityFactoryResponse>(baseUrl + "opportunitylink/add", body)
   }
   
-  getOpportunityLinks(): Observable<IOpportunityLinkResponseDict> {
+  addChild(parentId: number, childId: number): Observable<IOpportunityFactoryResponse> {
     const baseUrl = this.getUrl()
-    return this.http.get<IOpportunityLinkResponseDict>(baseUrl + "opportunitylink/get")
+    return this.http.post<IOpportunityFactoryResponse>(baseUrl + `opportunity/${parentId}/add/${childId}`, {})
   }
 
-  deleteOpportunityLink(linkId: number): Observable<any> {
+  getChildren(): Observable<IOpportunityChildrenResponse> {
     const baseUrl = this.getUrl()
-    return this.http.delete<any>(baseUrl + `opportunitylink/delete/${linkId}`)
+    return this.http.get<IOpportunityChildrenResponse>(baseUrl + "opportunity/children/get")
   }
+
+  removeChildFromParent(childId: number): Observable<IOpportunityChildrenResponse> {
+    const baseUrl = this.getUrl()
+    return this.http.delete<IOpportunityChildrenResponse>(baseUrl + `opportunity/children/remove/${childId}`)
+  }
+
+  getLinks(): Observable<IOpportunityLinkResponse> {
+    const baseUrl = this.getUrl()
+    return this.http.get<IOpportunityLinkResponse>(baseUrl + "opportunitylink/get")
+  }
+
+  deleteLink(id: number): Observable<IOpportunityLinkResponse> {
+    const baseUrl = this.getUrl()
+    return this.http.delete<IOpportunityLinkResponse>(baseUrl + `opportunitylink/delete/${id}`)
+  }
+
   private getUrl(): string {
     return "http://127.0.0.1:8000/database/"
   }

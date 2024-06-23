@@ -11,9 +11,9 @@ import { ConfigService } from 'src/app/services/config.service';
 })
 export class ConfigComponent implements OnInit {
   sports: IConfig[]
-  sportsBooks: IConfig[]
+  sportsbooks: IConfig[]
   selectedSports: IConfig[]
-  selectedSportsBooks: IConfig[]
+  selectedSportsbooks: IConfig[]
   gettingConfig: boolean
   inputUrlSegment: string
   
@@ -21,9 +21,9 @@ export class ConfigComponent implements OnInit {
     private messageService: MessageService ) {
     this.gettingConfig = true
     this.sports = []
-    this.sportsBooks = []
+    this.sportsbooks = []
     this.selectedSports = []
-    this.selectedSportsBooks = []
+    this.selectedSportsbooks = []
     this.inputUrlSegment = ''
   }
   
@@ -33,10 +33,11 @@ export class ConfigComponent implements OnInit {
 
   setConfig(): void {
     this.gettingConfig = true;
-    const body = { sports: this.selectedSports, sportsBooks: this.selectedSportsBooks } as IConfigResponse
+    const body = { sports: this.selectedSports, sportsbooks: this.selectedSportsbooks } as IConfigResponse
     this.configService.setConfig(body).subscribe({
-      next: (data) => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: data.message })
+      next: (data: IConfigResponse) => {
+        this.mapConfigResponse(data)
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: "Config set." })
         this.gettingConfig = false
       },
       error: (err) => {
@@ -57,10 +58,7 @@ export class ConfigComponent implements OnInit {
     this.gettingConfig = true
     this.configService.getConfig().subscribe({
       next: (data: IConfigResponse) => {
-        this.sports = data.sports
-        this.sportsBooks = data.sportsBooks
-        this.selectedSports = data.sports.filter((sport: any) => sport.selected)
-        this.selectedSportsBooks = data.sportsBooks.filter((sportsBook: any) => sportsBook.selected)
+        this.mapConfigResponse(data)
         this.gettingConfig = false
       },
       error: (err) => {
@@ -69,5 +67,12 @@ export class ConfigComponent implements OnInit {
         this.gettingConfig = false
       }
     })
+  }
+
+  private mapConfigResponse(data: IConfigResponse):void {
+    this.sports = data.sports
+    this.sportsbooks = data.sportsbooks
+    this.selectedSports = data.sports.filter((sport: any) => sport.selected)
+    this.selectedSportsbooks = data.sportsbooks.filter((sportsbook: any) => sportsbook.selected)
   }
 }

@@ -3,8 +3,11 @@
         <p-tabPanel header="Links">
             <app-opportunity-links *ngIf="activeIndex==0"></app-opportunity-links>
         </p-tabPanel>
+        <p-tabPanel header="Children">
+            <app-opportunity-children *ngIf="activeIndex==1"></app-opportunity-children>
+        </p-tabPanel>
         <p-tabPanel header="Factory">
-            <app-opportunity-factory *ngIf="activeIndex==1"></app-opportunity-factory>
+            <app-opportunity-factory *ngIf="activeIndex==2"></app-opportunity-factory>
         </p-tabPanel>
     </p-tabView>
 </div>

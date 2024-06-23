@@ -3,4 +3,9 @@ div.button_div {
     justify-content: center; 
     align-items: center;
     display: flex;
+    flex-direction: column;
+
+    .spaced {
+        margin-bottom: 10px;
+    }
 }
