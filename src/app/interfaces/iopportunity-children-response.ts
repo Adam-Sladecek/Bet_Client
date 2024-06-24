@@ -1,11 +1,10 @@
 import { IOpportunity } from "./iopportunity";
-import { IParentOpportunity } from "./iparrent-opportunity";
 
 export interface IOpportunityChildrenResponse {
-    parents: IParentOpportunity[] 
-    opportunities: ChildOpportunityDictionary
+    opportunities: IOpportunityWithParentName[]
 }
 
-type ChildOpportunityDictionary = {
-    [key: number]: IOpportunity[];
-};
+export interface IOpportunityWithParentName { 
+    parent_name: string
+    opportunity: IOpportunity
+}

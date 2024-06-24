@@ -2,6 +2,12 @@
 <div *ngIf="!loading">
     <div class="row flex">
         <div class="col-6">
+            <p-dropdown 
+                [options]="allSportsBooks" 
+                [(ngModel)]="selectedSportsbook" 
+                placeholder="Select a SportsBoook" 
+            />
+            <br>
             <p-table 
                 #dt1
                 [value]="parents" 
@@ -41,7 +47,7 @@
             <br>
             <p-table 
                 #dt2
-                [value]="opportunities" 
+                [value]="filterOpportunities(opportunities)" 
                 [scrollable]="true" 
                 scrollHeight="300px" 
                 [tableStyle]="{'min-width': '20rem'}">

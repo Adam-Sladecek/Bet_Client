@@ -1,1 +1,49 @@
-<p>opportunity-children works!</p>
+<p-progressSpinner *ngIf="loading" ariaLabel="loading"></p-progressSpinner>
+<div *ngIf="!loading">
+    <div class="row flex">
+        <p-table 
+            [value]="opportunities" 
+            sortField="parent_name" 
+            sortMode="single" 
+            [scrollable]="true" 
+            scrollHeight="400px" 
+            rowGroupMode="subheader" 
+            groupRowsBy="parent_name" 
+            [tableStyle]="{'min-width': '100rem'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Description</th>
+                        <th>Tip type</th>
+                        <th>Opp number</th>
+                        <th>Market Id</th>
+                        <th>Bet Order</th>
+                        <th>Sport</th>
+                        <th>SB</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="groupheader" let-model>
+                    <tr pRowGroupHeader>
+                        <td colspan="7">
+                            <span class="font-bold ml-2">{{model.parent_name}}</span>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-model let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{model.opportunity.opp_description}}</td>
+                        <td>{{model.opportunity.tip_type}}</td>
+                        <td>{{model.opportunity.opp_number}}</td>
+                        <td>{{model.opportunity.market_id}}</td>
+                        <td>{{model.opportunity.bet_order}}</td>
+                        <td>{{model.opportunity.sport}}</td>
+                        <td><img src="{{getImageRoute(model.opportunity.sportsbook)}}" alt="{{model.opportunity.sportsbook}}" width="50px" height="20px"></td>
+                        <td>
+                            <p-button (click)="removeChild(model.opportunity.id)" [disabled]="deleting" styleClass="p-button-danger">Remove</p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+        </p-table>
+    </div>
+</div>
+<p-toast></p-toast>

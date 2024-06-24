@@ -17,6 +17,8 @@ export class OpportunityFactoryComponent implements OnInit{
   linking: boolean
   canCreateParents: boolean
   canLinkChild: boolean
+  allSportsBooks: string[] = ["Nike", "Tipsport"]
+  selectedSportsbook!: string
   parents!: IParentOpportunity[]
   opportunities!: IOpportunity[]
   
@@ -40,6 +42,9 @@ export class OpportunityFactoryComponent implements OnInit{
     this.canLinkChild = false
     this.firstSelectedOpp = [parent]
     this.secondSelectedOpp = []
+  }
+  filterOpportunities(opportunities: IOpportunity[]){
+    return opportunities.filter(opp => opp.sportsbook==this.selectedSportsbook)
   }
 
   pickOpportunity(opp: IOpportunity) { 

@@ -77,8 +77,7 @@ describe('OpportunityService', () => {
 
   it('should get children', () => {
     const mockChildrenResponse = {
-      parents: [],
-      opportunities: {}
+      opportunities: []
     } as IOpportunityChildrenResponse;
     service.getChildren().subscribe(response => {
       expect(response).toEqual(mockChildrenResponse);
@@ -91,8 +90,7 @@ describe('OpportunityService', () => {
 
   it('should remove child from parent', () => {
     const mockChildrenResponse = {
-      parents: [],
-      opportunities: {}
+      opportunities: []
     } as IOpportunityChildrenResponse;
     service.removeChildFromParent(5).subscribe(response => {
       expect(response).toEqual(mockChildrenResponse);
