@@ -85,10 +85,11 @@ export class OpportunityFactoryComponent implements OnInit{
     const body = {opportunities: [this.firstSelectedOpp[0], this.secondSelectedOpp[0]]}
     this.oppService.addOpportunityLink(body).subscribe({
       next: (response: IOpportunityFactoryResponse) => {
+        this.opportunities = this.opportunities.filter(opp => opp.id != this.firstSelectedOpp[0].id && opp.id != this.secondSelectedOpp[0].id)
         this.firstSelectedOpp = [] 
         this.secondSelectedOpp = [] 
-        this.parents = response.parents 
-        this.opportunities = response.opportunities
+        // this.parents = response.parents 
+        // this.opportunities = response.opportunities
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Link added." })
         this.linking = false
       },
