@@ -134,6 +134,10 @@ export class BetsComponent implements OnInit{
       return bets.filter((bet) => bet.profit*100 >= this.lowerBound)
     }
 
+    import() { 
+      this.websocketService.sendMessage({ action: 'import' });
+    }
+
     private update(): void { 
       this.taskState = this.websocketService.state;
       this.error = this.websocketService.error;

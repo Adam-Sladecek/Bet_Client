@@ -9,6 +9,9 @@
             <span *ngIf="error && error.active">Error, try refreshing page.</span>
         </div>
         <div class="col">
+            <p-button (click)="import()" label="Import"></p-button>
+        </div>
+        <div class="col">
             <span><strong>Last signal:</strong> {{lastSignal}}</span>
         </div>
         <div class="col">
