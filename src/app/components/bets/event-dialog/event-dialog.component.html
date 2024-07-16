@@ -1,0 +1,44 @@
+<div *ngIf="!loading">
+    <p-table 
+    #dt1
+    [value]="events" 
+    [(selection)]="selectedEvents" 
+    dataKey="id" 
+    [scrollable]="true" 
+    scrollHeight="300px"
+    [globalFilterFields]="['home', 'away']">
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="filterGlobal($event)" placeholder="Search keyword" />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+                <th>Home</th>
+                <th>Away</th>
+                <th>Sportsbook</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-event>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="event" />
+                </td>
+                <td>{{ event.home }}</td>
+                <td>{{ event.away }}</td>
+                <td><img src="{{getImageRoute(event.sportsbook_id)}}" alt="{{event.sportsbook_id}}" width="50px" height="20px"></td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <br>
+    <div class="button-div">
+        <p-button [disabled]="updating" (click)="update_events()" label="Update" severity="success" styleClass="p-button-success"></p-button>
+        <i *ngIf="updating" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+    </div>
+</div>
+<p-progressSpinner *ngIf="loading" ariaLabel="loading"></p-progressSpinner>
+<p-toast></p-toast>

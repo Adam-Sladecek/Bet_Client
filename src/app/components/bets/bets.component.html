@@ -1,33 +1,28 @@
 <div class="card">
     <div class="row flex">
-        <div class="col">
+        <!-- <div class="col">
             <p-button (click)="endScrape()" [disabled]="disable_buttons()" *ngIf="appRunning()" label="End Scrape" severity="danger" styleClass="p-button-danger"></p-button>
             <p-button (click)="startScrape()" [disabled]="disable_buttons()" *ngIf="!appRunning()" label="Start Scrape" severity="success" styleClass="p-button-success"></p-button>
             <span>&nbsp;</span>
             <span *ngIf="appRunning()">Scraping... &nbsp;<i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i></span>
             <span *ngIf="endingScrape()">Ending scrape...</span>
             <span *ngIf="error && error.active">Error, try refreshing page.</span>
-        </div>
+        </div> -->
         <div class="col">
-            <p-button (click)="import()" label="Import"></p-button>
+            <p-button (click)="open_configuration()" label="Events"></p-button>
         </div>
         <div class="col">
             <span><strong>Last signal:</strong> {{lastSignal}}</span>
         </div>
-        <div class="col">
+        <!-- <div class="col">
             <div class="flex-auto" style="max-width: 400px;">
                 <span>Budget</span>
                 <br>
                 <p-inputNumber inputId="integeronly" [(ngModel)]="budget"></p-inputNumber>
             </div>
-        </div>
-        <div class="col lowerBoundDiv">
-            <span>Lower bound:</span>
-            <input type="text" pInputText [(ngModel)]="lowerBound" class="w-full"/>
-            <p-slider [(ngModel)]="lowerBound" [min]="0" [max]="8" [step]="0.1" class="w-full"></p-slider>
-        </div>
+        </div> -->
     </div>
-    <p-table [value]="filterBetsByLowerBound(bets)" rowGroupMode="rowspan" groupRowsBy="representative.name" sortField="representative.name" sortMode="single"  [tableStyle]="{'min-width': '75rem'}">
+    <!-- <p-table [value]="filterBetsByLowerBound(bets)" rowGroupMode="rowspan" groupRowsBy="representative.name" sortField="representative.name" sortMode="single"  [tableStyle]="{'min-width': '75rem'}">
         <ng-template pTemplate="header">
             <tr>
                 <th></th>
@@ -63,6 +58,14 @@
                 <td *ngIf="i === 0" [attr.rowspan]="bet.details.length">{{ bet.updated }}</td>
             </tr>
         </ng-template>
-    </p-table>
+    </p-table> -->
 </div>
+<p-dialog 
+        header="Events" 
+        [modal]="true" 
+        [(visible)]="showConfigDialog" 
+        [style]="{ width: '70%'}" 
+        [maximizable]="true">
+            <app-event-dialog></app-event-dialog>
+    </p-dialog>
 <p-toast></p-toast>

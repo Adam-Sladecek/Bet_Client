@@ -31,6 +31,8 @@ import { OpportunityFactoryComponent } from './components/opportunity-factory/op
 import { OpportunityLinksComponent } from './components/opportunity-links/opportunity-links.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { OpportunityChildrenComponent } from './components/opportunity-children/opportunity-children.component';
+import { DialogModule } from 'primeng/dialog';
+import { EventDialogComponent } from './components/bets/event-dialog/event-dialog.component';
 
 @NgModule({
   imports: [
@@ -49,7 +51,8 @@ import { OpportunityChildrenComponent } from './components/opportunity-children/
     HttpClientModule,
     BrowserAnimationsModule,
     TabViewModule,
-    DropdownModule
+    DropdownModule,
+    DialogModule
   ],
   declarations: [
     AppComponent,
@@ -62,6 +65,7 @@ import { OpportunityChildrenComponent } from './components/opportunity-children/
     OpportunityFactoryComponent,
     OpportunityLinksComponent,
     OpportunityChildrenComponent,
+    EventDialogComponent,
   ],
   providers: [
     WebSocketService, 

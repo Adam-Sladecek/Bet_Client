@@ -4,6 +4,7 @@ import { SocketResponseType } from '../enums/socket-response-type';
 import { TaskState } from '../enums/task-state';
 import { IBet } from '../interfaces/ibet';
 import { IError } from '../interfaces/ierror';
+import { IEventModel } from '../interfaces/Event/ievent-model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,8 @@ export class WebSocketService {
   private serverUrl: string
   private triggerEventSubject: Subject<void>
   private _triggerEvent$: Observable<void>
+  private defaultEventSubject: Subject<IEventModel[]>
+  private _defaultEvent$: Observable<IEventModel[]>
   private _state !: TaskState;
   private _error !: IError;
   private _bets: IBet[];
@@ -23,6 +26,10 @@ export class WebSocketService {
     this._bets = []
     this.triggerEventSubject = new Subject<void>()
     this._triggerEvent$ = this.triggerEventSubject.asObservable()
+
+    this.defaultEventSubject = new Subject<IEventModel[]>()
+    this._defaultEvent$ = this.defaultEventSubject.asObservable()
+
     this.serverUrl = 'ws://localhost:8000/ws/scrape/'
     this.error = {'active': false, 'message': ''} as IError
     // "http://192.168.0.106:5000/"
@@ -67,6 +74,10 @@ export class WebSocketService {
 
   get triggerEventObservable() {
     return this._triggerEvent$;
+  }
+
+  get defaultEventObservable() {
+    return this._defaultEvent$;
   }
 
   connect(): void {

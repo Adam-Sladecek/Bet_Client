@@ -1,16 +1,17 @@
 <div class="card">
-    <p-multiSelect [options]="sports" optionLabel="name" [(ngModel)]="selectedSports" defaultLabel="Select sports" display="chip"></p-multiSelect>
-    <br>
-    <br>
-    <p-multiSelect [options]="sportsbooks" optionLabel="name" [(ngModel)]="selectedSportsbooks" defaultLabel="Select sportsbooks" display="chip"></p-multiSelect>
-    <br>
-    <br>
-    <p-button *ngIf="sports.length && sportsbooks.length" [disabled]="gettingConfig" (click)="setConfig()" label="Set config" severity="success" styleClass="p-button-success"></p-button>
-    <i *ngIf="gettingConfig" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-    <br>
-    <br>
-    <input type="text" pInputText [(ngModel)]="inputUrlSegment" />
-    <span>&nbsp;</span>
-    <p-button (click)="setUrl()" label="Set url" severity="success" styleClass="p-button-success"></p-button>
+    <div *ngIf="!gettingConfig">
+        <p-multiSelect [options]="sports" optionLabel="name" [(ngModel)]="selectedSports" defaultLabel="Select sports" display="chip"></p-multiSelect>
+        <br>
+        <br>
+        <p-multiSelect [options]="sportsbooks" optionLabel="name" [(ngModel)]="selectedSportsbooks" defaultLabel="Select sportsbooks" display="chip"></p-multiSelect>
+        <br>
+        <br>
+        <p-dropdown [options]="defaultSportsbooks" [(ngModel)]="selectedDefaultSportsbook" optionLabel="name" placeholder="Select a default Sportsbook" />
+        <br>
+        <br>
+        <p-button [disabled]="updating" (click)="setConfig()" label="Set config" severity="success" styleClass="p-button-success"></p-button>
+        <i *ngIf="updating" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+    </div>
+    <p-progressSpinner *ngIf="gettingConfig" ariaLabel="loading"></p-progressSpinner>
 </div>
 <p-toast></p-toast>
