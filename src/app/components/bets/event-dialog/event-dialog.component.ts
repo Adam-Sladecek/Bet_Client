@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/cor
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Subscription } from 'rxjs';
+import { TaskState } from 'src/app/enums/task-state';
 import { IEventModel } from 'src/app/interfaces/Event/ievent-model';
 import { IEventResponse } from 'src/app/interfaces/Event/ievent-response';
 import { EventService } from 'src/app/services/event.service';
@@ -13,12 +14,12 @@ import { WebSocketService } from 'src/app/services/web-socket.service';
   styleUrls: ['./event-dialog.component.scss']
 })
 export class EventDialogComponent implements OnInit {
-  @Output() dataEmitter: EventEmitter<string> = new EventEmitter();
   @ViewChild('dt1') dt1!: Table;
 
   private defaultEventSubscription: Subscription
   loading: boolean
   updating: boolean
+  importing: boolean
   events: IEventModel[]
   selectedEvents: IEventModel[]
 
@@ -27,14 +28,17 @@ export class EventDialogComponent implements OnInit {
     private eventService: EventService ) {
     this.loading = true
     this.updating = false
+    this.importing = false
     this.events = []
     this.selectedEvents = []
     this.defaultEventSubscription = this.websocketService.defaultEventObservable.subscribe({
-      next: (response: IEventModel[]) => {
-        this.events = response
-      },
-      error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
+      next: (state: TaskState) => {
+        if (state == TaskState.RUNNING){ 
+          this.importing = true
+        }
+        else if (state == TaskState.CLOSED) { 
+          this.get_events(true)
+        }
       }
     });
   }
@@ -48,18 +52,27 @@ export class EventDialogComponent implements OnInit {
   }
 
   update_events() { 
-
+    this.updating = true
+    var ids = this.selectedEvents.map(event => event.id)
+    this.eventService.setDefaultEvents(ids).subscribe({
+      next: (response: IEventResponse) => {
+        this.events = response.events
+        this.selectedEvents = response.events.filter(event => event.selected)
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: "Events updated." })
+        this.updating = false
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
+      }
+    });
   }
 
-  getImageRoute(sbName: number): string {
-    switch (sbName) {
-      case 1:
-        return "assets/layout/images/sportsbooks/nike.png"
-      case 2:
-        return "assets/layout/images/sportsbooks/tipsport.png"
-      default:
-        return ""
-    }
+  getSbImageRoute(sbId: number): string {
+    return this.eventService.getSbImageRoute(sbId);
+  }
+
+  getSportImageRoute(sportId: number): string {
+    return this.eventService.getSportImageRoute(sportId);
   }
 
   filterGlobal(event: Event) {
@@ -69,12 +82,19 @@ export class EventDialogComponent implements OnInit {
     }
   }
 
-  private get_events() { 
+  import() { 
+    this.importing = true
+    this.websocketService.sendMessage({ action: 'import' });
+  }
+
+  private get_events(from_import: boolean = false) { 
     this.eventService.getDefaultEvents().subscribe({
       next: (response: IEventResponse) => {
         this.events = response.events
         this.selectedEvents = response.events.filter(event => event.selected)
         this.loading = false
+        if(from_import)
+          this.importing = false
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})

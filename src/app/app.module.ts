@@ -8,14 +8,9 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './layout/app.layout.module';
 import { BetsComponent } from './components/bets/bets.component';
-import { HiddenBetsComponent } from './components/hidden-bets/hidden-bets.component';
 import { ConfigComponent } from './components/config/config.component';
-import { ErrorsComponent } from './components/errors/errors.component';
-import { LoginComponent } from './components/login/login.component';
 import { WebSocketService } from './services/web-socket.service';
 import { ConfigService } from './services/config.service';
-import { LoginService } from './services/login.service';
-import { ErrorService } from './services/error.service';
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -57,10 +52,7 @@ import { EventDialogComponent } from './components/bets/event-dialog/event-dialo
   declarations: [
     AppComponent,
     BetsComponent,
-    HiddenBetsComponent,
     ConfigComponent,
-    ErrorsComponent,
-    LoginComponent,
     OpportunityManagementComponent,
     OpportunityFactoryComponent,
     OpportunityLinksComponent,
@@ -70,8 +62,6 @@ import { EventDialogComponent } from './components/bets/event-dialog/event-dialo
   providers: [
     WebSocketService, 
     ConfigService,
-    LoginService,
-    ErrorService
   ],
   bootstrap: [AppComponent]
 })

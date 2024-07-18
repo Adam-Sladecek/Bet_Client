@@ -1,69 +1,25 @@
 <div class="card">
     <div class="row flex">
-        <!-- <div class="col">
+        <div class="col">
             <p-button (click)="endScrape()" [disabled]="disable_buttons()" *ngIf="appRunning()" label="End Scrape" severity="danger" styleClass="p-button-danger"></p-button>
             <p-button (click)="startScrape()" [disabled]="disable_buttons()" *ngIf="!appRunning()" label="Start Scrape" severity="success" styleClass="p-button-success"></p-button>
             <span>&nbsp;</span>
             <span *ngIf="appRunning()">Scraping... &nbsp;<i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i></span>
             <span *ngIf="endingScrape()">Ending scrape...</span>
-            <span *ngIf="error && error.active">Error, try refreshing page.</span>
-        </div> -->
+            <span *ngIf="error">Error, try refreshing page.</span>
+        </div>
         <div class="col">
             <p-button (click)="open_configuration()" label="Events"></p-button>
         </div>
         <div class="col">
             <span><strong>Last signal:</strong> {{lastSignal}}</span>
         </div>
-        <!-- <div class="col">
-            <div class="flex-auto" style="max-width: 400px;">
-                <span>Budget</span>
-                <br>
-                <p-inputNumber inputId="integeronly" [(ngModel)]="budget"></p-inputNumber>
-            </div>
-        </div> -->
     </div>
-    <!-- <p-table [value]="filterBetsByLowerBound(bets)" rowGroupMode="rowspan" groupRowsBy="representative.name" sortField="representative.name" sortMode="single"  [tableStyle]="{'min-width': '75rem'}">
-        <ng-template pTemplate="header">
-            <tr>
-                <th></th>
-                <th>Sport</th>
-                <th>Profit</th>
-                <th>Sportsbook</th>
-                <th>Player</th>
-                <th>Opportunity</th>
-                <th>Odd</th>
-                <th>Amount</th>
-                <th>Updated</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-bet>
-            <tr *ngFor="let detail of bet.details; let i = index">
-                <td *ngIf="i === 0" [attr.rowspan]="bet.details.length">
-                    <p-button *ngIf="!editBet(bet)" (click)="betDetail(bet)" label="Edit" styleClass="p-button-warning"></p-button>
-                    <p-button *ngIf="editBet(bet)" (click)="betDetail(bet)" label="Done" styleClass="p-button-success"></p-button>
-                    <br>
-                    <br>
-                    <p-button (click)="hideBet(bet)" styleClass="p-button-danger">Delete</p-button>
-                </td>
-                <td *ngIf="i === 0" [attr.rowspan]="bet.details.length">{{ bet.sport_name }}</td>
-                <td *ngIf="i === 0 && !editBet(bet)" [attr.rowspan]="bet.details.length">{{ bet.profit*budget | number:'1.2-2'  }}</td>
-                <td *ngIf="i === 0 && editBet(bet)" [attr.rowspan]="bet.details.length">{{ getEditedBetProfit()*budget | number:'1.2-2' }}</td>
-                <td><img src="{{getImageRoute(detail.sportsbook_name)}}" alt="{{detail.sportsbook_name}}" width="50px" height="20px"></td>
-                <td>{{ detail.player_name }}</td>
-                <td>{{ detail.opportunity_name }}</td>
-                <td *ngIf="!editBet(bet)">{{ detail.odd }}</td>
-                <td *ngIf="editBet(bet)"><p-inputNumber [(ngModel)]="betInDetail.details[i].odd" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"></p-inputNumber></td>
-                <td *ngIf="!editBet(bet)">{{ detail.amount*budget | number:'1.2-2'  }}</td>
-                <td *ngIf="editBet(bet)">{{ getEditedBetAmount(i)*budget | number:'1.2-2' }}</td>
-                <td *ngIf="i === 0" [attr.rowspan]="bet.details.length">{{ bet.updated }}</td>
-            </tr>
-        </ng-template>
-    </p-table> -->
 </div>
 <p-dialog 
         header="Events" 
         [modal]="true" 
-        [(visible)]="showConfigDialog" 
+        [(visible)]="showEventDialog" 
         [style]="{ width: '70%'}" 
         [maximizable]="true">
             <app-event-dialog></app-event-dialog>
