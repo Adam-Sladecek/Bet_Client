@@ -40,11 +40,6 @@ export class WebSocketService {
 
     this.socket.onmessage = (event) => {
       let response = JSON.parse(event.data) as IBetResponse
-      if (response.type == SocketResponseType.ERROR) {
-        console.log('Error:', event.data);
-        this.triggerEventSubject.error({message: response.data});
-        return
-      }
       if (response.type == SocketResponseType.IMPORTRUNNING) {
         this.defaultEventSubject.next(response.data as TaskState);
         return
@@ -56,7 +51,6 @@ export class WebSocketService {
       var error = 'WebSocket connection closed.'
       console.log(error);
       this.triggerEventSubject.error({message: error});
-      
     };
   }
 

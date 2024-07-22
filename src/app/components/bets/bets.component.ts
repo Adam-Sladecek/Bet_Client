@@ -33,10 +33,14 @@ export class BetsComponent implements OnInit{
             this.getLastSignal()
             return
           }
+          if (response.type == SocketResponseType.ERROR) { 
+            const err = response.data as string
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: err})
+          }
         },
         error: (err) => {
           this.error = true
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message ?? err.message})
         }
       });
     }

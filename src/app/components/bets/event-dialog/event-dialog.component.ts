@@ -62,7 +62,7 @@ export class EventDialogComponent implements OnInit {
         this.updating = false
       },
       error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message ?? err.message})
       }
     });
   }
@@ -83,7 +83,6 @@ export class EventDialogComponent implements OnInit {
   }
 
   import() { 
-    this.importing = true
     this.websocketService.sendMessage({ action: 'import' });
   }
 
@@ -97,7 +96,7 @@ export class EventDialogComponent implements OnInit {
           this.importing = false
       },
       error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message ?? err.message})
       }
     });
   }

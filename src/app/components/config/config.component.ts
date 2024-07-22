@@ -49,7 +49,7 @@ export class ConfigComponent implements OnInit {
         this.updating = false
       },
       error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message ?? err.message})
         console.error(err)
         this.updating = false
       }
@@ -64,7 +64,7 @@ export class ConfigComponent implements OnInit {
         this.gettingConfig = false
       },
       error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message ?? err.message})
         console.error(err)
       }
     })

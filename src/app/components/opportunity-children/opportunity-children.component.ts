@@ -52,7 +52,7 @@ export class OpportunityChildrenComponent implements OnInit{
         this.deleting = false
       },
       error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message ?? err.message})
         console.error(err)
         this.deleting = false
       }
@@ -66,7 +66,7 @@ export class OpportunityChildrenComponent implements OnInit{
         this.loading = false
       },
       error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.message ?? err.message})
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message ?? err.message})
         console.error(err)
       }
     })
