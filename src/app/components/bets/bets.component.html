@@ -16,12 +16,53 @@
         </div>
     </div>
 </div>
-<p-dialog 
+
+<div class="card" *ngFor="let match of matches">
+    <span>{{match.name}}</span>
+    <span class="ml-5"><p-button (click)="open_opportunity_dialog(match)" icon="pi pi-plus" [rounded]="true" severity="success" ></p-button></span>
+    <p-table [value]="match.opportunities" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>{{match.time}}</th>
+                <th *ngFor="let id of sportsbook_ids">
+                    <img src="{{getSbImageRoute(id)}}" alt="{{id}}" width="50px" height="20px">
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-opportunity>
+            <tr>
+                <td>{{ opportunity.name }}</td>
+                <td *ngFor="let id of sportsbook_ids">
+                    <ng-container *ngIf="getMatchFromSb(id, opportunity.odds)?.locked; else showOdds">
+                        <i class="pi pi-lock"></i>
+                    </ng-container>
+                    <ng-template #showOdds>
+                        {{ getMatchFromSb(id, opportunity.odds)?.odd }}
+                    </ng-template>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    
+</div>
+<div *ngIf="showEventDialog">
+    <p-dialog 
         header="Events" 
         [modal]="true" 
         [(visible)]="showEventDialog" 
         [style]="{ width: '70%'}" 
         [maximizable]="true">
-            <app-event-dialog></app-event-dialog>
+        <app-event-dialog></app-event-dialog>
     </p-dialog>
+</div>
+<div *ngIf="showOddDialog">
+    <p-dialog 
+        [header]="selectedMatch.name" 
+        [modal]="true" 
+        [(visible)]="showOddDialog" 
+        [style]="{ width: '70%'}" 
+        [maximizable]="true">
+        <app-opportunity-dialog [event_id]="selectedMatch.match_id"></app-opportunity-dialog>
+    </p-dialog>
+</div>
 <p-toast></p-toast>

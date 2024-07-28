@@ -28,6 +28,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { OpportunityChildrenComponent } from './components/opportunity-children/opportunity-children.component';
 import { DialogModule } from 'primeng/dialog';
 import { EventDialogComponent } from './components/bets/event-dialog/event-dialog.component';
+import { OpportunityDialogComponent } from './components/bets/opportunity-dialog/opportunity-dialog.component';
 
 @NgModule({
   imports: [
@@ -58,6 +59,7 @@ import { EventDialogComponent } from './components/bets/event-dialog/event-dialo
     OpportunityLinksComponent,
     OpportunityChildrenComponent,
     EventDialogComponent,
+    OpportunityDialogComponent,
   ],
   providers: [
     WebSocketService, 

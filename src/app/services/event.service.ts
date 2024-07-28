@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IEventResponse } from '../interfaces/Event/ievent-response';
 import { API_CONSTANTS } from '../constants/app.constants';
+import { IOddResponse } from '../interfaces/Bet/iodd-model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,14 @@ export class EventService {
 
   setDefaultEvents(ids: number[]): Observable<IEventResponse> {
     return this.http.post<IEventResponse>(API_CONSTANTS.BASE_URL + "event/update", {ids: ids})
+  }
+
+  getEventOdds(event_id: number): Observable<IOddResponse> {
+    return this.http.get<IOddResponse>(API_CONSTANTS.BASE_URL + `event/${event_id}/odds`)
+  }
+
+  setEventOdds(event_id: number, ids: number []): Observable<IOddResponse> {
+    return this.http.post<IOddResponse>(API_CONSTANTS.BASE_URL + `event/${event_id}/odds/update`, {ids: ids})
   }
 
   getSbImageRoute(sbId: number): string {

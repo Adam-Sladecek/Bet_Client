@@ -1,0 +1,39 @@
+<div *ngIf="!loading">
+    <p-table 
+    #dt1
+    [value]="odds" 
+    [(selection)]="selectedOdds" 
+    dataKey="id" 
+    [scrollable]="true" 
+    scrollHeight="300px"
+    [globalFilterFields]="['description']">
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="filterGlobal($event)" placeholder="Search keyword" />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+                <th>Oppportunity</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-odd>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="odd" />
+                </td>
+                <td>{{ odd.description }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <br>
+    <div class="button-div">
+        <p-button [disabled]="updating" (click)="update_odds()" label="Update" severity="success" styleClass="p-button-success"></p-button>
+        <i *ngIf="updating" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+    </div>
+</div>
+<p-progressSpinner *ngIf="loading" ariaLabel="loading"></p-progressSpinner>
