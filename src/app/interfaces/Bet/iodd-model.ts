@@ -2,6 +2,7 @@ export interface IOddModel {
     id: number
     odd_id: number
     code: number
+    movement: number
     odd: number
     is_default: boolean
     selected: boolean

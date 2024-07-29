@@ -3,12 +3,12 @@ import { Subscription } from 'rxjs';
 import { WebSocketService } from 'src/app/services/web-socket.service';
 import { TaskState } from 'src/app/enums/task-state';
 import { MessageService } from 'primeng/api';
-import { IEventModel } from 'src/app/interfaces/Event/ievent-model';
 import { IBetResponse } from 'src/app/interfaces/Bet/ibet-response';
 import { SocketResponseType } from 'src/app/enums/socket-response-type';
 import { IMatch, IMatchResponse } from 'src/app/interfaces/Bet/imatch-response';
 import { EventService } from 'src/app/services/event.service';
 import { IOddModel } from 'src/app/interfaces/Bet/iodd-model';
+import { Movement } from 'src/app/enums/movement';
 
 @Component({
   selector: 'app-bets',
@@ -109,6 +109,16 @@ export class BetsComponent implements OnInit{
       var sbOdd = odds.find(odd => odd.sportsbook_id == sportsbook_id)
       if (sbOdd == null) return undefined
       return sbOdd
+    }
+    
+    getOddClass(sportsbook_id: number, odds: IOddModel[]): { [key: string]: boolean } {
+      if (odds.length == 0) return {}
+      var sbOdd = odds.find(odd => odd.sportsbook_id == sportsbook_id)
+      if (sbOdd == null) return {}
+      return {
+        'movement-up': sbOdd.movement == Movement.UP as number,
+        'movement-down': sbOdd.movement == Movement.DOWN as number
+      };
     }
 
     private getLastSignal() {

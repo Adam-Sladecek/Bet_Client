@@ -16,16 +16,16 @@ export class EventService {
     return this.http.get<IEventResponse>(API_CONSTANTS.BASE_URL + "event")
   }
 
-  setDefaultEvents(ids: number[]): Observable<IEventResponse> {
-    return this.http.post<IEventResponse>(API_CONSTANTS.BASE_URL + "event/update", {ids: ids})
+  setDefaultEvents(ids: number[]): Observable<any> {
+    return this.http.post<any>(API_CONSTANTS.BASE_URL + "event/update", {ids: ids})
   }
 
   getEventOdds(event_id: number): Observable<IOddResponse> {
     return this.http.get<IOddResponse>(API_CONSTANTS.BASE_URL + `event/${event_id}/odds`)
   }
 
-  setEventOdds(event_id: number, ids: number []): Observable<IOddResponse> {
-    return this.http.post<IOddResponse>(API_CONSTANTS.BASE_URL + `event/${event_id}/odds/update`, {ids: ids})
+  setEventOdds(event_id: number, ids: number []): Observable<any> {
+    return this.http.post<any>(API_CONSTANTS.BASE_URL + `event/${event_id}/odds/update`, {ids: ids})
   }
 
   getSbImageRoute(sbId: number): string {

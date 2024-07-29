@@ -1,19 +1,17 @@
-<div class="card">
-    <div class="row flex">
-        <div class="col">
-            <p-button (click)="endScrape()" [disabled]="disable_buttons()" *ngIf="appRunning()" label="End Scrape" severity="danger" styleClass="p-button-danger"></p-button>
-            <p-button (click)="startScrape()" [disabled]="disable_buttons()" *ngIf="!appRunning()" label="Start Scrape" severity="success" styleClass="p-button-success"></p-button>
-            <span>&nbsp;</span>
-            <span *ngIf="appRunning()">Scraping... &nbsp;<i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i></span>
-            <span *ngIf="endingScrape()">Ending scrape...</span>
-            <span *ngIf="error">Error, try refreshing page.</span>
-        </div>
-        <div class="col">
-            <p-button (click)="open_configuration()" label="Events"></p-button>
-        </div>
-        <div class="col">
-            <span><strong>Last signal:</strong> {{lastSignal}}</span>
-        </div>
+<div class="row flex">
+    <div class="col">
+        <p-button (click)="endScrape()" [disabled]="disable_buttons()" *ngIf="appRunning()" label="End Scrape" severity="danger" styleClass="p-button-danger"></p-button>
+        <p-button (click)="startScrape()" [disabled]="disable_buttons()" *ngIf="!appRunning()" label="Start Scrape" severity="success" styleClass="p-button-success"></p-button>
+        <span>&nbsp;</span>
+        <span *ngIf="appRunning()">Scraping... &nbsp;<i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i></span>
+        <span *ngIf="endingScrape()">Ending scrape...</span>
+        <span *ngIf="error">Error, try refreshing page.</span>
+    </div>
+    <div class="col">
+        <p-button (click)="open_configuration()" label="Events"></p-button>
+    </div>
+    <div class="col">
+        <span><strong>Last signal:</strong> {{lastSignal}}</span>
     </div>
 </div>
 
@@ -37,7 +35,9 @@
                         <i class="pi pi-lock"></i>
                     </ng-container>
                     <ng-template #showOdds>
-                        {{ getMatchFromSb(id, opportunity.odds)?.odd }}
+                        <div [ngClass]="getOddClass(id, opportunity.odds)">
+                            {{ getMatchFromSb(id, opportunity.odds)?.odd }}
+                        </div>
                     </ng-template>
                 </td>
             </tr>
@@ -65,4 +65,4 @@
         <app-opportunity-dialog [event_id]="selectedMatch.match_id"></app-opportunity-dialog>
     </p-dialog>
 </div>
-<p-toast></p-toast>
+<p-toast position="bottom-right"></p-toast>

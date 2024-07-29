@@ -55,9 +55,7 @@ export class EventDialogComponent implements OnInit {
     this.updating = true
     var ids = this.selectedEvents.map(event => event.id)
     this.eventService.setDefaultEvents(ids).subscribe({
-      next: (response: IEventResponse) => {
-        this.events = response.events
-        this.selectedEvents = response.events.filter(event => event.selected)
+      next: (response: any) => {
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Events updated." })
         this.updating = false
       },

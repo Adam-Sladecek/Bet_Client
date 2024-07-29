@@ -37,9 +37,7 @@ export class OpportunityDialogComponent implements OnInit {
     this.updating = true
     var ids = this.selectedOdds.map(odd => odd.id)
     this.eventService.setEventOdds(this.event_id, ids).subscribe({
-      next: (response: IOddResponse) => {
-        this.odds = response.odds
-        this.selectedOdds = response.odds.filter(odd => odd.selected)
+      next: (response: any) => {
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Opporunities updated." })
         this.updating = false
       },

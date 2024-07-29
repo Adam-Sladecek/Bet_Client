@@ -18,10 +18,7 @@ export class AppMenuComponent implements OnInit {
                 label: 'Home',
                 items: [
                     { label: 'Bets', icon: 'pi pi-fw pi-home', routerLink: ['/'] },
-                    // { label: 'LiveBets', icon: 'pi pi-fw pi-home', routerLink: ['/liveBets'] },
-                    { label: 'HiddenBets', icon: 'pi pi-fw pi-eye-slash', routerLink: ['/hidden'] },
                     { label: 'Configuration', icon: 'pi pi-fw pi-cog', routerLink: ['/config'] },
-                    { label: 'Errors', icon: 'pi pi-fw pi-thumbs-down-fill', routerLink: ['/errors'] },
                     { label: 'Opportunity management', icon: 'pi pi-fw pi-sort-alt', routerLink: ['/opportunities'] },
                 ]
             }
