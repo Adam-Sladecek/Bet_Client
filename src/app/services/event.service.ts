@@ -51,6 +51,18 @@ export class EventService {
         return "assets/layout/images/sports/football.png"
       case 2:
         return "assets/layout/images/sports/hockey.png"
+      case 3:
+        return "assets/layout/images/sports/tennis.png"
+      case 4:
+        return "assets/layout/images/sports/basketball.png"
+      case 5:
+        return "assets/layout/images/sports/handball.png"
+      case 6:
+        return "assets/layout/images/sports/volleyball.png"
+      case 7:
+        return "assets/layout/images/sports/tabletennis.png"
+      case 8:
+        return "assets/layout/images/sports/box.png"
       default:
         return ""
     }
