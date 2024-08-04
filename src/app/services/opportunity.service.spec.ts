@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { OpportunityService } from './opportunity.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { IOpportunityFactoryResponse } from '../interfaces/iopportunity-factory-response';
-import { IOpportunityChildrenResponse } from '../interfaces/iopportunity-children-response';
+import { IOpportunityFactoryResponse } from '../interfaces/Opportunity/iopportunity-factory-response';
+import { IOpportunityChildrenResponse } from '../interfaces/Opportunity/iopportunity-children-response';
 import { IOpportunityLinkResponse } from '../interfaces/iopportunity-link-response';
-import { IOpportunity } from '../interfaces/iopportunity';
+import { IOpportunity } from '../interfaces/Opportunity/iopportunity';
 
 describe('OpportunityService', () => {
   let service: OpportunityService;

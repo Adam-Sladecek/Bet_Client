@@ -11,31 +11,40 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Description</th>
-                        <th>Tip type</th>
-                        <th>Opp number</th>
-                        <th>Market Id</th>
-                        <th>Bet Order</th>
+                        <th>ID</th>
                         <th>Sport</th>
                         <th>SB</th>
+                        <th>Prefered</th>
                         <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="groupheader" let-model>
                     <tr pRowGroupHeader>
-                        <td colspan="7">
+                        <td>
                             <span class="font-bold ml-2">{{model.parent_name}}</span>
+                        </td>
+                        <td>{{model.parent_id}}</td>
+                        <td><img src="{{getSportImageRoute(model.sport_id)}}" alt="{{model.sport_id}}" width="50px" height="20px"></td>
+                        <td>
+                            <img src="{{getSbImageRoute(model.sportsbook_id)}}" alt="{{model.sportsbook_id}}" width="50px" height="20px">
+                        </td>
+                        <td>
+                            <i *ngIf="model.parent_prefered" class="pi pi-check" style="color: green"></i>
+                            <i *ngIf="!model.parent_prefered" class="pi pi-times" style="color: red"></i>    
+                        </td>
+                        <td>
+                            <p-button *ngIf="model.parent_prefered" (click)="changePreferedParent(model, model.parent_prefered)" [disabled]="deleting" styleClass="p-button-danger">Unset</p-button>
+                            <p-button *ngIf="!model.parent_prefered" (click)="changePreferedParent(model, model.parent_prefered)" [disabled]="deleting" styleClass="p-button-success">Set</p-button>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-model let-rowIndex="rowIndex">
                     <tr>
-                        <td>{{model.opportunity.opp_description}}</td>
-                        <td>{{model.opportunity.tip_type}}</td>
-                        <td>{{model.opportunity.opp_number}}</td>
-                        <td>{{model.opportunity.market_id}}</td>
-                        <td>{{model.opportunity.bet_order}}</td>
-                        <td>{{model.opportunity.sport}}</td>
-                        <td><img src="{{getImageRoute(model.opportunity.sportsbook)}}" alt="{{model.opportunity.sportsbook}}" width="50px" height="20px"></td>
+                        <td>{{model.opportunity.description}}</td>
+                        <td>{{model.opportunity.id}}</td>
+                        <td><img src="{{getSportImageRoute(model.opportunity.sport_id)}}" alt="{{model.opportunity.sport_id}}" width="50px" height="20px"></td>
+                        <td><img src="{{getSbImageRoute(model.opportunity.sportsbook_id)}}" alt="{{model.opportunity.sportsbook_id}}" width="50px" height="20px"></td>
+                        <td></td>
                         <td>
                             <p-button (click)="removeChild(model.opportunity.id)" [disabled]="deleting" styleClass="p-button-danger">Remove</p-button>
                         </td>

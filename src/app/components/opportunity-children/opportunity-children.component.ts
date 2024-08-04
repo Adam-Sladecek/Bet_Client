@@ -1,53 +1,61 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { IOpportunityChildrenResponse, IOpportunityWithParentName } from 'src/app/interfaces/iopportunity-children-response';
+import { IOpportunityChildrenResponse, IOpportunityWithParentName } from 'src/app/interfaces/Opportunity/iopportunity-children-response';
+import { EventService } from 'src/app/services/event.service';
 import { OpportunityService } from 'src/app/services/opportunity.service';
 
 @Component({
   selector: 'app-opportunity-children',
   templateUrl: './opportunity-children.component.html',
   styleUrls: ['./opportunity-children.component.scss'],
-  providers: [OpportunityService, MessageService]
+  providers: [MessageService]
 })
 export class OpportunityChildrenComponent implements OnInit{
   loading: boolean
   deleting: boolean
-  opportunities: IOpportunityWithParentName[]
+  opportunities: IOpportunityWithParentName[] = []
 
-  constructor( private oppService: OpportunityService, private messageService: MessageService) {
+  constructor( 
+    private oppService: OpportunityService, 
+    private messageService: MessageService,
+    private eventService: EventService) {
     this.loading = true
     this.deleting = false
-    this.opportunities = []
   }
 
   ngOnInit(): void {
     this.getChildren()
   }
 
-  getImageRoute(sbName?: string): string {
-    switch (sbName) {
-      case "Betfair":
-        return "assets/layout/images/sportsbooks/betfair.png"
-      case "IFortuna":
-        return "assets/layout/images/sportsbooks/fortuna.jpg"
-      case "Nike":
-        return "assets/layout/images/sportsbooks/nike.png"
-      case "Tipsport":
-        return "assets/layout/images/sportsbooks/tipsport.png"
-      case "Tipos":
-        return "assets/layout/images/sportsbooks/tipos.png"
-      case "Doxxbet":
-        return "assets/layout/images/sportsbooks/doxxbet.png"
-      default:
-        return ""
-    }
+  getSbImageRoute(sbId: number): string {
+    return this.eventService.getSbImageRoute(sbId);
+  }
+
+  getSportImageRoute(sportId: number): string {
+    return this.eventService.getSportImageRoute(sportId);
+  }
+
+  changePreferedParent(model: IOpportunityWithParentName, prefered: boolean) {
+    this.deleting = true
+    this.oppService.setPreferedOpportunity(model.parent_id, !prefered).subscribe({
+      next: (response: any) => {
+        model.parent_prefered = !prefered
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: "Preferency changed." })
+        this.deleting = false
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message ?? err.message})
+        console.error(err)
+        this.deleting = false
+      }
+    })
   }
 
   removeChild(id: number) {
     this.deleting = true
     this.oppService.removeChildFromParent(id).subscribe({
-      next: (response: IOpportunityChildrenResponse) => {
-        this.opportunities = response.opportunities
+      next: (response: any) => {
+        this.opportunities = this.opportunities.filter(opp => opp.opportunity.id != id)
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Child removed." })
         this.deleting = false
       },

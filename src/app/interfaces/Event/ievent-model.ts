@@ -8,5 +8,4 @@ export interface IEventModel {
     selected: boolean
     sportsbook_id: number
     sport_id: number
-    parent_id: number
 }

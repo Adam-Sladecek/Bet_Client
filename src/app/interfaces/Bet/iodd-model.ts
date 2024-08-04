@@ -10,7 +10,6 @@ export interface IOddModel {
     event_id: number
     sportsbook_id: number
     description: string
-    parent_id: number
     market_id: string
 }
 

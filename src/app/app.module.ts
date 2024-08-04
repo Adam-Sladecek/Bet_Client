@@ -23,12 +23,12 @@ import { TableModule } from 'primeng/table';
 import { OpportunityManagementComponent } from './components/opportunity-management/opportunity-management.component';
 import { TabViewModule } from 'primeng/tabview';
 import { OpportunityFactoryComponent } from './components/opportunity-factory/opportunity-factory.component';
-import { OpportunityLinksComponent } from './components/opportunity-links/opportunity-links.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { OpportunityChildrenComponent } from './components/opportunity-children/opportunity-children.component';
 import { DialogModule } from 'primeng/dialog';
 import { EventDialogComponent } from './components/bets/event-dialog/event-dialog.component';
 import { OpportunityDialogComponent } from './components/bets/opportunity-dialog/opportunity-dialog.component';
+import { OpportunityMarketsComponent } from './components/opportunity-markets/opportunity-markets.component';
 
 @NgModule({
   imports: [
@@ -56,10 +56,10 @@ import { OpportunityDialogComponent } from './components/bets/opportunity-dialog
     ConfigComponent,
     OpportunityManagementComponent,
     OpportunityFactoryComponent,
-    OpportunityLinksComponent,
     OpportunityChildrenComponent,
     EventDialogComponent,
     OpportunityDialogComponent,
+    OpportunityMarketsComponent,
   ],
   providers: [
     WebSocketService, 

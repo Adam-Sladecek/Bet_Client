@@ -8,7 +8,7 @@ import { ToastModule } from 'primeng/toast';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { Observable } from 'rxjs';
-import { IOpportunityChildrenResponse, IOpportunityWithParentName } from 'src/app/interfaces/iopportunity-children-response';
+import { IOpportunityChildrenResponse, IOpportunityWithParentName } from 'src/app/interfaces/Opportunity/iopportunity-children-response';
 
 describe('OpportunityChildrenComponent', () => {
   let component: OpportunityChildrenComponent;

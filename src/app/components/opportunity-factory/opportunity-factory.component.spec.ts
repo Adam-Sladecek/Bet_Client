@@ -8,8 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { Observable } from 'rxjs';
-import { IOpportunityFactoryResponse } from 'src/app/interfaces/iopportunity-factory-response';
-import { IOpportunity } from 'src/app/interfaces/iopportunity';
+import { IOpportunityFactoryResponse } from 'src/app/interfaces/Opportunity/iopportunity-factory-response';
+import { IOpportunity } from 'src/app/interfaces/Opportunity/iopportunity';
 import { IParentOpportunity } from 'src/app/interfaces/iparrent-opportunity';
 
 describe('OpportunityFactoryComponent', () => {
