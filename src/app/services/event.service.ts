@@ -9,6 +9,25 @@ import { IOddResponse } from '../interfaces/Bet/iodd-model';
   providedIn: 'root'
 })
 export class EventService {
+  private sbRoutes: {[key: number]: string} = {
+    1 : "assets/layout/images/sportsbooks/nike.png",
+    2 : "assets/layout/images/sportsbooks/tipsport.png",
+    3 : "assets/layout/images/sportsbooks/pinnacle.png",
+    4 : "assets/layout/images/sportsbooks/fortuna.jpg",
+    5 : "assets/layout/images/sportsbooks/tipos.png",
+    6 : "assets/layout/images/sportsbooks/doxxbet.png"
+  }
+
+  private sportRoutes: {[key: number]: string} = {
+    1 : "assets/layout/images/sports/football.png",
+    2 : "assets/layout/images/sports/hockey.png",
+    3 : "assets/layout/images/sports/tennis.png",
+    4 : "assets/layout/images/sports/basketball.png",
+    5 : "assets/layout/images/sports/handball.png",
+    6 : "assets/layout/images/sports/volleyball.png",
+    7 : "assets/layout/images/sports/tabletennis.png",
+    8 : "assets/layout/images/sports/box.png"
+  }
 
   constructor(private http: HttpClient) { }
 
@@ -29,42 +48,10 @@ export class EventService {
   }
 
   getSbImageRoute(sbId: number): string {
-    switch (sbId) {
-      case 1:
-        return "assets/layout/images/sportsbooks/nike.png"
-      case 2:
-        return "assets/layout/images/sportsbooks/tipsport.png"
-      case 3:
-        return "assets/layout/images/sportsbooks/fortuna.jpg"
-      case 4:
-        return "assets/layout/images/sportsbooks/tipos.png"
-      case 5:
-        return "assets/layout/images/sportsbooks/doxxbet.png"
-      default:
-        return ""
-    }
+    return this.sbRoutes[sbId] ?? ''
   }
 
   getSportImageRoute(sportId: number): string {
-    switch (sportId) {
-      case 1:
-        return "assets/layout/images/sports/football.png"
-      case 2:
-        return "assets/layout/images/sports/hockey.png"
-      case 3:
-        return "assets/layout/images/sports/tennis.png"
-      case 4:
-        return "assets/layout/images/sports/basketball.png"
-      case 5:
-        return "assets/layout/images/sports/handball.png"
-      case 6:
-        return "assets/layout/images/sports/volleyball.png"
-      case 7:
-        return "assets/layout/images/sports/tabletennis.png"
-      case 8:
-        return "assets/layout/images/sports/box.png"
-      default:
-        return ""
-    }
+    return this.sportRoutes[sportId] ?? ''
   }
 }
