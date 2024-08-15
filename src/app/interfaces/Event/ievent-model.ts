@@ -8,4 +8,6 @@ export interface IEventModel {
     selected: boolean
     sportsbook_id: number
     sport_id: number
+    available_sportsbooks: number[]
+    odd_count: number
 }
