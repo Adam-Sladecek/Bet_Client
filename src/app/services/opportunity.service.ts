@@ -19,7 +19,7 @@ export class OpportunityService {
   
   addChild(parentId: number, childId: number): Observable<any> {
     const baseUrl = this.getUrl()
-    return this.http.post<any>(baseUrl + `opportunity/${parentId}/add/${childId}`, {})
+    return this.http.patch<any>(baseUrl + `opportunity/${parentId}/add/${childId}`, {})
   }
 
   getChildren(): Observable<IOpportunityChildrenResponse> {
@@ -29,12 +29,12 @@ export class OpportunityService {
 
   removeChildFromParent(childId: number): Observable<any> {
     const baseUrl = this.getUrl()
-    return this.http.delete<any>(baseUrl + `opportunity/children/remove/${childId}`)
+    return this.http.patch<any>(baseUrl + `opportunity/children/remove/${childId}`, {})
   }
 
   setPreferedOpportunity(pk: number, value: boolean): Observable<any> {
     const baseUrl = this.getUrl()
-    return this.http.post<any>(baseUrl + `opportunity/prefered/${pk}`, {value: value})
+    return this.http.patch<any>(baseUrl + `opportunity/prefered/${pk}`, {value: value})
   }
 
   getMarkets(): Observable<IMarketResponse> {

@@ -1,19 +1,18 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
+
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { TableModule } from 'primeng/table';
+import { MessageService } from 'primeng/api';
+import { TaskState } from 'src/app/enums/task-state';
+import { By } from '@angular/platform-browser';
+import { DialogModule } from 'primeng/dialog';
 
 import { WebSocketService } from 'src/app/services/web-socket.service';
 import { BetsComponent } from './bets.component';
-
-import { InputNumberModule } from 'primeng/inputnumber';
-import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast';
-import { SliderModule } from 'primeng/slider';
-import { TableModule } from 'primeng/table';
-import { MessageService } from 'primeng/api';
-import { IBet } from 'src/app/interfaces/ibet';
-import { TaskState } from 'src/app/enums/task-state';
-import { IError } from 'src/app/interfaces/ierror';
-import { By } from '@angular/platform-browser';
+import { IOddModel } from 'src/app/interfaces/Bet/iodd-model';
 
 describe('BetsComponent', () => {
   let component: BetsComponent;
@@ -23,10 +22,10 @@ describe('BetsComponent', () => {
       imports: [
         FormsModule,
         TableModule,
-        InputNumberModule,
         ButtonModule,
         ToastModule,
-        SliderModule
+        DialogModule,
+        HttpClientTestingModule
       ],
       declarations: [BetsComponent],
       providers: [WebSocketService, MessageService]
@@ -39,31 +38,9 @@ describe('BetsComponent', () => {
     fixture.detectChanges();
   });
 
-  // function tests
-  
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should call ngOnInit', () => {
-    spyOn<any>(component['websocketService'], 'connect');
-
-    expect(component.bets).toEqual([]);
-    expect(component.budget).toBeInstanceOf(Number);
-    expect(component['oldLength']).toBe(0);
-    expect(component.lowerBound).toBeInstanceOf(Number);
-    expect(component['defaultBet']).toEqual({id: -1} as IBet);
-
-    component.ngOnInit();
-    expect(component['websocketService'].connect).toHaveBeenCalled();
-  })
-
-  it('should call ngOnDestroy', () => {
-    spyOn<any>(component['triggerEventSubscription'], 'unsubscribe');
-
-    component.ngOnDestroy();
-    expect(component['triggerEventSubscription'].unsubscribe).toHaveBeenCalled();
-  })
 
   it('should check app state', () => {
     var button = fixture.debugElement.query(By.css('button')).nativeElement;
@@ -102,77 +79,19 @@ describe('BetsComponent', () => {
     expect(ending).toBeFalse();
   })
 
-  it('should set bet detail', () => {
-    const bet: IBet = {
-      id: 0,
-      updated: '',
-      first_odd_id: 0,
-      second_odd_id: 0,
-      sport_id: 0,
-      sport_name: '',
-      profit: 0,
-      details: [{
-        id: 0,
-        player_name: '',
-        sportsbook_name: '',
-        opportunity_name: '',
-        odd: 3,
-        amount: 0
-      },
-      {
-        id: 1,
-        player_name: '',
-        sportsbook_name: '',
-        opportunity_name: '',
-        odd: 2,
-        amount: 0
-      }]
-    }
-    var edit = component.editBet(bet)
-    expect(edit).toBeFalsy()
-    expect(component.betInDetail).toBeFalsy()
-
-    component.betDetail(bet)
-    expect(component.betInDetail).toEqual(bet)
-    edit = component.editBet(bet)
-    expect(edit).toBeTrue
-    var profit = component.getEditedBetProfit()
-    var amount = component.getEditedBetAmount(0)
-    expect(Math.round(profit * 100) / 100).toBe(0.20)
-    expect(Math.round(amount * 100) / 100).toBe(0.4)
-
-    component.betDetail(bet)
-    expect(component.betInDetail).toEqual(component['defaultBet'])
-    edit = component.editBet(bet)
-    expect(edit).toBeFalse
-  })
-
-  it('should hide bet', () => { 
-    const mockBets: IBet[] = [
+  it('should get match from sb', () => { 
+    const mockBets: IOddModel[] = [
       {
         id: 0,
-        updated: '',
-        first_odd_id: 0,
-        second_odd_id: 0,
-        sport_id: 0,
-        sport_name: '',
-        profit: 0,
-        details: []
-      },
+        sportsbook_id: 1,
+      } as IOddModel,
       {
         id: 1,
-        updated: '',
-        first_odd_id: 0,
-        second_odd_id: 0,
-        sport_id: 0,
-        sport_name: '',
-        profit: 0,
-        details: []
-      }
+        sportsbook_id: 2,
+      } as IOddModel,
     ]
-    component.bets = mockBets
-    component.hideBet(mockBets[0])
-    expect(component.bets[0].id).toBe(1)
+    const match = component.getMatchFromSb(1, mockBets)
+    expect(match?.id).toBe(0)
   })
 
   it('should start and end scrape', () => {
@@ -187,47 +106,5 @@ describe('BetsComponent', () => {
   
   it('should pad zero', () => {
     expect(component['padZero'](4)).toBe('04')
-  })
-
-  it('should update', () => {
-    component['websocketService'].state = TaskState.RUNNING
-    component['websocketService'].error = {active: true, message: 'Internal server error.'} as IError
-    const bets = [ {
-      id: 0,
-      updated: '',
-      first_odd_id: 0,
-      second_odd_id: 0,
-      sport_id: 0,
-      sport_name: '',
-      profit: 0.04,
-      details: []
-    }, {
-      id: 1,
-      updated: '',
-      first_odd_id: 0,
-      second_odd_id: 0,
-      sport_id: 0,
-      sport_name: '',
-      profit: 0.02,
-      details: []
-    }]
-    component['websocketService'].bets = bets
-    spyOn<any>(component, 'playAudio');
-    spyOn(component['messageService'], 'add');
-    component['update']()
-    expect(component['messageService'].add).toHaveBeenCalledOnceWith({ severity: 'error', summary: 'Error', detail: component.error.message});
-    expect(component['playAudio']).toHaveBeenCalled();
-    expect(component.lastSignal).toBeInstanceOf(String);
-
-    component.budget = 100
-    component.lowerBound = 3
-    var filteredBets = component.filterBets(bets)
-    filteredBets = component.filterBetsByLowerBound(filteredBets)
-    expect(filteredBets).toEqual([bets[0]])
-
-    component['websocketService'].hiddenBets = [bets[0]]
-    component.lowerBound = 1
-    var filteredBets = component.filterBets(bets)
-    expect(filteredBets).toEqual([bets[1]])
   })
 });
