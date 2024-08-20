@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -11,6 +11,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { ConfigComponent } from './config.component';
 import { ConfigService } from 'src/app/services/config.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('ConfigComponent', () => {
@@ -18,19 +19,16 @@ describe('ConfigComponent', () => {
   let fixture: ComponentFixture<ConfigComponent>;
   
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({ 
-      imports: [
-        FormsModule,
+    TestBed.configureTestingModule({
+    declarations: [ConfigComponent],
+    imports: [FormsModule,
         ButtonModule,
         MultiSelectModule,
         ToastModule,
-        HttpClientTestingModule,
         CommonModule,
-        ProgressSpinnerModule
-      ],
-      declarations: [ConfigComponent],
-      providers: [ConfigComponent, ConfigService, MessageService]
-    }).compileComponents();
+        ProgressSpinnerModule],
+    providers: [ConfigComponent, ConfigService, MessageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -9,23 +9,21 @@ import { TableModule } from 'primeng/table';
 
 import { OpportunityChildrenComponent } from './opportunity-children.component';
 import { OpportunityService } from 'src/app/services/opportunity.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('OpportunityChildrenComponent', () => {
   let component: OpportunityChildrenComponent;
   let fixture: ComponentFixture<OpportunityChildrenComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({ 
-      imports: [
-        HttpClientTestingModule,
-        ProgressSpinnerModule,
+    TestBed.configureTestingModule({
+    declarations: [OpportunityChildrenComponent],
+    imports: [ProgressSpinnerModule,
         FormsModule,
         TableModule,
-        ToastModule
-      ],
-      declarations: [OpportunityChildrenComponent],
-      providers: [OpportunityService, MessageService]
-    }).compileComponents();
+        ToastModule],
+    providers: [OpportunityService, MessageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   beforeEach(() => {

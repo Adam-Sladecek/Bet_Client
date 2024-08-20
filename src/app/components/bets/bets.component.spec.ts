@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -13,23 +13,21 @@ import { DialogModule } from 'primeng/dialog';
 import { WebSocketService } from 'src/app/services/web-socket.service';
 import { BetsComponent } from './bets.component';
 import { IOddModel } from 'src/app/interfaces/Bet/iodd-model';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('BetsComponent', () => {
   let component: BetsComponent;
   let fixture: ComponentFixture<BetsComponent>;
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({ 
-      imports: [
-        FormsModule,
+    TestBed.configureTestingModule({
+    declarations: [BetsComponent],
+    imports: [FormsModule,
         TableModule,
         ButtonModule,
         ToastModule,
-        DialogModule,
-        HttpClientTestingModule
-      ],
-      declarations: [BetsComponent],
-      providers: [WebSocketService, MessageService]
-    }).compileComponents();
+        DialogModule],
+    providers: [WebSocketService, MessageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   beforeEach(() => {

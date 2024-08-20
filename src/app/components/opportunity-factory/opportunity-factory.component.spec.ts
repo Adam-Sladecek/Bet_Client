@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DropdownModule } from 'primeng/dropdown';
@@ -11,6 +11,7 @@ import { OpportunityFactoryComponent } from './opportunity-factory.component';
 import { OpportunityService } from 'src/app/services/opportunity.service';
 import { IOpportunityFactoryResponse } from 'src/app/interfaces/Opportunity/iopportunity-factory-response';
 import { IOpportunity } from 'src/app/interfaces/Opportunity/iopportunity';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('OpportunityFactoryComponent', () => {
   let component: OpportunityFactoryComponent;
@@ -18,17 +19,14 @@ describe('OpportunityFactoryComponent', () => {
   let opportunities: IOpportunityFactoryResponse
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({ 
-      imports: [
-        HttpClientTestingModule,
-        ProgressSpinnerModule,
+    TestBed.configureTestingModule({
+    declarations: [OpportunityFactoryComponent],
+    imports: [ProgressSpinnerModule,
         DropdownModule,
         FormsModule,
-        ToastModule
-      ],
-      declarations: [OpportunityFactoryComponent],
-      providers: [OpportunityService, MessageService]
-    }).compileComponents();
+        ToastModule],
+    providers: [OpportunityService, MessageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   beforeEach(() => {
