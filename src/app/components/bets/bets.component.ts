@@ -42,7 +42,7 @@ export class BetsComponent implements OnInit{
           if (response.type == SocketResponseType.MATCHDATA) { 
             this.getLastSignal()
             let matchResponse = response.data as IMatchResponse
-            this.matches = matchResponse.matches
+            this.updateMatches(matchResponse.matches)
             this.sportsbook_ids = matchResponse.sportsbook_ids
             return
           }
@@ -127,6 +127,37 @@ export class BetsComponent implements OnInit{
       const currentMinutes = this.padZero(currentDate.getMinutes());
       const currentSeconds = this.padZero(currentDate.getSeconds());
       this.lastSignal = currentHours + ':' + currentMinutes + ':' + currentSeconds;
+    }
+
+    private updateMatches(matches: IMatch[]) { 
+      const matchIds = new Set(matches.map(match => match.match_id));
+    
+      this.matches = this.matches.filter(match => matchIds.has(match.match_id));
+      
+      const matchIndexMap = new Map<number, number>();
+      this.matches.forEach((match, index) => {
+          matchIndexMap.set(match.match_id, index);
+      });
+      
+      matches.forEach(match => {
+        const existingIndex = matchIndexMap.get(match.match_id);
+        if(existingIndex == undefined) {
+          this.matches.push(match)
+          return
+        }
+        const existingMatch = this.matches[existingIndex];
+        existingMatch.time = match.time;
+        let opportunities = match.opportunities.filter(opp => opp.odds.length > 0)
+        if (!opportunities.length) return
+        opportunities.forEach(opp => { 
+          const oppIndex = existingMatch.opportunities.findIndex(p => p.name == opp.name)
+          if (oppIndex < 0) { 
+            existingMatch.opportunities.push(opp)
+            return
+          }
+          existingMatch.opportunities[oppIndex] = opp
+        })
+      });
     }
 
     private padZero(num: number): string {
