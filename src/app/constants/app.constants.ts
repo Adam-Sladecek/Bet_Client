@@ -4,5 +4,9 @@ export const API_CONSTANTS = {
 
 export const SOCKET_CONSTANTS = {
     URL: 'ws://localhost:8000/ws/scrape/',
+    START: 'start',
+    END: 'end',
+    IMPORT: 'import',
+    SENDALL: 'send_all'
 };
   

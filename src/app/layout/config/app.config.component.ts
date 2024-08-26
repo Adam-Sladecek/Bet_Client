@@ -10,9 +10,11 @@ export class AppConfigComponent {
 
     @Input() minimal: boolean = false;
 
-    scales: number[] = [12, 13, 14, 15, 16];
+    scales: number[] = [10, 11, 12, 13, 14, 15, 16];
 
-    constructor(public layoutService: LayoutService, public menuService: MenuService) { }
+    constructor(public layoutService: LayoutService, public menuService: MenuService) { 
+        this.applyScale()
+    }
 
     get visible(): boolean {
         return this.layoutService.state.configSidebarVisible;

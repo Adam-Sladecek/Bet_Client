@@ -1,8 +1,12 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
+
+import { SOCKET_CONSTANTS } from 'src/app/constants/app.constants';
 import { IOddModel, IOddResponse } from 'src/app/interfaces/Bet/iodd-model';
 import { EventService } from 'src/app/services/event.service';
+import { WebSocketService } from 'src/app/services/web-socket.service';
 
 @Component({
   selector: 'app-opportunity-dialog',
@@ -18,7 +22,9 @@ export class OpportunityDialogComponent implements OnInit {
   odds: IOddModel[] = [] 
   selectedOdds: IOddModel[] = [] 
 
-  constructor( private eventService: EventService, private messageService: MessageService ) {}
+  constructor( private eventService: EventService, 
+    private messageService: MessageService,
+    private websocketService: WebSocketService ) {}
 
   ngOnInit(): void {
     this.eventService.getEventOdds(this.event_id).subscribe({
@@ -38,6 +44,7 @@ export class OpportunityDialogComponent implements OnInit {
     var ids = this.selectedOdds.map(odd => odd.id)
     this.eventService.setEventOdds(this.event_id, ids).subscribe({
       next: (response: any) => {
+        this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.SENDALL });
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Opporunities updated." })
         this.updating = false
       },

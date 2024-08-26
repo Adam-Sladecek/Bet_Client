@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+
+import { MessageService } from 'primeng/api';
+
 import { WebSocketService } from 'src/app/services/web-socket.service';
 import { TaskState } from 'src/app/enums/task-state';
-import { MessageService } from 'primeng/api';
 import { IBetResponse } from 'src/app/interfaces/Bet/ibet-response';
 import { SocketResponseType } from 'src/app/enums/socket-response-type';
-import { IMatch, IMatchResponse } from 'src/app/interfaces/Bet/imatch-response';
+import { IMatchOpportunityResponse, IMatchOpportunity } from 'src/app/interfaces/Bet/imatch-response';
 import { EventService } from 'src/app/services/event.service';
 import { IOddModel } from 'src/app/interfaces/Bet/iodd-model';
 import { Movement } from 'src/app/enums/movement';
+import { SOCKET_CONSTANTS } from 'src/app/constants/app.constants';
 
 @Component({
   selector: 'app-bets',
@@ -23,16 +26,16 @@ export class BetsComponent implements OnInit{
     error!: boolean
     showEventDialog: boolean
     showOddDialog: boolean
-    matches: IMatch[] = []
+    opportunities: IMatchOpportunity[] = []
     sportsbook_ids: number[] = []
-    selectedMatch: IMatch
+    selectedOpportunity: IMatchOpportunity
     
     constructor( private websocketService: WebSocketService,
       private messageService: MessageService,
       private eventService: EventService ) {
       this.showEventDialog = false
       this.showOddDialog = false
-      this.selectedMatch = {name: ""} as IMatch
+      this.selectedOpportunity = {} as IMatchOpportunity
       this.triggerEventSubscription = this.websocketService.triggerEventObservable.subscribe({
         next: (response: IBetResponse) => {
           if (response.type == SocketResponseType.STATERESPONSE){ 
@@ -41,8 +44,8 @@ export class BetsComponent implements OnInit{
           }
           if (response.type == SocketResponseType.MATCHDATA) { 
             this.getLastSignal()
-            let matchResponse = response.data as IMatchResponse
-            this.updateMatches(matchResponse.matches)
+            let matchResponse = response.data as IMatchOpportunityResponse
+            this.updateOpportunities(matchResponse)
             this.sportsbook_ids = matchResponse.sportsbook_ids
             return
           }
@@ -79,20 +82,20 @@ export class BetsComponent implements OnInit{
     }
     
     startScrape(): void {
-      this.websocketService.sendMessage({ action: 'start' });
+      this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.START });
     }
     
     endScrape(): void {
       this.taskState = TaskState.ENDING;
-      this.websocketService.sendMessage({ action: 'end' });
+      this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.END });
     }
 
     open_configuration() { 
       this.showEventDialog = true
     }
 
-    open_opportunity_dialog (match: IMatch) { 
-      this.selectedMatch = match
+    open_opportunity_dialog (opportunity: IMatchOpportunity) { 
+      this.selectedOpportunity = opportunity
       this.showOddDialog = true
     }
 
@@ -129,34 +132,29 @@ export class BetsComponent implements OnInit{
       this.lastSignal = currentHours + ':' + currentMinutes + ':' + currentSeconds;
     }
 
-    private updateMatches(matches: IMatch[]) { 
-      const matchIds = new Set(matches.map(match => match.match_id));
-    
-      this.matches = this.matches.filter(match => matchIds.has(match.match_id));
-      
-      const matchIndexMap = new Map<number, number>();
-      this.matches.forEach((match, index) => {
-          matchIndexMap.set(match.match_id, index);
+    private updateOpportunities(response: IMatchOpportunityResponse) { 
+      const opportunities = response.opportunities
+      if (response.update_all) { 
+        const oppNames = new Set(opportunities.map(opp => opp.name))
+        this.opportunities = this.opportunities.filter(opp => oppNames.has(opp.name))
+      }
+      else { 
+        const match_ids = new Set(response.match_ids)
+        this.opportunities = this.opportunities.filter(opp => match_ids.has(opp.match_id))
+      }
+
+      const oppIndexMap = new Map<string, number>();
+      this.opportunities.forEach((opp, index) => {
+        oppIndexMap.set(opp.name, index);
       });
       
-      matches.forEach(match => {
-        const existingIndex = matchIndexMap.get(match.match_id);
+      opportunities.forEach(opp => {
+        const existingIndex = oppIndexMap.get(opp.name);
         if(existingIndex == undefined) {
-          this.matches.push(match)
+          this.opportunities.push(opp)
           return
         }
-        const existingMatch = this.matches[existingIndex];
-        existingMatch.time = match.time;
-        let opportunities = match.opportunities.filter(opp => opp.odds.length > 0)
-        if (!opportunities.length) return
-        opportunities.forEach(opp => { 
-          const oppIndex = existingMatch.opportunities.findIndex(p => p.name == opp.name)
-          if (oppIndex < 0) { 
-            existingMatch.opportunities.push(opp)
-            return
-          }
-          existingMatch.opportunities[oppIndex] = opp
-        })
+        this.opportunities[existingIndex] = opp
       });
     }
 

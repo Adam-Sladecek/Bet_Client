@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
+
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { Subscription } from 'rxjs';
+
+import { SOCKET_CONSTANTS } from 'src/app/constants/app.constants';
 import { TaskState } from 'src/app/enums/task-state';
 import { IEventModel } from 'src/app/interfaces/Event/ievent-model';
 import { IEventResponse } from 'src/app/interfaces/Event/ievent-response';
@@ -81,7 +84,7 @@ export class EventDialogComponent implements OnInit {
   }
 
   import() { 
-    this.websocketService.sendMessage({ action: 'import' });
+    this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.IMPORT });
   }
 
   private get_events(from_import: boolean = false) { 

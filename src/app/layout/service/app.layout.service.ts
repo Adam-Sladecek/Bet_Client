@@ -30,7 +30,7 @@ export class LayoutService {
         menuMode: 'overlay',
         colorScheme: 'dark',
         theme: 'vela-blue',
-        scale: 13,
+        scale: 11,
     };
 
     state: LayoutState = {
