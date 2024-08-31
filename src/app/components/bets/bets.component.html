@@ -14,29 +14,47 @@
         <span><strong>Last signal:</strong> {{lastSignal}}</span>
     </div>
 </div>
-
-<div *ngFor="let match of matches">
+<div class="card" style="height: 80vh;">
     <p-table 
-    [value]="match.opportunities" 
-    [tableStyle]="{ 'min-width': '50rem' }"
-    [scrollable]="true" 
-    scrollHeight="flex">
+        [value]="opportunities" 
+        sortField="match_id" 
+        sortMode="single" 
+        [scrollable]="true" 
+        scrollHeight="flex"
+        rowGroupMode="subheader" 
+        groupRowsBy="match_id" 
+        [tableStyle]="{'min-width': '60rem'}">
         <ng-template pTemplate="header">
             <tr>
-                <th class="flex">
-                    <span><p-button (click)="open_opportunity_dialog(match)" icon="pi pi-plus" [rounded]="true" severity="success" ></p-button></span>
-                    <span class="ml-3">{{match.name}}</span>
-                    <span class="ml-2">|</span>
-                    <span class="ml-2">{{match.time}}</span>
-                </th>
+                <th>Action</th>
+                <th>Name</th>
+                <th>Time</th>
+                <th>Sport</th>
                 <th *ngFor="let id of sportsbook_ids">
                     <img src="{{getSbImageRoute(id)}}" alt="{{id}}" width="50px" height="20px">
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-opportunity>
+        <ng-template pTemplate="groupheader" let-opportunity>
+            <tr pRowGroupHeader>
+                <td>
+                    <p-button (click)="open_opportunity_dialog(opportunity)" icon="pi pi-plus" [rounded]="true" severity="success" ></p-button>
+                </td>
+                <td>
+                    {{opportunity.match_name}} 
+                </td>
+                <td>
+                    {{opportunity.time}} 
+                </td>
+                <td>
+                    <img src="{{getSportImageRoute(opportunity.sport_id)}}" alt="{{opportunity.sport_id}}" width="50px" height="20px">
+                </td>
+                <td *ngFor="let id of sportsbook_ids"></td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-opportunity let-rowIndex="rowIndex"> 
             <tr>
-                <td>{{ opportunity.name }}</td>
+                <td colspan="4">{{ opportunity.name }}</td>
                 <td *ngFor="let id of sportsbook_ids">
                     <ng-container *ngIf="getMatchFromSb(id, opportunity.odds)?.locked; else showOdds">
                         <i class="pi pi-lock"></i>
@@ -50,8 +68,7 @@
             </tr>
         </ng-template>
     </p-table>
-    
-</div>
+</div>   
 <div *ngIf="showEventDialog">
     <p-dialog 
         header="Events" 
@@ -64,7 +81,7 @@
 </div>
 <div *ngIf="showOddDialog">
     <p-dialog 
-        [header]="selectedOpportunity.matchName" 
+        [header]="selectedOpportunity.match_name" 
         [modal]="true" 
         [(visible)]="showOddDialog" 
         [style]="{ width: '70%'}" 

@@ -134,27 +134,35 @@ export class BetsComponent implements OnInit{
 
     private updateOpportunities(response: IMatchOpportunityResponse) { 
       const opportunities = response.opportunities
+      
       if (response.update_all) { 
-        const oppNames = new Set(opportunities.map(opp => opp.name))
-        this.opportunities = this.opportunities.filter(opp => oppNames.has(opp.name))
+        const oppIds = new Set(opportunities.map(opp => opp.odd_id))
+        this.opportunities = this.opportunities.filter(opp => oppIds.has(opp.odd_id))
       }
       else { 
         const match_ids = new Set(response.match_ids)
         this.opportunities = this.opportunities.filter(opp => match_ids.has(opp.match_id))
       }
 
-      const oppIndexMap = new Map<string, number>();
+      const oppIndexMap = new Map<number, number>();
       this.opportunities.forEach((opp, index) => {
-        oppIndexMap.set(opp.name, index);
+        oppIndexMap.set(opp.odd_id, index);
       });
       
       opportunities.forEach(opp => {
-        const existingIndex = oppIndexMap.get(opp.name);
+        const existingIndex = oppIndexMap.get(opp.odd_id);
         if(existingIndex == undefined) {
           this.opportunities.push(opp)
           return
         }
         this.opportunities[existingIndex] = opp
+      });
+
+      response.match_ids.forEach(match_id => {
+        const count = this.opportunities.filter(opp => opp.match_id == match_id).length
+        if (count > 1) { 
+          this.opportunities = this.opportunities.filter(opp => opp.match_id != match_id || opp.odd_id != match_id )
+        }
       });
     }
 
