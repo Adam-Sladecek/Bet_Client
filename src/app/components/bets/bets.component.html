@@ -56,14 +56,44 @@
             <tr>
                 <td colspan="4">{{ opportunity.name }}</td>
                 <td *ngFor="let id of sportsbook_ids">
-                    <ng-container *ngIf="getMatchFromSb(id, opportunity.odds)?.locked; else showOdds">
+                    <ng-container *ngIf="getOddModelFromSb(id, opportunity.odds)?.locked; else showOdds">
                         <i class="pi pi-lock"></i>
                     </ng-container>
-                    <ng-template #showOdds>
+                    <ng-template #showOdds class="flex">
                         <div [ngClass]="getOddClass(id, opportunity.odds)">
-                            {{ getMatchFromSb(id, opportunity.odds)?.odd }}
+                            {{ getOddModelFromSb(id, opportunity.odds)?.odd }}
+                        </div>
+                        <div *ngIf="getOddModelFromSb(id, opportunity.odds)?.kelly != undefined" class="stake">
+                            {{calculateStake(id, getOddModelFromSb(id, opportunity.odds)).toFixed(2)}}
                         </div>
                     </ng-template>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td *ngFor="let id of sportsbook_ids">
+                    <label class="mb-2 block font-bold" [for]="'horizontal_' + id.toString()">
+                        {{getSbName(id)}}
+                    </label>
+                    <p-inputNumber 
+                    [(ngModel)]="budgets[id]" 
+                    [showButtons]="true" 
+                    buttonLayout="horizontal" 
+                    [inputId]="'horizontal_' + id.toString()" 
+                    spinnerMode="horizontal" 
+                    [step]="10"
+                    [min]="0" 
+                    decrementButtonClass="p-button-danger"
+                    incrementButtonClass="p-button-success"
+                    incrementButtonIcon="pi pi-plus" 
+                    decrementButtonIcon="pi pi-minus" 
+                    mode="currency" 
+                    currency="EUR" />
                 </td>
             </tr>
         </ng-template>

@@ -29,6 +29,8 @@ export class BetsComponent implements OnInit{
     opportunities: IMatchOpportunity[] = []
     sportsbook_ids: number[] = []
     selectedOpportunity: IMatchOpportunity
+
+    budgets: {[key: number]: number} = {}
     
     constructor( private websocketService: WebSocketService,
       private messageService: MessageService,
@@ -46,6 +48,11 @@ export class BetsComponent implements OnInit{
             this.getLastSignal()
             let matchResponse = response.data as IMatchOpportunityResponse
             this.updateOpportunities(matchResponse)
+            matchResponse.sportsbook_ids.forEach(id => { 
+              if (this.budgets[id] == undefined) { 
+                this.budgets[id] = 100
+              }
+            })
             this.sportsbook_ids = matchResponse.sportsbook_ids
             return
           }
@@ -102,12 +109,16 @@ export class BetsComponent implements OnInit{
     getSbImageRoute(sbId: number): string {
       return this.eventService.getSbImageRoute(sbId);
     }
+
+    getSbName(sbId: number): string {
+      return this.eventService.getSbName(sbId);
+    }
   
     getSportImageRoute(sportId: number): string {
       return this.eventService.getSportImageRoute(sportId);
     }
 
-    getMatchFromSb(sportsbook_id: number, odds: IOddModel[]): IOddModel | undefined {
+    getOddModelFromSb(sportsbook_id: number, odds: IOddModel[]): IOddModel | undefined {
       if (odds.length == 0) return undefined
       var sbOdd = odds.find(odd => odd.sportsbook_id == sportsbook_id)
       if (sbOdd == null) return undefined
@@ -115,13 +126,19 @@ export class BetsComponent implements OnInit{
     }
     
     getOddClass(sportsbook_id: number, odds: IOddModel[]): { [key: string]: boolean } {
-      if (odds.length == 0) return {}
-      var sbOdd = odds.find(odd => odd.sportsbook_id == sportsbook_id)
-      if (sbOdd == null) return {}
+      const sbOdd = this.getOddModelFromSb(sportsbook_id, odds)
+      if (!sbOdd) return {}
       return {
         'movement-up': sbOdd.movement == Movement.UP as number,
         'movement-down': sbOdd.movement == Movement.DOWN as number
       };
+    }
+
+    calculateStake(sbId: number, oddModel?: IOddModel): number { 
+      if(!oddModel) return 0
+      // Kelly
+      const percentage = oddModel.kelly? oddModel.kelly: 0
+      return percentage*this.budgets[sbId]
     }
 
     private getLastSignal() {

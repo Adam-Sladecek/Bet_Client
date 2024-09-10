@@ -29,6 +29,15 @@ export class EventService {
     8 : "assets/layout/images/sports/box.png"
   }
 
+  private sbNames: {[key: number]: string} = {
+    1 : "Nike",
+    2 : "Tipsport",
+    3 : "Pinnacle",
+    4 : "Fortuna",
+    5 : "Tipos",
+    6 : "Doxxbet"
+  }
+
   constructor(private http: HttpClient) { }
 
   getDefaultEvents(): Observable<IEventResponse> {
@@ -49,6 +58,10 @@ export class EventService {
 
   getSbImageRoute(sbId: number): string {
     return this.sbRoutes[sbId] ?? ''
+  }
+
+  getSbName(sbId: number): string {
+    return this.sbNames[sbId] ?? ''
   }
 
   getSportImageRoute(sportId: number): string {

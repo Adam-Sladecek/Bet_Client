@@ -20,6 +20,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { OpportunityChildrenComponent } from './components/opportunity-children/opportunity-children.component';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 import { EventDialogComponent } from './components/bets/event-dialog/event-dialog.component';
 import { OpportunityDialogComponent } from './components/bets/opportunity-dialog/opportunity-dialog.component';
@@ -40,6 +41,7 @@ import { OpportunityMarketsComponent } from './components/opportunity-markets/op
     DropdownModule,
     DialogModule,
     InputTextModule,
+    InputNumberModule
   ],
   declarations: [
     AppComponent,

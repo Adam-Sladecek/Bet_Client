@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api';
 import { TaskState } from 'src/app/enums/task-state';
 import { By } from '@angular/platform-browser';
 import { DialogModule } from 'primeng/dialog';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 import { WebSocketService } from 'src/app/services/web-socket.service';
 import { BetsComponent } from './bets.component';
@@ -25,7 +26,8 @@ describe('BetsComponent', () => {
         TableModule,
         ButtonModule,
         ToastModule,
-        DialogModule],
+        DialogModule,
+        InputNumberModule],
     providers: [WebSocketService, MessageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 }).compileComponents();
   }));
@@ -82,14 +84,17 @@ describe('BetsComponent', () => {
       {
         id: 0,
         sportsbook_id: 1,
+        kelly: 0.3
       } as IOddModel,
       {
         id: 1,
         sportsbook_id: 2,
       } as IOddModel,
     ]
-    const match = component.getMatchFromSb(1, mockBets)
+    component.budgets = {1: 100}
+    const match = component.getOddModelFromSb(1, mockBets)
     expect(match?.id).toBe(0)
+    expect(component.calculateStake(1, match)).toBe(30)
   })
 
   it('should start and end scrape', () => {
