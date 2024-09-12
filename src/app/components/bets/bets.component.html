@@ -1,5 +1,5 @@
 <div class="row flex">
-    <div class="col">
+    <div class="col-2">
         <p-button (click)="endScrape()" [disabled]="disable_buttons()" *ngIf="appRunning()" label="End Scrape" severity="danger" styleClass="p-button-danger"></p-button>
         <p-button (click)="startScrape()" [disabled]="disable_buttons()" *ngIf="!appRunning()" label="Start Scrape" severity="success" styleClass="p-button-success"></p-button>
         <span>&nbsp;</span>
@@ -7,10 +7,60 @@
         <span *ngIf="endingScrape()">Ending scrape...</span>
         <span *ngIf="error">Error, try refreshing page.</span>
     </div>
-    <div class="col">
+    <div class="col-1">
         <p-button (click)="open_configuration()" label="Events"></p-button>
     </div>
-    <div class="col">
+    <div class="col-5">
+        <div class="flex">
+            <label class="mr-2 block font-bold" for="parentminmaxfraction">
+                Sharp odds
+            </label>
+            <p-inputNumber 
+            [(ngModel)]="parentOdds" 
+            inputId="parentminmaxfraction" 
+            mode="decimal" 
+            [minFractionDigits]="2" 
+            [maxFractionDigits]="3" /> 
+            <label class="mr-2 ml-2 block font-bold" for="minmaxfraction">
+                Odds
+            </label>
+            <p-inputNumber 
+            [(ngModel)]="childOdds" 
+            inputId="minmaxfraction" 
+            mode="decimal" 
+            [minFractionDigits]="2" 
+            [maxFractionDigits]="5" /> 
+            <label class="mr-2 ml-2 block font-bold" for="budget">
+                Budget
+            </label>
+            <p-inputNumber 
+            inputId="budget" 
+            [(ngModel)]="budget" /> 
+        </div>
+        <div>
+            Bet: {{calculateSelectedStake().toFixed(2)}}
+        </div>
+    </div>
+    <div class="col-2">
+        <label class="mb-2 block font-bold" for="kelly">
+            Kelly multiplier
+        </label>
+        <p-inputNumber
+            [(ngModel)]="kellyMultiplier"
+            [showButtons]="true"
+            buttonLayout="horizontal"
+            inputId="horizontal"
+            spinnerMode="horizontal"
+            [min]="0" 
+            [max]="1"
+            [step]="0.1"
+            decrementButtonClass="p-button-danger"
+            incrementButtonClass="p-button-success"
+            incrementButtonIcon="pi pi-plus"
+            decrementButtonIcon="pi pi-minus"
+            mode="decimal" />
+    </div>
+    <div class="col-2">
         <span><strong>Last signal:</strong> {{lastSignal}}</span>
     </div>
 </div>
@@ -39,6 +89,8 @@
             <tr pRowGroupHeader>
                 <td>
                     <p-button (click)="open_opportunity_dialog(opportunity)" icon="pi pi-plus" [rounded]="true" severity="success" ></p-button>
+                    <span class="ml-2"></span>
+                    <p-button (click)="setUsedEvent(opportunity.match_id)" label="Set as used" ></p-button>
                 </td>
                 <td>
                     {{opportunity.match_name}} 
@@ -72,10 +124,6 @@
         </ng-template>
         <ng-template pTemplate="summary">
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
                 <td *ngFor="let id of sportsbook_ids">
                     <label class="mb-2 block font-bold" [for]="'horizontal_' + id.toString()">
                         {{getSbName(id)}}
@@ -94,6 +142,7 @@
                     decrementButtonIcon="pi pi-minus" 
                     mode="currency" 
                     currency="EUR" />
+                    
                 </td>
             </tr>
         </ng-template>

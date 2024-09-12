@@ -31,6 +31,10 @@ export class BetsComponent implements OnInit{
     selectedOpportunity: IMatchOpportunity
 
     budgets: {[key: number]: number} = {}
+    kellyMultiplier: number = 1
+    parentOdds: number = 0
+    childOdds: number = 0
+    budget: number = 100
     
     constructor( private websocketService: WebSocketService,
       private messageService: MessageService,
@@ -137,8 +141,26 @@ export class BetsComponent implements OnInit{
     calculateStake(sbId: number, oddModel?: IOddModel): number { 
       if(!oddModel) return 0
       // Kelly
-      const percentage = oddModel.kelly? oddModel.kelly: 0
-      return percentage*this.budgets[sbId]
+      const percentage = oddModel.kelly ?? 0
+      return this.kellyMultiplier*percentage*this.budgets[sbId]
+    }
+
+    calculateSelectedStake(): number { 
+      if(this.parentOdds == 0) return 0
+      const impl_prob = 1/this.parentOdds
+      const kelly = impl_prob - (1 - impl_prob)/(this.childOdds-1)
+      return this.kellyMultiplier*kelly*this.budget
+    }
+
+    setUsedEvent(event_id: number) { 
+      this.eventService.setUsedEvent(event_id).subscribe({
+        next: (response: any) => {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: "Event set as used." })
+        },
+        error: (err) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message ?? err.message})
+        }
+      });
     }
 
     private getLastSignal() {
