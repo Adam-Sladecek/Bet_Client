@@ -11,7 +11,6 @@ export interface IOddModel {
     sportsbook_id: number
     description: string
     market_id: string
-    kelly ?: number
 }
 
 export interface IOddResponse { 

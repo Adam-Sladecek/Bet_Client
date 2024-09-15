@@ -20,6 +20,7 @@
         <ng-template pTemplate="header">
             <tr>
                 <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+                <th>Action</th>
                 <th>Home</th>
                 <th>Away</th>
                 <th>Sport</th>
@@ -32,6 +33,9 @@
             <tr>
                 <td>
                     <p-tableCheckbox [value]="event" />
+                </td>
+                <td>
+                    <p-button (click)="open_opportunity_dialog(event)" icon="pi pi-plus" [rounded]="true" severity="success" ></p-button>
                 </td>
                 <td>{{ event.home }}</td>
                 <td>{{ event.away }}</td>
@@ -51,3 +55,13 @@
     </div>
 </div>
 <p-progressSpinner *ngIf="loading" ariaLabel="loading"></p-progressSpinner>
+<div *ngIf="showOpportunityDialog">
+    <p-dialog 
+        [header]="selectedEvent.home + 'vs.' + selectedEvent.away" 
+        [modal]="true" 
+        [(visible)]="showOpportunityDialog" 
+        [style]="{ width: '70%'}" 
+        [maximizable]="true">
+        <app-opportunity-dialog [event_id]="selectedEvent.id"></app-opportunity-dialog>
+    </p-dialog>
+</div>

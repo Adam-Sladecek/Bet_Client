@@ -1,18 +1,26 @@
-import { IOddModel } from "./iodd-model"
-
 export interface IMatchOpportunityResponse {
     opportunities: IMatchOpportunity[]
     update_all: boolean
     match_ids: number[]
-    sportsbook_ids: number[]
+    odd_ids: number[]
 }
 
 export interface IMatchOpportunity {
-    name: string
     match_name: string
+    opp_name: string
     match_id: number
-    odd_id: number
     time: string
-    sport_id: string
-    odds: IOddModel[]
+    parent: IMatchOdd
+    child: IMatchOdd
+    sport_id: number
+    sportsbook_id: number
+    ev: number
+    stake: number
+}
+
+export interface IMatchOdd {
+    odd_pk: number
+    odds: number
+    locked: boolean
+    movement: number
 }

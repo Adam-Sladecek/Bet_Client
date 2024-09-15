@@ -25,6 +25,8 @@ export class EventDialogComponent implements OnInit {
   importing: boolean
   events: IEventModel[]
   selectedEvents: IEventModel[]
+  showOpportunityDialog: boolean = false
+  selectedEvent !: IEventModel
 
   constructor( private websocketService: WebSocketService, 
     private messageService: MessageService,
@@ -59,6 +61,7 @@ export class EventDialogComponent implements OnInit {
     var ids = this.selectedEvents.map(event => event.id)
     this.eventService.setDefaultEvents(ids).subscribe({
       next: (response: any) => {
+        this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.SENDALL });
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Events updated." })
         this.updating = false
       },
@@ -85,6 +88,11 @@ export class EventDialogComponent implements OnInit {
 
   import() { 
     this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.IMPORT });
+  }
+
+  open_opportunity_dialog (event: IEventModel) { 
+    this.selectedEvent = event
+    this.showOpportunityDialog = true
   }
 
   private get_events(from_import: boolean = false) { 

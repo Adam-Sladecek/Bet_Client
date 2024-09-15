@@ -7,9 +7,8 @@ import { WebSocketService } from 'src/app/services/web-socket.service';
 import { TaskState } from 'src/app/enums/task-state';
 import { IBetResponse } from 'src/app/interfaces/Bet/ibet-response';
 import { SocketResponseType } from 'src/app/enums/socket-response-type';
-import { IMatchOpportunityResponse, IMatchOpportunity } from 'src/app/interfaces/Bet/imatch-response';
+import { IMatchOpportunityResponse, IMatchOpportunity, IMatchOdd } from 'src/app/interfaces/Bet/imatch-response';
 import { EventService } from 'src/app/services/event.service';
-import { IOddModel } from 'src/app/interfaces/Bet/iodd-model';
 import { Movement } from 'src/app/enums/movement';
 import { SOCKET_CONSTANTS } from 'src/app/constants/app.constants';
 
@@ -25,12 +24,13 @@ export class BetsComponent implements OnInit{
     lastSignal?: string
     error!: boolean
     showEventDialog: boolean
-    showOddDialog: boolean
     opportunities: IMatchOpportunity[] = []
     sportsbook_ids: number[] = []
+    selectedSportsbookIds: number[] = []; 
+    sport_ids: number[] = []
+    selectedSportIds: number[] = []; 
     selectedOpportunity: IMatchOpportunity
 
-    budgets: {[key: number]: number} = {}
     kellyMultiplier: number = 1
     parentOdds: number = 0
     childOdds: number = 0
@@ -40,7 +40,6 @@ export class BetsComponent implements OnInit{
       private messageService: MessageService,
       private eventService: EventService ) {
       this.showEventDialog = false
-      this.showOddDialog = false
       this.selectedOpportunity = {} as IMatchOpportunity
       this.triggerEventSubscription = this.websocketService.triggerEventObservable.subscribe({
         next: (response: IBetResponse) => {
@@ -52,12 +51,6 @@ export class BetsComponent implements OnInit{
             this.getLastSignal()
             let matchResponse = response.data as IMatchOpportunityResponse
             this.updateOpportunities(matchResponse)
-            matchResponse.sportsbook_ids.forEach(id => { 
-              if (this.budgets[id] == undefined) { 
-                this.budgets[id] = 100
-              }
-            })
-            this.sportsbook_ids = matchResponse.sportsbook_ids
             return
           }
           if (response.type == SocketResponseType.ERROR) { 
@@ -105,11 +98,6 @@ export class BetsComponent implements OnInit{
       this.showEventDialog = true
     }
 
-    open_opportunity_dialog (opportunity: IMatchOpportunity) { 
-      this.selectedOpportunity = opportunity
-      this.showOddDialog = true
-    }
-
     getSbImageRoute(sbId: number): string {
       return this.eventService.getSbImageRoute(sbId);
     }
@@ -122,27 +110,15 @@ export class BetsComponent implements OnInit{
       return this.eventService.getSportImageRoute(sportId);
     }
 
-    getOddModelFromSb(sportsbook_id: number, odds: IOddModel[]): IOddModel | undefined {
-      if (odds.length == 0) return undefined
-      var sbOdd = odds.find(odd => odd.sportsbook_id == sportsbook_id)
-      if (sbOdd == null) return undefined
-      return sbOdd
-    }
-    
-    getOddClass(sportsbook_id: number, odds: IOddModel[]): { [key: string]: boolean } {
-      const sbOdd = this.getOddModelFromSb(sportsbook_id, odds)
-      if (!sbOdd) return {}
+    getOddClass(odd: IMatchOdd): { [key: string]: boolean } {
       return {
-        'movement-up': sbOdd.movement == Movement.UP as number,
-        'movement-down': sbOdd.movement == Movement.DOWN as number
+        'movement-up': odd.movement == Movement.UP as number,
+        'movement-down': odd.movement == Movement.DOWN as number
       };
     }
 
-    calculateStake(sbId: number, oddModel?: IOddModel): number { 
-      if(!oddModel) return 0
-      // Kelly
-      const percentage = oddModel.kelly ?? 0
-      return this.kellyMultiplier*percentage*this.budgets[sbId]
+    calculateStake(opportunity: IMatchOpportunity): number { 
+      return this.kellyMultiplier*opportunity.stake*this.budget
     }
 
     calculateSelectedStake(): number { 
@@ -175,33 +151,36 @@ export class BetsComponent implements OnInit{
       const opportunities = response.opportunities
       
       if (response.update_all) { 
-        const oppIds = new Set(opportunities.map(opp => opp.odd_id))
-        this.opportunities = this.opportunities.filter(opp => oppIds.has(opp.odd_id))
+        this.opportunities = opportunities
       }
       else { 
-        const match_ids = new Set(response.match_ids)
-        this.opportunities = this.opportunities.filter(opp => match_ids.has(opp.match_id))
+        const odd_ids = new Set(response.odd_ids)
+        this.opportunities = this.opportunities.filter(opp => odd_ids.has(opp.child.odd_pk))
+        // for (let i = this.opportunities.length - 1; i >= 0; i--) {
+        //   if (!odd_ids.has(this.opportunities[i].child.odd_pk)) {
+        //     this.opportunities.splice(i, 1);
+        //   }
+        // }
       }
 
       const oppIndexMap = new Map<number, number>();
       this.opportunities.forEach((opp, index) => {
-        oppIndexMap.set(opp.odd_id, index);
+        oppIndexMap.set(opp.child.odd_pk, index);
       });
       
       opportunities.forEach(opp => {
-        const existingIndex = oppIndexMap.get(opp.odd_id);
+        if (!this.sportsbook_ids.includes(opp.sportsbook_id)) {
+          this.sportsbook_ids.push(opp.sportsbook_id)
+        }
+        if (!this.sport_ids.includes(opp.sport_id)) {
+          this.sport_ids.push(opp.sport_id)
+        }
+        const existingIndex = oppIndexMap.get(opp.child.odd_pk);
         if(existingIndex == undefined) {
           this.opportunities.push(opp)
           return
         }
         this.opportunities[existingIndex] = opp
-      });
-
-      response.match_ids.forEach(match_id => {
-        const count = this.opportunities.filter(opp => opp.match_id == match_id).length
-        if (count > 1) { 
-          this.opportunities = this.opportunities.filter(opp => opp.match_id != match_id || opp.odd_id != match_id )
-        }
       });
     }
 

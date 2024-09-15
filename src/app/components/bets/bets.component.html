@@ -67,82 +67,121 @@
 <div class="card" style="height: 80vh;">
     <p-table 
         [value]="opportunities" 
-        sortField="match_id" 
-        sortMode="single" 
+        sortField="ev" 
+        [sortOrder]="-1"
         [scrollable]="true" 
         scrollHeight="flex"
-        rowGroupMode="subheader" 
-        groupRowsBy="match_id" 
+        styleClass="p-datatable-striped" 
         [tableStyle]="{'min-width': '60rem'}">
         <ng-template pTemplate="header">
             <tr>
-                <th>Action</th>
-                <th>Name</th>
-                <th>Time</th>
-                <th>Sport</th>
-                <th *ngFor="let id of sportsbook_ids">
-                    <img src="{{getSbImageRoute(id)}}" alt="{{id}}" width="50px" height="20px">
+                <th style="width:10%">Action</th>
+                <th style="width:10%">Time</th> 
+                <th style="width:10%">Event</th>
+                <th style="width:10%">Market</th>
+                <th style="width:10%">Sharp odds</th>
+                <th style="width:10%">Odds</th>
+                <th style="width:10%">Sportsbook</th>
+                <th style="width:10%">Sport</th>
+                <th style="width:10%" pSortableColumn="ev">
+                    EV <p-sortIcon field="ev" />
                 </th>
+                <th style="width:10%">Stake</th>
             </tr>
-        </ng-template>
-        <ng-template pTemplate="groupheader" let-opportunity>
-            <tr pRowGroupHeader>
-                <td>
-                    <p-button (click)="open_opportunity_dialog(opportunity)" icon="pi pi-plus" [rounded]="true" severity="success" ></p-button>
-                    <span class="ml-2"></span>
-                    <p-button (click)="setUsedEvent(opportunity.match_id)" label="Set as used" ></p-button>
-                </td>
-                <td>
-                    {{opportunity.match_name}} 
-                </td>
-                <td>
-                    {{opportunity.time}} 
-                </td>
-                <td>
-                    <img src="{{getSportImageRoute(opportunity.sport_id)}}" alt="{{opportunity.sport_id}}" width="50px" height="20px">
-                </td>
-                <td *ngFor="let id of sportsbook_ids"></td>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>
+                    <p-columnFilter 
+                    type="text"
+                    field="match_name" 
+                    placeholder="Event" 
+                    ariaLabel="Filter Event" />
+                </th>
+                <th>
+                    <p-columnFilter 
+                    type="text"
+                    field="opp_name" 
+                    placeholder="Market" 
+                    ariaLabel="Filter Market" />
+                </th>
+                <th></th>
+                <th></th>
+                <th>
+                    <p-columnFilter field="sportsbook_id" matchMode="in" [showMenu]="false">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-multiSelect 
+                                [(ngModel)]="selectedSportsbookIds" 
+                                [options]="sportsbook_ids" 
+                                placeholder="Sportsbook" 
+                                (onChange)="filter($event.value)">
+                                    <ng-template let-id pTemplate="item">
+                                        <div class="inline-block vertical-align-middle">
+                                            <img src="{{getSbImageRoute(id)}}" alt="{{getSbName(id)}}" width="50px" height="20px">
+                                        </div>
+                                    </ng-template>
+                            </p-multiSelect>
+                        </ng-template>
+                    </p-columnFilter>
+                </th>
+                <th>
+                    <p-columnFilter field="sport_id" matchMode="in" [showMenu]="false">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-multiSelect 
+                                [(ngModel)]="selectedSportIds" 
+                                [options]="sport_ids" 
+                                placeholder="Sport" 
+                                (onChange)="filter($event.value)">
+                                    <ng-template let-id pTemplate="item">
+                                        <div class="inline-block vertical-align-middle">
+                                            <img src="{{getSportImageRoute(id)}}" alt="{{getSportImageRoute(id)}}" width="50px" height="20px">
+                                        </div>
+                                    </ng-template>
+                            </p-multiSelect>
+                        </ng-template>
+                    </p-columnFilter>
+                </th>
+                <th></th>
+                <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-opportunity let-rowIndex="rowIndex"> 
             <tr>
-                <td colspan="4">{{ opportunity.name }}</td>
-                <td *ngFor="let id of sportsbook_ids">
-                    <ng-container *ngIf="getOddModelFromSb(id, opportunity.odds)?.locked; else showOdds">
+                <td>
+                    <p-button (click)="setUsedEvent(opportunity.match_id)" label="Set as used" ></p-button>
+                </td>
+                <td>{{ opportunity.time }}</td>
+                <td>{{ opportunity.match_name }}</td>
+                <td>{{ opportunity.opp_name }}</td>
+                <td>
+                    <ng-container *ngIf="opportunity.parent.locked; else showParentOdds">
                         <i class="pi pi-lock"></i>
                     </ng-container>
-                    <ng-template #showOdds class="flex">
-                        <div [ngClass]="getOddClass(id, opportunity.odds)">
-                            {{ getOddModelFromSb(id, opportunity.odds)?.odd }}
-                        </div>
-                        <div *ngIf="getOddModelFromSb(id, opportunity.odds)?.kelly != undefined" class="stake">
-                            {{calculateStake(id, getOddModelFromSb(id, opportunity.odds)).toFixed(2)}}
+                    <ng-template #showParentOdds class="flex">
+                        <div [ngClass]="getOddClass(opportunity.parent)">
+                            {{ opportunity.parent.odds }}
                         </div>
                     </ng-template>
                 </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="summary">
-            <tr>
-                <td *ngFor="let id of sportsbook_ids">
-                    <label class="mb-2 block font-bold" [for]="'horizontal_' + id.toString()">
-                        {{getSbName(id)}}
-                    </label>
-                    <p-inputNumber 
-                    [(ngModel)]="budgets[id]" 
-                    [showButtons]="true" 
-                    buttonLayout="horizontal" 
-                    [inputId]="'horizontal_' + id.toString()" 
-                    spinnerMode="horizontal" 
-                    [step]="10"
-                    [min]="0" 
-                    decrementButtonClass="p-button-danger"
-                    incrementButtonClass="p-button-success"
-                    incrementButtonIcon="pi pi-plus" 
-                    decrementButtonIcon="pi pi-minus" 
-                    mode="currency" 
-                    currency="EUR" />
-                    
+                <td>
+                    <ng-container *ngIf="opportunity.child.locked; else showOdds">
+                        <i class="pi pi-lock"></i>
+                    </ng-container>
+                    <ng-template #showOdds class="flex">
+                        <div [ngClass]="getOddClass(opportunity.child)">
+                            {{ opportunity.child.odds }}
+                        </div>
+                    </ng-template>
+                </td>
+                <td>
+                    <img src="{{getSbImageRoute(opportunity.sportsbook_id)}}" alt="{{getSbName(opportunity.sportsbook_id)}}" width="50px" height="20px">
+                </td>
+                <td>
+                    <img src="{{getSportImageRoute(opportunity.sport_id)}}" alt="{{getSportImageRoute(opportunity.sport_id)}}" width="50px" height="20px">
+                </td>
+                <td>{{ opportunity.ev }}%</td>
+                <td>
+                    {{calculateStake(opportunity).toFixed(2)}}
                 </td>
             </tr>
         </ng-template>
@@ -156,16 +195,6 @@
         [style]="{ width: '70%'}" 
         [maximizable]="true">
         <app-event-dialog></app-event-dialog>
-    </p-dialog>
-</div>
-<div *ngIf="showOddDialog">
-    <p-dialog 
-        [header]="selectedOpportunity.match_name" 
-        [modal]="true" 
-        [(visible)]="showOddDialog" 
-        [style]="{ width: '70%'}" 
-        [maximizable]="true">
-        <app-opportunity-dialog [event_id]="selectedOpportunity.match_id"></app-opportunity-dialog>
     </p-dialog>
 </div>
 <p-toast position="bottom-right"></p-toast>
