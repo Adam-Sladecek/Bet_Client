@@ -48,8 +48,8 @@ export class EventService {
     return this.http.post<any>(API_CONSTANTS.BASE_URL + "event/update", {ids: ids})
   }
 
-  setUsedEvent(event_id: number): Observable<any> {
-    return this.http.patch<any>(API_CONSTANTS.BASE_URL + `event/used/${event_id}`, {})
+  setUsedEvent(event_id: number, sb_id: number): Observable<any> {
+    return this.http.patch<any>(API_CONSTANTS.BASE_URL + `event/used/${event_id}/sportsbook/${sb_id}`, {})
   }
 
   getEventOdds(event_id: number): Observable<IOddResponse> {

@@ -128,8 +128,8 @@ export class BetsComponent implements OnInit{
       return this.kellyMultiplier*kelly*this.budget
     }
 
-    setUsedEvent(event_id: number) { 
-      this.eventService.setUsedEvent(event_id).subscribe({
+    setUsedEvent(opportunity: IMatchOpportunity) { 
+      this.eventService.setUsedEvent(opportunity.match_id, opportunity.sportsbook_id).subscribe({
         next: (response: any) => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: "Event set as used." })
         },

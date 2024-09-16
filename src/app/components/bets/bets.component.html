@@ -1,4 +1,4 @@
-<div class="row flex">
+<div class="row flex" id="overlayElement">
     <div class="col-2">
         <p-button (click)="endScrape()" [disabled]="disable_buttons()" *ngIf="appRunning()" label="End Scrape" severity="danger" styleClass="p-button-danger"></p-button>
         <p-button (click)="startScrape()" [disabled]="disable_buttons()" *ngIf="!appRunning()" label="Start Scrape" severity="success" styleClass="p-button-success"></p-button>
@@ -64,15 +64,13 @@
         <span><strong>Last signal:</strong> {{lastSignal}}</span>
     </div>
 </div>
-<div class="card" style="height: 80vh;">
+<div class="card">
     <p-table 
         [value]="opportunities" 
         sortField="ev" 
         [sortOrder]="-1"
-        [scrollable]="true" 
-        scrollHeight="flex"
         styleClass="p-datatable-striped" 
-        [tableStyle]="{'min-width': '60rem'}">
+        [tableStyle]="{'min-width': '60rem', 'padding-bottom': '50px'}">
         <ng-template pTemplate="header">
             <tr>
                 <th style="width:10%">Action</th>
@@ -148,7 +146,7 @@
         <ng-template pTemplate="body" let-opportunity let-rowIndex="rowIndex"> 
             <tr>
                 <td>
-                    <p-button (click)="setUsedEvent(opportunity.match_id)" label="Set as used" ></p-button>
+                    <p-button (click)="setUsedEvent(opportunity)" label="Set as used" ></p-button>
                 </td>
                 <td>{{ opportunity.time }}</td>
                 <td>{{ opportunity.match_name }}</td>

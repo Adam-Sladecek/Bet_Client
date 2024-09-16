@@ -27,3 +27,12 @@
 .stake {
     color: var(--blue-500);
 }
+
+#overlayElement {
+    position: fixed;    /* Keeps the element in the same position in the viewport */
+    top: 90%;             /* Align to the top of the viewport */
+    left: 0;            /* Align to the left of the viewport */
+    width: 100vw;       /* Full viewport width */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 9999;      /* Ensures it's on top of everything else */
+  }
