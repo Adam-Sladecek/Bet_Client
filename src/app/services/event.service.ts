@@ -14,8 +14,9 @@ export class EventService {
     2 : "assets/layout/images/sportsbooks/tipsport.png",
     3 : "assets/layout/images/sportsbooks/pinnacle.png",
     4 : "assets/layout/images/sportsbooks/fortuna.jpg",
-    5 : "assets/layout/images/sportsbooks/tipos.png",
-    6 : "assets/layout/images/sportsbooks/doxxbet.png"
+    5 : "assets/layout/images/sportsbooks/ps3838.png",
+    6 : "assets/layout/images/sportsbooks/tipos.png",
+    7 : "assets/layout/images/sportsbooks/doxxbet.png"
   }
 
   private sportRoutes: {[key: number]: string} = {
@@ -34,8 +35,9 @@ export class EventService {
     2 : "Tipsport",
     3 : "Pinnacle",
     4 : "Fortuna",
-    5 : "Tipos",
-    6 : "Doxxbet"
+    5 : "PS3838",
+    6 : "Tipos",
+    7 : "Doxxbet"
   }
 
   constructor(private http: HttpClient) { }
