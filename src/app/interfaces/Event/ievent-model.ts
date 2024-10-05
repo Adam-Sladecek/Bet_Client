@@ -1,6 +1,7 @@
 export interface IEventModel {
     id: number
     event_id: number
+    league_id: number
     time: string
     home: string
     away: string
