@@ -14,42 +14,42 @@ export class OpportunityService {
 
   getOpportunitiesToLink(): Observable<IOpportunityFactoryResponse> {
     const baseUrl = this.getUrl()
-    return this.http.get<IOpportunityFactoryResponse>(baseUrl + "opportunity")
+    return this.http.get<IOpportunityFactoryResponse>(baseUrl + "opportunities")
   }
   
   addChild(parentId: number, childId: number): Observable<any> {
     const baseUrl = this.getUrl()
-    return this.http.patch<any>(baseUrl + `opportunity/${parentId}/add/${childId}`, {})
+    return this.http.patch<any>(baseUrl + `opportunities/${parentId}/children/${childId}`, {})
   }
 
   getChildren(): Observable<IOpportunityChildrenResponse> {
     const baseUrl = this.getUrl()
-    return this.http.get<IOpportunityChildrenResponse>(baseUrl + "opportunity/children")
+    return this.http.get<IOpportunityChildrenResponse>(baseUrl + "opportunities/children")
   }
 
   removeChildFromParent(childId: number): Observable<any> {
     const baseUrl = this.getUrl()
-    return this.http.patch<any>(baseUrl + `opportunity/children/${childId}`, {})
+    return this.http.patch<any>(baseUrl + `opportunities/${childId}/children`, {})
   }
 
   setPreferedOpportunity(pk: number, value: boolean): Observable<any> {
     const baseUrl = this.getUrl()
-    return this.http.patch<any>(baseUrl + `opportunity/${pk}`, {value: value})
+    return this.http.patch<any>(baseUrl + `opportunities/${pk}`, {value: value})
   }
 
   getMarkets(): Observable<IMarketResponse> {
     const baseUrl = this.getUrl()
-    return this.http.get<IMarketResponse>(baseUrl + `market`)
+    return this.http.get<IMarketResponse>(baseUrl + `markets`)
   }
 
   addMarket(name: string, sbid: number): Observable<IMarketResponse> {
     const baseUrl = this.getUrl()
-    return this.http.put<IMarketResponse>(baseUrl + `market`, {name: name, sbid: sbid})
+    return this.http.put<IMarketResponse>(baseUrl + `markets`, {name: name, sbid: sbid})
   }
 
   removeMarket(pk: number): Observable<IMarketResponse> {
     const baseUrl = this.getUrl()
-    return this.http.delete<IMarketResponse>(baseUrl + `market/${pk}`)
+    return this.http.delete<IMarketResponse>(baseUrl + `markets/${pk}`)
   }
 
   private getUrl(): string {

@@ -43,23 +43,23 @@ export class EventService {
   constructor(private http: HttpClient) { }
 
   getDefaultEvents(): Observable<IEventResponse> {
-    return this.http.get<IEventResponse>(API_CONSTANTS.BASE_URL + "event")
+    return this.http.get<IEventResponse>(API_CONSTANTS.BASE_URL + "events")
   }
 
   setDefaultEvents(ids: number[]): Observable<any> {
-    return this.http.post<any>(API_CONSTANTS.BASE_URL + "event", {ids: ids})
+    return this.http.post<any>(API_CONSTANTS.BASE_URL + "events", {ids: ids})
   }
 
   setUsedEvent(event_id: number, sb_id: number): Observable<any> {
-    return this.http.post<any>(API_CONSTANTS.BASE_URL + `event/used/${event_id}/sportsbook/${sb_id}`, {})
+    return this.http.post<any>(API_CONSTANTS.BASE_URL + `events/${event_id}/used/${sb_id}`, {})
   }
 
   getEventOdds(event_id: number): Observable<IOddResponse> {
-    return this.http.get<IOddResponse>(API_CONSTANTS.BASE_URL + `event/${event_id}/odds`)
+    return this.http.get<IOddResponse>(API_CONSTANTS.BASE_URL + `events/${event_id}/odds`)
   }
 
   setEventOdds(event_id: number, ids: number []): Observable<any> {
-    return this.http.post<any>(API_CONSTANTS.BASE_URL + `event/${event_id}/odds`, {ids: ids})
+    return this.http.post<any>(API_CONSTANTS.BASE_URL + `events/${event_id}/odds`, {ids: ids})
   }
 
   getSbImageRoute(sbId: number): string {

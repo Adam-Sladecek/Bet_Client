@@ -12,10 +12,10 @@ export class ConfigService {
   constructor( private http: HttpClient ) {}
 
   getConfig(): Observable<IConfigResponse> {
-    return this.http.get<IConfigResponse>(API_CONSTANTS.BASE_URL + "config")
+    return this.http.get<IConfigResponse>(API_CONSTANTS.BASE_URL + "configs")
   }
   
   setConfig(body: any): Observable<IConfigResponse> {
-    return this.http.post<IConfigResponse>(API_CONSTANTS.BASE_URL + "config", body)
+    return this.http.post<IConfigResponse>(API_CONSTANTS.BASE_URL + "configs", body)
   }
 }
