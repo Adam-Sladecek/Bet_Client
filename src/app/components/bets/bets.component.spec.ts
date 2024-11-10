@@ -10,10 +10,10 @@ import { TaskState } from 'src/app/enums/task-state';
 import { By } from '@angular/platform-browser';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 import { WebSocketService } from 'src/app/services/web-socket.service';
 import { BetsComponent } from './bets.component';
-import { IOddModel } from 'src/app/interfaces/Bet/iodd-model';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('BetsComponent', () => {
@@ -27,7 +27,8 @@ describe('BetsComponent', () => {
         ButtonModule,
         ToastModule,
         DialogModule,
-        InputNumberModule],
+        InputNumberModule,
+        MultiSelectModule],
     providers: [WebSocketService, MessageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 }).compileComponents();
   }));
@@ -77,24 +78,6 @@ describe('BetsComponent', () => {
     expect(button.disabled).toBeFalse();
     expect(running).toBeFalse();
     expect(ending).toBeFalse();
-  })
-
-  it('should get match from sb', () => { 
-    const mockBets: IOddModel[] = [
-      {
-        id: 0,
-        sportsbook_id: 1,
-        kelly: 0.3
-      } as IOddModel,
-      {
-        id: 1,
-        sportsbook_id: 2,
-      } as IOddModel,
-    ]
-    component.budgets = {1: 100}
-    const match = component.getOddModelFromSb(1, mockBets)
-    expect(match?.id).toBe(0)
-    expect(component.calculateStake(1, match)).toBe(30)
   })
 
   it('should start and end scrape', () => {

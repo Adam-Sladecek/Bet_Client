@@ -6,6 +6,8 @@ import { MessageService } from 'primeng/api';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
 import { AuthService } from 'src/app/services/auth.service';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -21,7 +23,7 @@ describe('LoginComponent', () => {
         FormsModule,
         ToastModule
       ],
-    providers: [AuthService, MessageService]
+    providers: [AuthService, MessageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 }).compileComponents();
   }));
 
