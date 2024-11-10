@@ -1,10 +1,12 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, ConfirmationService } from 'primeng/api';
 import { LayoutService } from "./service/app.layout.service";
+import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: 'app-topbar',
-    templateUrl: './app.topbar.component.html'
+    templateUrl: './app.topbar.component.html',
+    providers: [ConfirmationService]
 })
 export class AppTopBarComponent {
 
@@ -16,5 +18,20 @@ export class AppTopBarComponent {
 
     @ViewChild('topbarmenu') menu!: ElementRef;
 
-    constructor(public layoutService: LayoutService) { }
+    constructor(public layoutService: LayoutService, private confirmationService: ConfirmationService, private authService: AuthService) { }
+
+    confirmLogout(event: Event) {
+        this.confirmationService.confirm({
+            target: event.target as EventTarget,
+            message: 'Do you want to log out?',
+            header: 'Confirmation',
+            acceptIcon:"none",
+            rejectIcon:"none",
+            rejectButtonStyleClass:"p-button-text",
+            accept: () => {
+                this.authService.logout()
+            },
+            reject: () => {}
+        });
+    }
 }
