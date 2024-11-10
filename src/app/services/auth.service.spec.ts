@@ -1,18 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-
-import { ConfigService } from './config.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-describe('ConfigService', () => {
-  let service: ConfigService;
+import { AuthService } from './auth.service';
+
+describe('AuthService', () => {
+  let service: AuthService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [ConfigService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+      providers: [AuthService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
     });
-    service = TestBed.inject(ConfigService);
+    service = TestBed.inject(AuthService);
   });
 
   it('should be created', () => {

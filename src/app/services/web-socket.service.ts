@@ -32,7 +32,8 @@ export class WebSocketService {
   }
 
   connect(): void {
-    this.socket = new WebSocket(SOCKET_CONSTANTS.URL);
+    const token = localStorage.getItem('access_token');
+    this.socket = new WebSocket(SOCKET_CONSTANTS.URL + `?token=${token}`);
 
     this.socket.onopen = () => {
       console.log('WebSocket connection established.');

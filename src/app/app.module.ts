@@ -21,10 +21,16 @@ import { OpportunityChildrenComponent } from './components/opportunity-children/
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { PasswordModule } from 'primeng/password';
 
 import { EventDialogComponent } from './components/bets/event-dialog/event-dialog.component';
 import { OpportunityDialogComponent } from './components/bets/opportunity-dialog/opportunity-dialog.component';
 import { OpportunityMarketsComponent } from './components/opportunity-markets/opportunity-markets.component';
+
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './services/auth.interceptor';
+import { CommonModule } from '@angular/common';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   imports: [
@@ -41,7 +47,11 @@ import { OpportunityMarketsComponent } from './components/opportunity-markets/op
     DropdownModule,
     DialogModule,
     InputTextModule,
-    InputNumberModule
+    InputNumberModule,
+    CommonModule,
+    InputTextModule,
+    FormsModule,
+    PasswordModule
   ],
   declarations: [
     AppComponent,
@@ -53,7 +63,11 @@ import { OpportunityMarketsComponent } from './components/opportunity-markets/op
     EventDialogComponent,
     OpportunityDialogComponent,
     OpportunityMarketsComponent,
+    LoginComponent
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ]
 })
 export class AppModule { }
