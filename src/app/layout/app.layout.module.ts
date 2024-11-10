@@ -10,7 +10,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { AppMenuComponent } from './app.menu.component';
 import { AppMenuitemComponent } from './app.menuitem.component';
 import { RouterModule } from '@angular/router';
@@ -39,6 +39,6 @@ import { AppLayoutComponent } from "./app.layout.component";
         RippleModule,
         RouterModule,
         ButtonModule,
-        ConfirmDialogModule,
+        ConfirmPopupModule,
         AppConfigModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppLayoutModule { }
