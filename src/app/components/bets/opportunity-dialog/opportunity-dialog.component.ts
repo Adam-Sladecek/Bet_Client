@@ -4,7 +4,7 @@ import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 
 import { SOCKET_CONSTANTS } from 'src/app/constants/app.constants';
-import { IOddModel, IOddResponse } from 'src/app/interfaces/Bet/iodd-model';
+import { IPriceModel, IPriceResponse } from 'src/app/interfaces/Bet/iprice-model';
 import { EventService } from 'src/app/services/event.service';
 import { WebSocketService } from 'src/app/services/web-socket.service';
 
@@ -15,22 +15,22 @@ import { WebSocketService } from 'src/app/services/web-socket.service';
 })
 export class OpportunityDialogComponent implements OnInit {
   @ViewChild('dt1') dt1!: Table;
-  @Input({required: true}) event_id !: number
+  @Input({required: true}) event_pk !: number
   
   loading: boolean = true
   updating: boolean = false
-  odds: IOddModel[] = [] 
-  selectedOdds: IOddModel[] = [] 
+  prices: IPriceModel[] = [] 
+  selectedPrices: IPriceModel[] = [] 
 
   constructor( private eventService: EventService, 
     private messageService: MessageService,
     private websocketService: WebSocketService ) {}
 
   ngOnInit(): void {
-    this.eventService.getEventOdds(this.event_id).subscribe({
-      next: (response: IOddResponse) => {
-        this.odds = response.odds
-        this.selectedOdds = response.odds.filter(odd => odd.selected)
+    this.eventService.getEventPrices(this.event_pk).subscribe({
+      next: (response: IPriceResponse) => {
+        this.prices = response.prices
+        this.selectedPrices = response.prices.filter(price => price.selected)
         this.loading = false
       },
       error: (err) => {
@@ -39,10 +39,10 @@ export class OpportunityDialogComponent implements OnInit {
     });
   }
 
-  update_odds() { 
+  update_prices() { 
     this.updating = true
-    var ids = this.selectedOdds.map(odd => odd.id)
-    this.eventService.setEventOdds(this.event_id, ids).subscribe({
+    var ids = this.selectedPrices.map(price => price.id)
+    this.eventService.setEventPrices(this.event_pk, ids).subscribe({
       next: (response: any) => {
         this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.SENDALL });
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Opporunities updated." })

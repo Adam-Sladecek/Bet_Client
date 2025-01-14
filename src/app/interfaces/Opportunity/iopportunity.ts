@@ -5,6 +5,5 @@ export interface IOpportunity {
     prefered: boolean
     sportsbook_id: number
     sport_id: number
-    market_id: string
 }
 

@@ -7,7 +7,7 @@ import { WebSocketService } from 'src/app/services/web-socket.service';
 import { TaskState } from 'src/app/enums/task-state';
 import { IBetResponse } from 'src/app/interfaces/Bet/ibet-response';
 import { SocketResponseType } from 'src/app/enums/socket-response-type';
-import { IMatchOpportunityResponse, IMatchOpportunity, IMatchOdd } from 'src/app/interfaces/Bet/imatch-response';
+import { IMatchOpportunityResponse, IMatchOpportunity, IMatchPrice } from 'src/app/interfaces/Bet/imatch-response';
 import { EventService } from 'src/app/services/event.service';
 import { Movement } from 'src/app/enums/movement';
 import { SOCKET_CONSTANTS } from 'src/app/constants/app.constants';
@@ -110,7 +110,7 @@ export class BetsComponent implements OnInit{
       return this.eventService.getSportImageRoute(sportId);
     }
 
-    getOddClass(odd: IMatchOdd): { [key: string]: boolean } {
+    getOddClass(odd: IMatchPrice): { [key: string]: boolean } {
       return {
         'movement-up': odd.movement == Movement.UP as number,
         'movement-down': odd.movement == Movement.DOWN as number
@@ -154,18 +154,13 @@ export class BetsComponent implements OnInit{
         this.opportunities = opportunities
       }
       else { 
-        const odd_ids = new Set(response.odd_ids)
-        this.opportunities = this.opportunities.filter(opp => odd_ids.has(opp.child.odd_pk))
-        // for (let i = this.opportunities.length - 1; i >= 0; i--) {
-        //   if (!odd_ids.has(this.opportunities[i].child.odd_pk)) {
-        //     this.opportunities.splice(i, 1);
-        //   }
-        // }
+        const price_ids = new Set(response.price_ids)
+        this.opportunities = this.opportunities.filter(opp => price_ids.has(opp.child.price_pk))
       }
 
       const oppIndexMap = new Map<number, number>();
       this.opportunities.forEach((opp, index) => {
-        oppIndexMap.set(opp.child.odd_pk, index);
+        oppIndexMap.set(opp.child.price_pk, index);
       });
       
       opportunities.forEach(opp => {
@@ -175,7 +170,7 @@ export class BetsComponent implements OnInit{
         if (!this.sport_ids.includes(opp.sport_id)) {
           this.sport_ids.push(opp.sport_id)
         }
-        const existingIndex = oppIndexMap.get(opp.child.odd_pk);
+        const existingIndex = oppIndexMap.get(opp.child.price_pk);
         if(existingIndex == undefined) {
           this.opportunities.push(opp)
           return

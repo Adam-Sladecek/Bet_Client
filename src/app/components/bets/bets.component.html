@@ -75,36 +75,20 @@
         [tableStyle]="{'min-width': '60rem', 'padding-bottom': '50px'}">
         <ng-template pTemplate="header">
             <tr>
-                <th style="width:10%">Action</th>
-                <th style="width:10%">Time</th> 
-                <th style="width:10%">Event</th>
-                <th style="width:10%">Market</th>
-                <th style="width:10%">Sharp odds (vigfree)</th>
-                <th style="width:10%">Odds</th>
-                <th style="width:10%">Sportsbook</th>
-                <th style="width:10%">Sport</th>
-                <th style="width:10%" pSortableColumn="ev">
-                    EV <p-sortIcon field="ev" />
-                </th>
-                <th style="width:10%">Stake</th>
+                <th style="width:11%">Action</th>
+                <th style="width:11%">Event</th>
+                <th style="width:11%">Market</th>
+                <th style="width:11%">Sharp odds (vigfree)</th>
+                <th style="width:11%">Odds</th>
+                <th style="width:11%">Sportsbook</th>
+                <th style="width:11%">Sport</th>
+                <th style="width:11%" pSortableColumn="ev"> EV <p-sortIcon field="ev" /></th>
+                <th style="width:11%">Stake</th>
             </tr>
             <tr>
                 <th></th>
-                <th></th>
-                <th>
-                    <p-columnFilter 
-                    type="text"
-                    field="match_name" 
-                    placeholder="Event" 
-                    ariaLabel="Filter Event" />
-                </th>
-                <th>
-                    <p-columnFilter 
-                    type="text"
-                    field="opp_name" 
-                    placeholder="Market" 
-                    ariaLabel="Filter Market" />
-                </th>
+                <th><p-columnFilter type="text" field="match_name" placeholder="Event" ariaLabel="Filter Event" /></th>
+                <th><p-columnFilter type="text" field="opp_name" placeholder="Market" ariaLabel="Filter Market" /></th>
                 <th></th>
                 <th></th>
                 <th>
@@ -150,7 +134,6 @@
                 <td>
                     <p-button (click)="setUsedEvent(opportunity)" label="Set as used" ></p-button>
                 </td>
-                <td>{{ opportunity.time }}</td>
                 <td>{{ opportunity.match_name }}</td>
                 <td>{{ opportunity.opp_name }}</td>
                 <td>

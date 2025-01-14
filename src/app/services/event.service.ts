@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IEventResponse } from '../interfaces/Event/ievent-response';
 import { API_CONSTANTS } from '../constants/app.constants';
-import { IOddResponse } from '../interfaces/Bet/iodd-model';
+import { IPriceResponse } from '../interfaces/Bet/iprice-model';
 
 @Injectable({
   providedIn: 'root'
@@ -52,16 +52,16 @@ export class EventService {
     return this.http.post<any>(API_CONSTANTS.BASE_URL + "events", {ids: ids})
   }
 
-  setUsedEvent(event_id: number, sb_id: number): Observable<any> {
-    return this.http.post<any>(API_CONSTANTS.BASE_URL + `events/${event_id}/used/${sb_id}`, {})
+  setUsedEvent(event_pk: number, sb_id: number): Observable<any> {
+    return this.http.post<any>(API_CONSTANTS.BASE_URL + `events/${event_pk}/used/${sb_id}`, {})
   }
 
-  getEventOdds(event_id: number): Observable<IOddResponse> {
-    return this.http.get<IOddResponse>(API_CONSTANTS.BASE_URL + `events/${event_id}/odds`)
+  getEventPrices(event_pk: number): Observable<IPriceResponse> {
+    return this.http.get<IPriceResponse>(API_CONSTANTS.BASE_URL + `events/${event_pk}/prices`)
   }
 
-  setEventOdds(event_id: number, ids: number []): Observable<any> {
-    return this.http.post<any>(API_CONSTANTS.BASE_URL + `events/${event_id}/odds`, {ids: ids})
+  setEventPrices(event_pk: number, ids: number []): Observable<any> {
+    return this.http.post<any>(API_CONSTANTS.BASE_URL + `events/${event_pk}/prices`, {ids: ids})
   }
 
   getSbImageRoute(sbId: number): string {

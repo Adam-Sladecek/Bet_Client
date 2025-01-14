@@ -1,14 +1,10 @@
 export interface IEventModel {
     id: number
-    event_id: number
-    league_id: number
     time: string
-    home: string
-    away: string
-    is_default: boolean
+    description: string
     selected: boolean
-    sportsbook_id: number
     sport_id: number
+    sportsbook_id: number
     available_sportsbooks: number[]
-    odd_count: number
+    price_count: number
 }

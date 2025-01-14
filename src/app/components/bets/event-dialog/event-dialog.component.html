@@ -8,7 +8,7 @@
     dataKey="id" 
     [scrollable]="true" 
     scrollHeight="300px"
-    [globalFilterFields]="['home', 'away']">
+    [globalFilterFields]="['description']">
         <ng-template pTemplate="caption">
             <div class="flex">
                 <span class="p-input-icon-left ml-auto">
@@ -21,12 +21,12 @@
             <tr>
                 <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
                 <th>Action</th>
-                <th>Home</th>
-                <th>Away</th>
+                <th>Time</th>
+                <th>Description</th>
                 <th>Sport</th>
                 <th>Sportsbook</th>
                 <th>Availabe In</th>
-                <th># opportunities</th>
+                <th># markets</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-event>
@@ -37,14 +37,14 @@
                 <td>
                     <p-button (click)="open_opportunity_dialog(event)" icon="pi pi-plus" [rounded]="true" severity="success" ></p-button>
                 </td>
-                <td>{{ event.home }}</td>
-                <td>{{ event.away }}</td>
+                <td>{{ event.time }}</td>
+                <td>{{ event.description }}</td>
                 <td><img src="{{getSportImageRoute(event.sport_id)}}" alt="{{event.sport_id}}" width="50px" height="20px"></td>
                 <td><img src="{{getSbImageRoute(event.sportsbook_id)}}" alt="{{event.sportsbook_id}}" width="50px" height="20px"></td>
                 <td class="flex">
                     <img class="mr-1" *ngFor="let id of event.available_sportsbooks" src="{{getSbImageRoute(id)}}" alt="{{id}}" width="50px" height="20px">
                 </td>
-                <td>{{ event.odd_count }}</td>
+                <td>{{ event.price_count }}</td>
             </tr>
         </ng-template>
     </p-table>
@@ -57,11 +57,11 @@
 <p-progressSpinner *ngIf="loading" ariaLabel="loading"></p-progressSpinner>
 <div *ngIf="showOpportunityDialog">
     <p-dialog 
-        [header]="selectedEvent.home + 'vs.' + selectedEvent.away" 
+        [header]="selectedEvent.description" 
         [modal]="true" 
         [(visible)]="showOpportunityDialog" 
         [style]="{ width: '70%'}" 
         [maximizable]="true">
-        <app-opportunity-dialog [event_id]="selectedEvent.id"></app-opportunity-dialog>
+        <app-opportunity-dialog [event_pk]="selectedEvent.id"></app-opportunity-dialog>
     </p-dialog>
 </div>
