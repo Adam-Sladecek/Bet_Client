@@ -24,29 +24,7 @@ export class BetsComponent implements OnInit{
     lastSignal?: string
     error!: boolean
     showEventDialog: boolean
-    opportunities: IMatchOpportunity[] = [
-      {
-        match_name: 'Test',
-        opp_name: 'Test',
-        match_id: 1,
-        parent: {
-          price_pk: 1,
-          odds: 1.0,
-          locked: false,
-          movement: 0
-        },
-        child: {
-          price_pk: 1,
-          odds: 1.0,
-          locked: false,
-          movement: 0
-        },
-        sport_id: 1,
-        sportsbook_id: 1,
-        ev: 0,
-        stake: 0
-      }
-    ]
+    opportunities: IMatchOpportunity[] = []
     sportsbook_ids: number[] = []
     selectedSportsbookIds: number[] = []; 
     sport_ids: number[] = []
