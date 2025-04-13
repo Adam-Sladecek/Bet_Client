@@ -81,7 +81,7 @@ export class OpportunityFactoryComponent implements OnInit {
     this.oppService.getOpportunitiesToLink().subscribe({
       next: (response: IOpportunityFactoryResponse) => {
         this.parents = response.parents 
-        this.opportunities = response.opportunities
+        this.opportunities = response.children
         this.loading = false
       },
       error: (err) => {

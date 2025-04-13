@@ -44,7 +44,8 @@ export class OpportunityDialogComponent implements OnInit {
     var ids = this.selectedPrices.map(price => price.id)
     this.eventService.setEventPrices(this.event_pk, ids).subscribe({
       next: (response: any) => {
-        this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.SENDALL });
+        // this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.SENDALL });
+        this.websocketService.sendMessage({ action: 'update_events' });
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Opporunities updated." })
         this.updating = false
       },

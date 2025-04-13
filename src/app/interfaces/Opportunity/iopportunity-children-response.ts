@@ -9,5 +9,6 @@ export interface IOpportunityWithParentName {
     parent_name: string
     parent_prefered: boolean
     sportsbook_id: number
+    sport_id: number
     opportunity: IOpportunity
 }

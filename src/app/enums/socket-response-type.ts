@@ -1,6 +1,6 @@
 export enum SocketResponseType {
-    STATERESPONSE = 1,
-    ERROR = 2,
-    MATCHDATA = 3,
-    IMPORTRUNNING = 4
+    SCRAPING = 1,
+    IMPORT = 2,
+    ERROR = 3,
+    MATCHDATA = 4,
 }

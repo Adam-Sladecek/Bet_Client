@@ -11,7 +11,6 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Description</th>
-                        <th>ID</th>
                         <th>Sport</th>
                         <th>SB</th>
                         <th>Prefered</th>
@@ -23,7 +22,6 @@
                         <td>
                             <span class="font-bold ml-2">{{model.parent_name}}</span>
                         </td>
-                        <td>{{model.parent_id}}</td>
                         <td><img src="{{getSportImageRoute(model.sport_id)}}" alt="{{model.sport_id}}" width="50px" height="20px"></td>
                         <td>
                             <img src="{{getSbImageRoute(model.sportsbook_id)}}" alt="{{model.sportsbook_id}}" width="50px" height="20px">
@@ -33,15 +31,14 @@
                             <i *ngIf="!model.parent_prefered" class="pi pi-times" style="color: red"></i>    
                         </td>
                         <td>
-                            <p-button *ngIf="model.parent_prefered" (click)="changePreferedParent(model, model.parent_prefered)" [disabled]="deleting" styleClass="p-button-danger">Unset</p-button>
-                            <p-button *ngIf="!model.parent_prefered" (click)="changePreferedParent(model, model.parent_prefered)" [disabled]="deleting" styleClass="p-button-success">Set</p-button>
+                            <p-button *ngIf="model.parent_prefered" (click)="changePreferedParent(model)" [disabled]="deleting" styleClass="p-button-danger">Unset</p-button>
+                            <p-button *ngIf="!model.parent_prefered" (click)="changePreferedParent(model)" [disabled]="deleting" styleClass="p-button-success">Set</p-button>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-model let-rowIndex="rowIndex">
                     <tr>
                         <td>{{model.opportunity.description}}</td>
-                        <td>{{model.opportunity.id}}</td>
                         <td><img src="{{getSportImageRoute(model.opportunity.sport_id)}}" alt="{{model.opportunity.sport_id}}" width="50px" height="20px"></td>
                         <td><img src="{{getSbImageRoute(model.opportunity.sportsbook_id)}}" alt="{{model.opportunity.sportsbook_id}}" width="50px" height="20px"></td>
                         <td></td>

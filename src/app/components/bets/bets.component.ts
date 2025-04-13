@@ -24,7 +24,29 @@ export class BetsComponent implements OnInit{
     lastSignal?: string
     error!: boolean
     showEventDialog: boolean
-    opportunities: IMatchOpportunity[] = []
+    opportunities: IMatchOpportunity[] = [
+      {
+        match_name: 'Test',
+        opp_name: 'Test',
+        match_id: 1,
+        parent: {
+          price_pk: 1,
+          odds: 1.0,
+          locked: false,
+          movement: 0
+        },
+        child: {
+          price_pk: 1,
+          odds: 1.0,
+          locked: false,
+          movement: 0
+        },
+        sport_id: 1,
+        sportsbook_id: 1,
+        ev: 0,
+        stake: 0
+      }
+    ]
     sportsbook_ids: number[] = []
     selectedSportsbookIds: number[] = []; 
     sport_ids: number[] = []
@@ -43,7 +65,7 @@ export class BetsComponent implements OnInit{
       this.selectedOpportunity = {} as IMatchOpportunity
       this.triggerEventSubscription = this.websocketService.triggerEventObservable.subscribe({
         next: (response: IBetResponse) => {
-          if (response.type == SocketResponseType.STATERESPONSE){ 
+          if (response.type == SocketResponseType.SCRAPING){ 
             this.taskState = response.data as TaskState;
             return
           }
@@ -90,7 +112,6 @@ export class BetsComponent implements OnInit{
     }
     
     endScrape(): void {
-      this.taskState = TaskState.ENDING;
       this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.END });
     }
 

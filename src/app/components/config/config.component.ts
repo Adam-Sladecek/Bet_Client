@@ -3,6 +3,7 @@ import { MessageService } from 'primeng/api';
 import { IConfig } from 'src/app/interfaces/Config/iconfig';
 import { IConfigResponse } from 'src/app/interfaces/Config/iconfig-response';
 import { ConfigService } from 'src/app/services/config.service';
+import { WebSocketService } from 'src/app/services/web-socket.service';
 
 @Component({
   selector: 'app-config',
@@ -21,7 +22,8 @@ export class ConfigComponent implements OnInit {
   updating: boolean
   
   constructor( private configService: ConfigService, 
-    private messageService: MessageService ) {
+    private messageService: MessageService,
+    private websocketService: WebSocketService ) {
     this.updating = false
     this.gettingConfig = true
     this.sports = []
@@ -33,19 +35,26 @@ export class ConfigComponent implements OnInit {
   
   ngOnInit(): void {
     this.getConfig()
+    this.websocketService.connect()
   }
 
   setConfig(): void {
     this.updating = true;
-    var default_sbs: IConfig[] = []
-    if (this.selectedDefaultSportsbook) {
-      default_sbs = [this.selectedDefaultSportsbook]
+    if (!this.selectedDefaultSportsbook) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: "Please select a default sportsbook." })
+      this.updating = false
+      return
     }
-    const body = { sports: this.selectedSports, sportsbooks: this.selectedSportsbooks, default_sportsbooks: default_sbs } as IConfigResponse
+    const body = { 
+      sportsbookIds: this.selectedSportsbooks.map((sportsbook: IConfig) => sportsbook.id), 
+      defaultSportsbookId: this.selectedDefaultSportsbook.id, 
+      sportIds: this.selectedSports.map((sport: IConfig) => sport.id)
+    }
     this.configService.setConfig(body).subscribe({
       next: (data: IConfigResponse) => {
-        this.mapConfigResponse(data)
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Config set." })
+        this.websocketService.sendMessage({ action: "update_sportsbooks"})
+        this.websocketService.sendMessage({ action: "update_sports"})
         this.updating = false
       },
       error: (err) => {
@@ -72,10 +81,10 @@ export class ConfigComponent implements OnInit {
 
   private mapConfigResponse(data: IConfigResponse):void {
     this.sports = data.sports
-    this.sportsbooks = data.sportsbooks
-    this.defaultSportsbooks = data.default_sportsbooks
+    this.sportsbooks = data.sportsbooks.filter((sportsbook: any) => !sportsbook.is_default)
+    this.defaultSportsbooks = data.sportsbooks.filter((sportsbook: any) => sportsbook.is_default)
     this.selectedSports = data.sports.filter((sport: any) => sport.selected)
-    this.selectedSportsbooks = data.sportsbooks.filter((sportsbook: any) => sportsbook.selected)
-    this.selectedDefaultSportsbook = data.default_sportsbooks.find((sportsbook: any) => sportsbook.selected)
+    this.selectedSportsbooks = data.sportsbooks.filter((sportsbook: any) => sportsbook.selected && !sportsbook.is_default)
+    this.selectedDefaultSportsbook = data.sportsbooks.find((sportsbook: any) => sportsbook.is_default && sportsbook.selected)
   }
 }

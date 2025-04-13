@@ -1,5 +1,7 @@
-import { ISbWithMarkets } from "./isb-with-markets";
+import { IMarket } from "./imarket"
 
 export interface IMarketResponse {
-    sb_markets: ISbWithMarkets[]
+    markets: {
+        [key: number]: IMarket[]
+    }
 }

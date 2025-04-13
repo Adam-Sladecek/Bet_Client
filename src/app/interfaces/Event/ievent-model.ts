@@ -5,6 +5,6 @@ export interface IEventModel {
     selected: boolean
     sport_id: number
     sportsbook_id: number
-    available_sportsbooks: number[]
-    price_count: number
+    available_sportsbook_ids: number[]
+    num_prices: number
 }

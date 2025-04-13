@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { AbstractType, Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { IMarket } from 'src/app/interfaces/Opportunity/imarket';
 import { IMarketResponse } from 'src/app/interfaces/Opportunity/imarket-response';
-import { ISbWithMarkets } from 'src/app/interfaces/Opportunity/isb-with-markets';
 import { EventService } from 'src/app/services/event.service';
 import { OpportunityService } from 'src/app/services/opportunity.service';
 
@@ -15,7 +15,14 @@ export class OpportunityMarketsComponent implements OnInit{
   loading: boolean = true
   updating: boolean = false
 
-  sbsWithMarkets: ISbWithMarkets[] = []
+  markets_dict: {
+    [key: number]: IMarket[]
+  } = {}
+
+  newMarketName: {
+    [key: number]: string
+  } = {}
+
   constructor( 
     private oppService: OpportunityService, 
     private messageService: MessageService, 
@@ -27,6 +34,10 @@ export class OpportunityMarketsComponent implements OnInit{
     this.getMarkets()
   }
 
+  sportbookIds(): number[] {
+    return Object.keys(this.markets_dict).map(Number)
+  }
+
   getSbImageRoute(sbId: number): string {
     return this.eventService.getSbImageRoute(sbId);
   }
@@ -35,8 +46,8 @@ export class OpportunityMarketsComponent implements OnInit{
     if (!name) return
     this.updating = true
     this.oppService.addMarket(name, sbid).subscribe({
-      next: (response: IMarketResponse) => {
-        this.sbsWithMarkets = response.sb_markets 
+      next: (market: IMarket) => {
+        this.markets_dict[sbid].push(market)
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Market added." })
         this.updating = false
       },
@@ -47,11 +58,11 @@ export class OpportunityMarketsComponent implements OnInit{
     })
   }
 
-  removeMarket(pk: number) { 
+  removeMarket(pk: number, sbid: number) { 
     this.updating = true
     this.oppService.removeMarket(pk).subscribe({
-      next: (response: IMarketResponse) => {
-        this.sbsWithMarkets = response.sb_markets 
+      next: (response: any) => {
+        this.markets_dict[sbid] = this.markets_dict[sbid].filter(m => m.id !== pk)
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Market deleted." })
         this.updating = false
       },
@@ -65,7 +76,7 @@ export class OpportunityMarketsComponent implements OnInit{
   private getMarkets() { 
     this.oppService.getMarkets().subscribe({
       next: (response: IMarketResponse) => {
-        this.sbsWithMarkets = response.sb_markets 
+        this.markets_dict = response.markets
         this.loading = false
       },
       error: (err) => {

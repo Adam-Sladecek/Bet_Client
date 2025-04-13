@@ -1,15 +1,15 @@
 <p-progressSpinner *ngIf="loading" ariaLabel="loading"></p-progressSpinner>
 <div class="flex">
-    <div *ngFor="let val of sbsWithMarkets" class="ml-5">
+    <div *ngFor="let sbId of sportbookIds()" class="ml-5">
         <div>
-            <img src="{{getSbImageRoute(val.sportsbook_id)}}" alt="{{val.sportsbook_id}}" width="50px" height="20px">
+            <img src="{{getSbImageRoute(sbId)}}" alt="{{sbId}}" width="50px" height="20px">
         </div>
         <div class="flex">
-            <input type="text" pInputText [(ngModel)]="val.new_market_name" />
+            <input type="text" pInputText [(ngModel)]="newMarketName[sbId]" />
             <span>&nbsp;</span>
-            <p-button [disabled]="updating" (click)="addMarket(val.new_market_name, val.sportsbook_id)" label="Add" />
+            <p-button [disabled]="updating" (click)="addMarket(newMarketName[sbId], sbId)" label="Add" />
         </div>
-        <p-table [value]="val.markets">
+        <p-table [value]="markets_dict[sbId]">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Id</th>
@@ -20,9 +20,9 @@
             <ng-template pTemplate="body" let-market>
                 <tr>
                     <td>{{ market.id }}</td>
-                    <td>{{ market.name }}</td>
+                    <td>{{ market.value }}</td>
                     <td>
-                        <p-button icon="pi pi-trash" [disabled]="updating" (click)="removeMarket(market.id)" severity="danger" />
+                        <p-button icon="pi pi-trash" [disabled]="updating" (click)="removeMarket(market.id, sbId)" severity="danger" />
                     </td>
                 </tr>
             </ng-template>

@@ -41,7 +41,7 @@ export class EventDialogComponent implements OnInit {
         if (state == TaskState.RUNNING){ 
           this.importing = true
         }
-        else if (state == TaskState.CLOSED) { 
+        else if (state == TaskState.ENDED) { 
           this.get_events(true)
         }
       }
@@ -61,7 +61,8 @@ export class EventDialogComponent implements OnInit {
     var ids = this.selectedEvents.map(event => event.id)
     this.eventService.setDefaultEvents(ids).subscribe({
       next: (response: any) => {
-        this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.SENDALL });
+        // this.websocketService.sendMessage({ action: SOCKET_CONSTANTS.SENDALL });
+        this.websocketService.sendMessage({ action: "update_events" });
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Events updated." })
         this.updating = false
       },
@@ -106,6 +107,7 @@ export class EventDialogComponent implements OnInit {
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message ?? err.message})
+        this.importing = false
       }
     });
   }

@@ -35,11 +35,11 @@ export class OpportunityChildrenComponent implements OnInit{
     return this.eventService.getSportImageRoute(sportId);
   }
 
-  changePreferedParent(model: IOpportunityWithParentName, prefered: boolean) {
+  changePreferedParent(model: IOpportunityWithParentName) {
     this.deleting = true
-    this.oppService.setPreferedOpportunity(model.parent_id, !prefered).subscribe({
+    this.oppService.setPreferedOpportunity(model.parent_id, !model.parent_prefered).subscribe({
       next: (response: any) => {
-        model.parent_prefered = !prefered
+        model.parent_prefered = !model.parent_prefered
         this.messageService.add({ severity: 'success', summary: 'Success', detail: "Preferency changed." })
         this.deleting = false
       },

@@ -41,7 +41,7 @@ export class WebSocketService {
 
     this.socket.onmessage = (event) => {
       let response = JSON.parse(event.data) as IBetResponse
-      if (response.type == SocketResponseType.IMPORTRUNNING) {
+      if (response.type == SocketResponseType.IMPORT) {
         this.defaultEventSubject.next(response.data as TaskState);
         return
       }
