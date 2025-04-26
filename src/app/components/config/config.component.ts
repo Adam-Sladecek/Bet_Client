@@ -48,6 +48,7 @@ export class ConfigComponent implements OnInit {
     const body = { 
       sportsbookIds: this.selectedSportsbooks.map((sportsbook: IConfig) => sportsbook.id), 
       defaultSportsbookId: this.selectedDefaultSportsbook.id, 
+      timeout: this.selectedDefaultSportsbook.timeout,
       sportIds: this.selectedSports.map((sport: IConfig) => sport.id)
     }
     this.configService.setConfig(body).subscribe({
@@ -70,6 +71,7 @@ export class ConfigComponent implements OnInit {
     this.configService.getConfig().subscribe({
       next: (data: IConfigResponse) => {
         this.mapConfigResponse(data)
+        console.log(data)
         this.gettingConfig = false
       },
       error: (err) => {

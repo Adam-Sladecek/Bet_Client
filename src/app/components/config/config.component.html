@@ -9,6 +9,19 @@
         <p-dropdown [options]="defaultSportsbooks" [(ngModel)]="selectedDefaultSportsbook" optionLabel="name" placeholder="Select a default Sportsbook" />
         <br>
         <br>
+        <p-inputNumber 
+            *ngIf="selectedDefaultSportsbook"
+            [(ngModel)]="selectedDefaultSportsbook.timeout" 
+            [showButtons]="true" 
+            buttonLayout="horizontal" 
+            spinnerMode="horizontal" 
+            inputId="horizontal"
+            decrementButtonClass="p-button-secondary"
+            incrementButtonClass="p-button-secondary" 
+            incrementButtonIcon="pi pi-plus" 
+            decrementButtonIcon="pi pi-minus" />
+        <br>
+        <br>
         <p-button [disabled]="updating" (click)="setConfig()" label="Set config" severity="success" styleClass="p-button-success"></p-button>
         <i *ngIf="updating" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
     </div>

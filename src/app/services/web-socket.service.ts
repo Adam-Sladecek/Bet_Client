@@ -55,6 +55,10 @@ export class WebSocketService {
     };
   }
 
+  disconnect(): void {
+    this.socket.close();
+  }
+
   sendMessage(message: any): void {
     if (this.socket.readyState === WebSocket.OPEN) {
       this.socket.send(JSON.stringify(message));

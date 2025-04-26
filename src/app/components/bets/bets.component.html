@@ -66,7 +66,7 @@
 </div>
 <div class="card">
     <p-table 
-        [value]="opportunities" 
+        [value]="lines" 
         sortField="ev" 
         [sortOrder]="-1"
         selectionMode="single" 
@@ -129,42 +129,42 @@
                 <th></th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-opportunity let-rowIndex="rowIndex"> 
-            <tr [pSelectableRow]="opportunity">
+        <ng-template pTemplate="body" let-line let-rowIndex="rowIndex"> 
+            <tr [pSelectableRow]="line">
                 <td>
-                    <p-button (click)="setUsedEvent(opportunity)" label="Set as used" ></p-button>
+                    <p-button (click)="setUsedEvent(line)" label="Set as used" ></p-button>
                 </td>
-                <td>{{ opportunity.match_name }}</td>
-                <td>{{ opportunity.opp_name }}</td>
+                <td>{{ line.match_name }}</td>
+                <td>{{ line.opp_description }}</td>
                 <td>
-                    <ng-container *ngIf="opportunity.parent.locked; else showParentOdds">
+                    <ng-container *ngIf="line.parent.locked; else showParentOdds">
                         <i class="pi pi-lock"></i>
                     </ng-container>
                     <ng-template #showParentOdds class="flex">
-                        <div [ngClass]="getOddClass(opportunity.parent)">
-                            {{ opportunity.parent.odds }}
+                        <div [ngClass]="getOddClass(line.parent)">
+                            {{ line.parent.odds }}
                         </div>
                     </ng-template>
                 </td>
                 <td>
-                    <ng-container *ngIf="opportunity.child.locked; else showOdds">
+                    <ng-container *ngIf="line.child.locked; else showOdds">
                         <i class="pi pi-lock"></i>
                     </ng-container>
                     <ng-template #showOdds class="flex">
-                        <div [ngClass]="getOddClass(opportunity.child)">
-                            {{ opportunity.child.odds }}
+                        <div [ngClass]="getOddClass(line.child)">
+                            {{ line.child.odds }}
                         </div>
                     </ng-template>
                 </td>
                 <td>
-                    <img src="{{getSbImageRoute(opportunity.sportsbook_id)}}" alt="{{getSbName(opportunity.sportsbook_id)}}" width="50px" height="20px">
+                    <img src="{{getSbImageRoute(line.sportsbook_id)}}" alt="{{getSbName(line.sportsbook_id)}}" width="50px" height="20px">
                 </td>
                 <td>
-                    <img src="{{getSportImageRoute(opportunity.sport_id)}}" alt="{{getSportImageRoute(opportunity.sport_id)}}" width="50px" height="20px">
+                    <img src="{{getSportImageRoute(line.sport_id)}}" alt="{{getSportImageRoute(line.sport_id)}}" width="50px" height="20px">
                 </td>
-                <td>{{ opportunity.ev }}%</td>
+                <td>{{ line.ev }}%</td>
                 <td>
-                    {{calculateStake(opportunity).toFixed(2)}}
+                    {{calculateStake(line).toFixed(2)}}
                 </td>
             </tr>
         </ng-template>

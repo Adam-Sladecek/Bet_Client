@@ -3,4 +3,5 @@ export interface IConfig {
     name: string
     is_default: boolean
     selected: boolean
+    timeout: number
 }

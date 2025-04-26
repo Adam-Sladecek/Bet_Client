@@ -7,7 +7,7 @@ import { WebSocketService } from 'src/app/services/web-socket.service';
 import { TaskState } from 'src/app/enums/task-state';
 import { IBetResponse } from 'src/app/interfaces/Bet/ibet-response';
 import { SocketResponseType } from 'src/app/enums/socket-response-type';
-import { IMatchOpportunityResponse, IMatchOpportunity, IMatchPrice } from 'src/app/interfaces/Bet/imatch-response';
+import { ILineResponse, ILine, ILinePrice } from 'src/app/interfaces/Bet/iline-response';
 import { EventService } from 'src/app/services/event.service';
 import { Movement } from 'src/app/enums/movement';
 import { SOCKET_CONSTANTS } from 'src/app/constants/app.constants';
@@ -24,12 +24,12 @@ export class BetsComponent implements OnInit{
     lastSignal?: string
     error!: boolean
     showEventDialog: boolean
-    opportunities: IMatchOpportunity[] = []
+    lines: ILine[] = []
     sportsbook_ids: number[] = []
     selectedSportsbookIds: number[] = []; 
     sport_ids: number[] = []
     selectedSportIds: number[] = []; 
-    selectedOpportunity: IMatchOpportunity
+    selectedOpportunity: ILine
 
     kellyMultiplier: number = 1
     parentOdds: number = 0
@@ -40,7 +40,7 @@ export class BetsComponent implements OnInit{
       private messageService: MessageService,
       private eventService: EventService ) {
       this.showEventDialog = false
-      this.selectedOpportunity = {} as IMatchOpportunity
+      this.selectedOpportunity = {} as ILine
       this.triggerEventSubscription = this.websocketService.triggerEventObservable.subscribe({
         next: (response: IBetResponse) => {
           if (response.type == SocketResponseType.SCRAPING){ 
@@ -49,7 +49,7 @@ export class BetsComponent implements OnInit{
           }
           if (response.type == SocketResponseType.MATCHDATA) { 
             this.getLastSignal()
-            let matchResponse = response.data as IMatchOpportunityResponse
+            let matchResponse = response.data as ILineResponse
             this.updateOpportunities(matchResponse)
             return
           }
@@ -70,6 +70,7 @@ export class BetsComponent implements OnInit{
     }
 
     ngOnDestroy(): void {
+      this.websocketService.disconnect();
       this.triggerEventSubscription.unsubscribe();
     }
 
@@ -109,14 +110,14 @@ export class BetsComponent implements OnInit{
       return this.eventService.getSportImageRoute(sportId);
     }
 
-    getOddClass(odd: IMatchPrice): { [key: string]: boolean } {
+    getOddClass(odd: ILinePrice): { [key: string]: boolean } {
       return {
         'movement-up': odd.movement == Movement.UP as number,
         'movement-down': odd.movement == Movement.DOWN as number
       };
     }
 
-    calculateStake(opportunity: IMatchOpportunity): number { 
+    calculateStake(opportunity: ILine): number { 
       return this.kellyMultiplier*opportunity.stake*this.budget
     }
 
@@ -127,10 +128,11 @@ export class BetsComponent implements OnInit{
       return this.kellyMultiplier*kelly*this.budget
     }
 
-    setUsedEvent(opportunity: IMatchOpportunity) { 
-      this.eventService.setUsedEvent(opportunity.match_id, opportunity.sportsbook_id).subscribe({
+    setUsedEvent(opportunity: ILine) { 
+      this.eventService.setUsedEvent(opportunity.default_event_id, opportunity.sportsbook_id).subscribe({
         next: (response: any) => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: "Event set as used." })
+          this.websocketService.sendMessage({ action: "update_events" });
         },
         error: (err) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message ?? err.message})
@@ -146,35 +148,37 @@ export class BetsComponent implements OnInit{
       this.lastSignal = currentHours + ':' + currentMinutes + ':' + currentSeconds;
     }
 
-    private updateOpportunities(response: IMatchOpportunityResponse) { 
-      const opportunities = response.opportunities
-      
+    private updateOpportunities(response: ILineResponse) { 
+      console.log(response)
       if (response.update_all) { 
-        this.opportunities = opportunities
-      }
-      else { 
-        const price_ids = new Set(response.price_ids)
-        this.opportunities = this.opportunities.filter(opp => price_ids.has(opp.child.price_pk))
+        this.lines = response.lines
+        return
       }
 
-      const oppIndexMap = new Map<number, number>();
-      this.opportunities.forEach((opp, index) => {
-        oppIndexMap.set(opp.child.price_pk, index);
+      this.lines = this.lines.filter(line => 
+        response.selected_event_ids.includes(line.regular_event_id) && 
+        response.selected_event_ids.includes(line.default_event_id)
+      );
+
+      const lineIndexMap = new Map<number, number>();
+      response.lines.forEach((line, index) => {
+        lineIndexMap.set(line.id, index);
       });
-      
-      opportunities.forEach(opp => {
-        if (!this.sportsbook_ids.includes(opp.sportsbook_id)) {
-          this.sportsbook_ids.push(opp.sportsbook_id)
+
+      response.lines.forEach(line => {
+        if (!this.sportsbook_ids.includes(line.sportsbook_id)) {
+          this.sportsbook_ids.push(line.sportsbook_id)
         }
-        if (!this.sport_ids.includes(opp.sport_id)) {
-          this.sport_ids.push(opp.sport_id)
+        if (!this.sport_ids.includes(line.sport_id)) {
+          this.sport_ids.push(line.sport_id)
         }
-        const existingIndex = oppIndexMap.get(opp.child.price_pk);
+
+        const existingIndex = lineIndexMap.get(line.id);
         if(existingIndex == undefined) {
-          this.opportunities.push(opp)
+          this.lines.push(line)
           return
         }
-        this.opportunities[existingIndex] = opp
+        this.lines[existingIndex] = line
       });
     }
 
