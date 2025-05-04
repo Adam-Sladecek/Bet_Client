@@ -12,10 +12,10 @@ export class EventService {
   private sbRoutes: {[key: number]: string} = {
     1 : "assets/layout/images/sportsbooks/nike.png",
     2 : "assets/layout/images/sportsbooks/tipsport.png",
-    3 : "assets/layout/images/sportsbooks/pinnacle.png",
+    3 : "assets/layout/images/sportsbooks/betfair.png",
     4 : "assets/layout/images/sportsbooks/fortuna.jpg",
     5 : "assets/layout/images/sportsbooks/ps3838.png",
-    6 : "assets/layout/images/sportsbooks/betfair.png",
+    6 : "assets/layout/images/sportsbooks/pinnacle.png",
     7 : "assets/layout/images/sportsbooks/tipos.png",
     8 : "assets/layout/images/sportsbooks/doxxbet.png"
   }
