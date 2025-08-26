@@ -4,10 +4,7 @@ A comprehensive Angular application for real-time sports betting arbitrage monit
 
 ## 📚 Documentation
 
-This project includes comprehensive documentation for all public APIs, functions, and components:
-
-- **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference with examples and usage instructions
-- **[Component Documentation](COMPONENT_DOCUMENTATION.md)** - Detailed component guides with templates and styling
+This project includes comprehensive documentation for all public APIs, functions, and components in this README file.
 
 ## 🚀 Quick Start
 
@@ -106,7 +103,7 @@ src/
 - **Base URL:** `http://127.0.0.1:8000/database/`
 - **Error API:** `http://192.168.0.106:5000/`
 
-See [API Documentation](API_DOCUMENTATION.md) for complete endpoint details.
+See the Services section below for complete endpoint details.
 
 ## 🎯 Core Services
 
@@ -150,7 +147,7 @@ Container for opportunity management features with tabbed interface.
 ### ConfigComponent
 Manages application configuration settings.
 
-See [Component Documentation](COMPONENT_DOCUMENTATION.md) for detailed component guides.
+See the Components section below for detailed component information.
 
 ## 🔌 Data Interfaces
 
@@ -243,7 +240,7 @@ ng build --configuration production
    - Verify change detection
    - Ensure data emission
 
-See [API Documentation](API_DOCUMENTATION.md) for detailed troubleshooting guide.
+See the Troubleshooting section below for detailed troubleshooting guide.
 
 ## 📄 License
 
@@ -258,10 +255,7 @@ This project is proprietary software. All rights reserved.
 
 ## 📞 Support
 
-For technical support or questions about the API, please refer to the comprehensive documentation:
-
-- [API Documentation](API_DOCUMENTATION.md)
-- [Component Documentation](COMPONENT_DOCUMENTATION.md)
+For technical support or questions about the API, please refer to the comprehensive documentation in this README file.
 
 ---
 
